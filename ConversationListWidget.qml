@@ -32,6 +32,7 @@ Item {
 
         delegate: ConversationListDelegate {
             onClicked: {
+                pageStack.push(Qt.resolvedUrl("ConversationPage.qml"))
             }
         }
     }
