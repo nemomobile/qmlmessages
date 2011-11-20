@@ -41,6 +41,7 @@ Image {
     Image {
         id: photo
         source: model.personavatarPath
+        anchors.verticalCenter: parent.verticalCenter
     }
 
     Label {
