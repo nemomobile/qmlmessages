@@ -79,6 +79,10 @@ Page {
 
         ToolIcon {
             iconId: "icon-m-toolbar-send-sms"
+            onClicked: {
+                console.log("Sending message!")
+                pageStack.pop()
+            }
         }
     }
 }
