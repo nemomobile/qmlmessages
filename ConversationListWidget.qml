@@ -21,9 +21,18 @@ Item {
     ListModel {
         id: peopleModel
         ListElement {
-            personavatarPath: "image://theme/icon-m-telephony-contact-avatar"
-            persondisplayLabel: "Nemo Mobile"
-            personfavorite: false
+            avatarPath: "image://theme/icon-m-telephony-contact-avatar"
+            displayName: "Robin Burchell"
+            messagePreview: "I can boss you around, but do you really want that?"
+            messageDate: "4:24pm"
+            favorite: false
+        }
+        ListElement {
+            avatarPath: "image://theme/icon-m-telephony-contact-avatar"
+            displayName: "Nemo Mobile"
+            messagePreview: "This is a message!"
+            messageDate: "7/22"
+            favorite: false
         }
     }
 

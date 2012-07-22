@@ -24,20 +24,61 @@ Item {
 
     Image {
         id: photo
-        source: model.personavatarPath
+        source: model.avatarPath
+        sourceSize: Qt.size(80, 80)
         anchors.verticalCenter: parent.verticalCenter
     }
 
-    Label {
-        id: nameFirst
-        text: model.persondisplayLabel
+    Column {
         anchors {
-            left: photo.right;
-            verticalCenter: parent.verticalCenter;
-            leftMargin: photo.height/8
+            left: photo.right
+            leftMargin: photo.height/4
+            right: parent.right
+            verticalCenter: parent.verticalCenter
         }
-        smooth: true
+
+        Item {
+            width: parent.width
+            height: nameFirst.paintedHeight
+
+            Label {
+                id: nameFirst
+                text: model.displayName
+
+                platformStyle: LabelStyle {
+                    fontFamily: "Droid Sans"
+                    fontPixelSize: 30
+                }
+            }
+
+            Label {
+                id: messageDate
+                text: model.messageDate
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+
+                platformStyle: LabelStyle {
+                    fontFamily: "Droid Sans"
+                    fontPixelSize: 22
+                    textColor: "#303030"
+                }
+            }
+        }
+
+        Label {
+            id: messagePreview
+            text: model.messagePreview
+            elide: Text.ElideRight
+            width: parent.width
+
+            platformStyle: LabelStyle {
+                fontFamily: "Droid Sans"
+                fontPixelSize: 20
+                textColor: "#4b4b4b"
+            }
+        }
     }
+
 
     MouseArea {
         id: mouseArea

@@ -37,6 +37,11 @@ Rectangle {
         elide: Text.ElideRight
         smooth: true
         color: "white"
+
+        platformStyle: LabelStyle {
+            fontFamily: "Droid Sans"
+            fontPixelSize: 30
+        }
     }
 }
 

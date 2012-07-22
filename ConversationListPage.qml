@@ -12,7 +12,7 @@ import com.nokia.meego 1.0
 Page {
     PageHeader {
         id: header
-        text: qsTr("Messaging")
+        text: qsTr("Conversations")
     }
 
     ConversationListWidget {
