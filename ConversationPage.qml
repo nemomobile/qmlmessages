@@ -49,18 +49,67 @@ Page {
             anchors.fill: parent
             clip: true
             model: messagesModel
+            spacing: 20
 
-            delegate: Rectangle {
-                color: model.direction == "incoming" ? "steelblue" : "white"
-                height: childrenRect.height
-                width: parent.width
+            delegate: BorderImage {
+                id: messageBox
+                height: 100
+                width: parent.width * 0.8
 
-                Label {
-                    text: model.text
-                    width: parent.width
-                    height: paintedHeight
+                Item {
+                    id: messageContent
+                    anchors.fill: parent
+                    anchors.margins: 10
+
+                    Label {
+                        id: messageText
+                        text: model.text
+                        width: parent.width
+                    }
                 }
-                // "image://theme/meegotouch-speechbubble-incoming-background" :
+
+                // This should use meegotouch's speechbubble theme elements, but those SVG group
+                // images are not supported in qt-components currently. incoming.svg and outgoing.svg
+                // are extracted from the group SVG in meegotouch's base theme and included here.
+                states: [
+                    State {
+                        name: "incoming"
+                        when: model.direction == "incoming"
+
+                        PropertyChanges {
+                            target: messageBox
+                            x: parent.width - width
+                            source: "incoming.svg"
+                            border.left: 24
+                            border.right: 24
+                            border.top: 24
+                            border.bottom: 24
+                        }
+
+                        PropertyChanges {
+                            target: messageContent
+                            anchors.rightMargin: 20
+                        }
+                    },
+                    State {
+                        name: "outgoing"
+                        when: model.direction == "outgoing"
+
+                        PropertyChanges {
+                            target: messageBox
+                            source: "outgoing.svg"
+                            border.left: 24
+                            border.right: 24
+                            border.top: 24
+                            border.bottom: 24
+                        }
+
+                        PropertyChanges {
+                            target: messageContent
+                            anchors.leftMargin: 20
+                        }
+                    }
+                ]
             }
         }
 
@@ -69,7 +118,7 @@ Page {
         }
     }
 
-    TextArea {
+    TextField {
         id: textArea
         anchors.bottom: parent.bottom
         anchors.left: parent.left
