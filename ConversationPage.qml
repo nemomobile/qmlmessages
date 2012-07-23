@@ -13,6 +13,7 @@ Page {
     PageHeader {
         id: header
         text: qsTr("Nemo Mobile")
+        z: 1
     }
 
     Item {
@@ -20,7 +21,11 @@ Page {
         anchors.top: header.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.bottom: textArea.bottom
+        anchors.bottom: textArea.top
+        anchors.leftMargin: 5
+        anchors.rightMargin: 5
+        anchors.topMargin: 10
+        anchors.bottomMargin: 10
 
         ListModel {
             id: messagesModel
@@ -47,7 +52,6 @@ Page {
         ListView {
             id: messagesView
             anchors.fill: parent
-            clip: true
             model: messagesModel
             spacing: 20
 
@@ -118,15 +122,44 @@ Page {
         }
     }
 
-    TextField {
+    Image {
         id: textArea
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        placeholderText: qsTr("Enter a message to send.")
+        height: textInput.height + 22
+
+        source: "image://theme/meegotouch-toolbar-portrait-background"
+
+        TextField {
+            id: textInput
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.leftMargin: 10
+            anchors.rightMargin: 10
+            y: 10
+            placeholderText: qsTr("Type a message")
+
+            Button {
+                id: sendBtn
+                anchors.right: parent.right
+                anchors.rightMargin: 5
+                anchors.verticalCenter: textInput.verticalCenter
+                anchors.verticalCenterOffset: textInput.hasFocus ? 0 : 1
+
+                text: qsTr("Send")
+                
+                platformStyle: ButtonStyle {
+                    buttonWidth: 100
+                    buttonHeight: textInput.height - 10
+                    background: "image://theme/meegotouch-button-inverted-background"
+                    textColor: "white"
+                }
+            }
+        }
     }
 
-    tools: ToolBarLayout {
+    /*tools: ToolBarLayout {
         ToolIcon {
             iconId: "icon-m-toolbar-back"
             onClicked: {
@@ -141,6 +174,6 @@ Page {
                 pageStack.pop()
             }
         }
-    }
+    }*/
 }
 
