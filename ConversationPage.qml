@@ -12,8 +12,46 @@ import com.nokia.meego 1.0
 Page {
     PageHeader {
         id: header
-        text: qsTr("Nemo Mobile")
+        color: "#bcbcbc"
         z: 1
+
+        Rectangle {
+            anchors.bottom: header.bottom
+            anchors.left: header.left
+            anchors.right: header.right
+            height: 2
+            color: "#a0a0a0"
+        }
+
+        ToolIcon {
+            id: backBtn
+            anchors.verticalCenter: parent.verticalCenter
+            iconId: "icon-m-toolbar-back"
+            onClicked: pageStack.pop()
+        }
+
+        Label {
+            id: label
+            anchors.centerIn: parent
+            elide: Text.ElideRight
+            smooth: true
+            color: "#111111"
+            text: qsTr("Contact #1")
+
+            platformStyle: LabelStyle {
+                fontFamily: "Droid Sans"
+                fontPixelSize: 30
+            }
+        }
+
+        Image {
+            id: avatar
+            anchors.right: parent.right
+            anchors.rightMargin: 10
+            anchors.verticalCenter: parent.verticalCenter
+            source: "image://theme/icon-m-telephony-contact-avatar"
+            sourceSize: Qt.size(55, 55)
+        }
     }
 
     Item {
