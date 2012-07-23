@@ -30,18 +30,18 @@ Page {
             onClicked: pageStack.pop()
         }
 
-        Label {
+        Text {
             id: label
             anchors.centerIn: parent
             elide: Text.ElideRight
             smooth: true
             color: "#111111"
             text: qsTr("Contact #1")
+            style: Text.Raised
+            styleColor: "white"
 
-            platformStyle: LabelStyle {
-                fontFamily: "Droid Sans"
-                fontPixelSize: 30
-            }
+            font.family: "Droid Sans"
+            font.pixelSize: 30
         }
 
         Image {
@@ -70,20 +70,20 @@ Page {
 
             ListElement {
                 direction: "incoming"
-                text: "hey"
+                text: "Hey"
             }
 
             ListElement {
                 direction: "outgoing"
-                text: "hello"
+                text: "Hello"
             }
             ListElement {
                 direction: "outgoing"
-                text: "world"
+                text: "Nemo"
             }
             ListElement {
                 direction: "incoming"
-                text: "this isn't a program, silly"
+                text: "Long demo text is too difficult to write at 1am, but I have to come up with something."
             }
         }
 
@@ -95,13 +95,16 @@ Page {
 
             delegate: BorderImage {
                 id: messageBox
-                height: 100
+                height: messageContent.height + 20
                 width: parent.width * 0.8
 
                 Item {
                     id: messageContent
-                    anchors.fill: parent
+                    anchors.left: parent.left
+                    anchors.right: parent.right
                     anchors.margins: 10
+                    height: Math.max(messageText.height, 60)
+                    y: 10
 
                     Label {
                         id: messageText
@@ -196,22 +199,5 @@ Page {
             }
         }
     }
-
-    /*tools: ToolBarLayout {
-        ToolIcon {
-            iconId: "icon-m-toolbar-back"
-            onClicked: {
-                pageStack.pop()
-            }
-        }
-
-        ToolIcon {
-            iconId: "icon-m-toolbar-send-sms"
-            onClicked: {
-                console.log("Sending message!")
-                pageStack.pop()
-            }
-        }
-    }*/
 }
 
