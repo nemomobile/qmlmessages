@@ -1,0 +1,5 @@
+qmlmessages
+*.o
+moc_*.cpp
+qrc_*.cpp
+Makefile
