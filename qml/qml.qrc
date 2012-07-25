@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/qml">
+        <file>qmlmessages/main.qml</file>
+        <file>qmlmessages/PageHeader.qml</file>
+        <file>qmlmessages/EmptyConversations.qml</file>
+        <file>qmlmessages/ConversationPage.qml</file>
+        <file>qmlmessages/ConversationListWidget.qml</file>
+        <file>qmlmessages/ConversationListPage.qml</file>
+        <file>qmlmessages/ConversationListDelegate.qml</file>
+    </qresource>
+</RCC>

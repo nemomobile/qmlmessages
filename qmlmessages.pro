@@ -12,3 +12,4 @@ HEADERS += src/accountsmodel.h \
     src/clienthandler.h \
     src/chatmodel.h
 
+RESOURCES += res.qrc qml/qml.qrc
