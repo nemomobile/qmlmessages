@@ -33,10 +33,25 @@ void ChatModel::messageReceived(const Tp::ReceivedMessage &message)
     qDebug() << "ChatModel:" << message.received() << message.text();
 
     beginInsertRows(QModelIndex(), mMessages.size(), mMessages.size());
-    mMessages.append(message);
+    mMessages.append(Message(message.text(), message.received(), Incoming));
     endInsertRows();
 
     mChannel->acknowledge(QList<Tp::ReceivedMessage>() << message);
+}
+
+void ChatModel::sendMessage(const QString &text)
+{
+    qDebug() << "ChatModel: sending" << text;
+
+    Q_ASSERT(mChannel->isReady());
+    mChannel->send(text);
+
+    // XXX This maybe should use Tp::TextChannel::messageSent to find
+    // what was actually sent. Although, this might not be best in the
+    // model to begin with.
+    beginInsertRows(QModelIndex(), mMessages.size(), mMessages.size());
+    mMessages.append(Message(text, QDateTime::currentDateTime(), Outgoing));
+    endInsertRows();
 }
 
 int ChatModel::rowCount(const QModelIndex &parent) const
@@ -52,12 +67,17 @@ QVariant ChatModel::data(const QModelIndex &index, int role) const
     if (!index.isValid() || index.row() >= mMessages.size())
         return QVariant();
 
-    const Tp::ReceivedMessage &message = mMessages[index.row()];
+    const Message &message = mMessages[index.row()];
     switch (role) {
-        case Qt::DisplayRole: return message.text();
-        case ChatDirectionRole: return "incoming";
+        case Qt::DisplayRole: return message.text;
+        case ChatDirectionRole: return message.direction;
     }
 
     return QVariant();
+}
+
+ChatModel::Message::Message(const QString &t, const QDateTime &dt, Direction d)
+    : text(t), date(dt), direction(d)
+{
 }
 

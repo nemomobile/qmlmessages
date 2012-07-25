@@ -8,6 +8,7 @@
 
 import QtQuick 1.1
 import com.nokia.meego 1.0
+import org.nemomobile.qmlmessages 1.0
 
 Page {
     property alias model: messagesView.model
@@ -121,7 +122,7 @@ Page {
                 states: [
                     State {
                         name: "incoming"
-                        when: model.direction == "incoming"
+                        when: model.direction == ChatModel.Incoming
 
                         PropertyChanges {
                             target: messageBox
@@ -140,7 +141,7 @@ Page {
                     },
                     State {
                         name: "outgoing"
-                        when: model.direction == "outgoing"
+                        when: model.direction == ChatModel.Outgoing
 
                         PropertyChanges {
                             target: messageBox
@@ -197,6 +198,13 @@ Page {
                     buttonHeight: textInput.height - 10
                     background: "image://theme/meegotouch-button-inverted-background"
                     textColor: "white"
+                }
+
+                onClicked: {
+                    if (textInput.text.length > 0) {
+                        messagesView.model.sendMessage(textInput.text)
+                        textInput.text = ""
+                    }
                 }
             }
         }
