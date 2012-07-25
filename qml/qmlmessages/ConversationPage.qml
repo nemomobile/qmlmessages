@@ -124,7 +124,7 @@ Page {
                         PropertyChanges {
                             target: messageBox
                             x: parent.width - width
-                            source: "incoming.svg"
+                            source: "qrc:/images/incoming.svg"
                             border.left: 24
                             border.right: 24
                             border.top: 24
@@ -142,7 +142,7 @@ Page {
 
                         PropertyChanges {
                             target: messageBox
-                            source: "outgoing.svg"
+                            source: "qrc:/images/outgoing.svg"
                             border.left: 24
                             border.right: 24
                             border.top: 24
