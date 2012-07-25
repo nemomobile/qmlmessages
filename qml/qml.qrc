@@ -7,5 +7,6 @@
         <file>qmlmessages/ConversationListWidget.qml</file>
         <file>qmlmessages/ConversationListPage.qml</file>
         <file>qmlmessages/ConversationListDelegate.qml</file>
+        <file>qmlmessages/MessagesView.qml</file>
     </qresource>
 </RCC>
