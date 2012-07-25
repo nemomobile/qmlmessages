@@ -4,12 +4,17 @@
 #include <QAbstractListModel>
 
 #include <TelepathyQt4/TextChannel>
+#include <TelepathyQt4/ReceivedMessage>
 
 class ChatModel : public QAbstractListModel
 {
     Q_OBJECT
 
 public:
+    enum {
+        ChatDirectionRole = Qt::UserRole
+    };
+
     ChatModel(const Tp::TextChannelPtr &channel, QObject *parent = 0);
 
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -21,7 +26,10 @@ private slots:
 
 private:
     Tp::TextChannelPtr mChannel;
+    QList<Tp::ReceivedMessage> mMessages;
 };
+
+Q_DECLARE_METATYPE(ChatModel*)
 
 #endif
 

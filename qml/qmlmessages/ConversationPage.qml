@@ -10,6 +10,8 @@ import QtQuick 1.1
 import com.nokia.meego 1.0
 
 Page {
+    property alias model: messagesView.model
+
     PageHeader {
         id: header
         color: "#bcbcbc"
@@ -90,7 +92,7 @@ Page {
         ListView {
             id: messagesView
             anchors.fill: parent
-            model: messagesModel
+            //model: messagesModel
             spacing: 20
 
             delegate: BorderImage {

@@ -13,5 +13,12 @@ PageStackWindow {
     id: window 
 
     initialPage: ConversationListPage {}
+
+    Connections {
+        target: clientHandler
+        onNewChatModel: {
+            pageStack.push(Qt.resolvedUrl("ConversationPage.qml"), { model: chatModel })
+        }
+    }
 }
 

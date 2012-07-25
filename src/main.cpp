@@ -1,5 +1,7 @@
 #include <QApplication>
 #include <QDeclarativeView>
+#include <QDeclarativeContext>
+#include <QtDeclarative>
 #ifdef HAS_BOOSTER
 #include <applauncherd/MDeclarativeCache>
 #endif
@@ -11,6 +13,7 @@
 
 #include "src/accountsmodel.h"
 #include "src/clienthandler.h"
+#include "src/chatmodel.h"
 
 using namespace Tp;
 
@@ -40,10 +43,16 @@ int main(int argc, char **argv)
     //AccountsModel *m = new AccountsModel;
 
     ClientRegistrarPtr registrar = ClientRegistrar::create();
-    AbstractClientPtr handler = AbstractClientPtr::dynamicCast(SharedPtr<ClientHandler>(new ClientHandler));
+    ClientHandler *clientHandler = new ClientHandler;
+    AbstractClientPtr handler = AbstractClientPtr::dynamicCast(SharedPtr<ClientHandler>(clientHandler));
     registrar->registerClient(handler, "qmlmessages");
 
+    // Set up QML
+    qRegisterMetaType<ChatModel*>();
+    qmlRegisterUncreatableType<ChatModel>("org.nemomobile.qmlmessages", 1, 0, "ChatModel", "Cannot be created");
+
     // Set up view
+    view->rootContext()->setContextProperty("clientHandler", QVariant::fromValue<QObject*>(clientHandler));
     view->setSource(QUrl("qrc:qml/qmlmessages/main.qml"));
     view->setAttribute(Qt::WA_OpaquePaintEvent);
     view->setAttribute(Qt::WA_NoSystemBackground);

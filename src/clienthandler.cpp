@@ -31,6 +31,7 @@ void ClientHandler::handleChannels(const MethodInvocationContextPtr<> &context, 
         TextChannelPtr channel = SharedPtr<TextChannel>::dynamicCast<Channel>(c);
         // XXX Do we need to track channels that already have a model?
         ChatModel *model = new ChatModel(channel, this);
+        emit newChatModel(model);
     }
     context->setFinished();
 }
