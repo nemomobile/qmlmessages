@@ -73,20 +73,20 @@ Page {
             id: messagesModel
 
             ListElement {
-                direction: "incoming"
+                direction: ChatModel.Incoming
                 text: "Hey"
             }
 
             ListElement {
-                direction: "outgoing"
+                direction: ChatModel.Outgoing
                 text: "Hello"
             }
             ListElement {
-                direction: "outgoing"
+                direction: ChatModel.Outgoing
                 text: "Nemo"
             }
             ListElement {
-                direction: "incoming"
+                direction: ChatModel.Incoming
                 text: "Long demo text is too difficult to write at 1am, but I have to come up with something."
             }
         }
@@ -95,11 +95,7 @@ Page {
             id: messagesView
             anchors.fill: parent
             // XXX Demo purposes only
-            model: (model == undefined) ? messagesModel : conversationPage.model
-        }
-
-        ScrollDecorator {
-            flickableItem: messagesView
+            model: (conversationPage.model == undefined) ? messagesModel : conversationPage.model
         }
     }
 
