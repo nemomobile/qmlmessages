@@ -69,33 +69,10 @@ Page {
         anchors.topMargin: 10
         anchors.bottomMargin: 10
 
-        ListModel {
-            id: messagesModel
-
-            ListElement {
-                direction: ChatModel.Incoming
-                text: "Hey"
-            }
-
-            ListElement {
-                direction: ChatModel.Outgoing
-                text: "Hello"
-            }
-            ListElement {
-                direction: ChatModel.Outgoing
-                text: "Nemo"
-            }
-            ListElement {
-                direction: ChatModel.Incoming
-                text: "Long demo text is too difficult to write at 1am, but I have to come up with something."
-            }
-        }
-
         MessagesView {
             id: messagesView
             anchors.fill: parent
-            // XXX Demo purposes only
-            model: (conversationPage.model == undefined) ? messagesModel : conversationPage.model
+            model: conversationPage.model
         }
     }
 
