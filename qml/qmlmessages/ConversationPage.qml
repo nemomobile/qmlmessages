@@ -40,7 +40,7 @@ Page {
             elide: Text.ElideRight
             smooth: true
             color: "#111111"
-            text: qsTr("Contact #1")
+            text: model.contactId
             style: Text.Raised
             styleColor: "white"
 

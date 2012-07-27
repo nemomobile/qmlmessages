@@ -55,7 +55,7 @@ QVariant ConversationsModel::data(const QModelIndex &index, int role) const
     ChatModel *model = mChats[index.row()];
 
     switch (role) {
-        case Qt::DisplayRole: return "Some guy";
+        case Qt::DisplayRole: return model->contactId();
         case ChatModelRole: return QVariant::fromValue<QObject*>(model);
         case MessagePreviewRole: {
             QModelIndex index = model->index(model->rowCount()-1, 0);

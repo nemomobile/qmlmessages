@@ -3,6 +3,7 @@
 
 #include <TelepathyQt4/ReceivedMessage>
 #include <TelepathyQt4/PendingReady>
+#include <TelepathyQt4/Contact>
 
 ChatModel::ChatModel(const Tp::TextChannelPtr &channel, QObject *parent)
     : QAbstractListModel(parent), mChannel(channel)
@@ -23,6 +24,8 @@ ChatModel::ChatModel(const Tp::TextChannelPtr &channel, QObject *parent)
 void ChatModel::channelReady(Tp::PendingOperation *op)
 {
     Q_UNUSED(op);
+
+    emit contactIdChanged();
 
     QList<Tp::ReceivedMessage> messages = mChannel->messageQueue();
     foreach (Tp::ReceivedMessage msg, messages)
@@ -53,6 +56,19 @@ void ChatModel::sendMessage(const QString &text)
     beginInsertRows(QModelIndex(), mMessages.size(), mMessages.size());
     mMessages.append(Message(text, QDateTime::currentDateTime(), Outgoing));
     endInsertRows();
+}
+
+QString ChatModel::contactId() const
+{
+    if (!mChannel->isReady())
+        return QString();
+
+    Tp::ContactPtr contact = mChannel->targetContact();
+    // XXX Can happen if target is not a single contact type
+    if (contact.isNull())
+        return tr("Unknown Contact");
+
+    return contact->id();
 }
 
 int ChatModel::rowCount(const QModelIndex &parent) const
