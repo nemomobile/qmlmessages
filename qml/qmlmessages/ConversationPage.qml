@@ -60,6 +60,18 @@ Page {
             source: "image://theme/icon-m-telephony-contact-avatar"
             sourceSize: Qt.size(55, 55)
         }
+
+        // For the new conversation state
+        AccountSelector {
+            id: accountSelector
+            anchors.left: backBtn.right
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.margins: 10
+
+            visible: false
+        }
     }
 
     TargetEditBox {
@@ -147,6 +159,12 @@ Page {
             PropertyChanges {
                 target: avatar
                 visible: false
+            }
+
+            PropertyChanges {
+                target: accountSelector
+                visible: true
+                model: accountsModel
             }
 
             AnchorChanges {

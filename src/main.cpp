@@ -46,8 +46,6 @@ int main(int argc, char **argv)
             Tp::enableDebug(true);
     }
 
-    //AccountsModel *m = new AccountsModel;
-
     // Features can be requested in the factories here, and are applied to all objects
     // of that type created under the ClientHandler; list them here if they are needed
     // often, or immediately after the instance is created.
@@ -62,6 +60,7 @@ int main(int argc, char **argv)
     // Set up QML
     qRegisterMetaType<ChatModel*>();
     qmlRegisterType<ConversationsModel>("org.nemomobile.qmlmessages", 1, 0, "ConversationsModel");
+    qmlRegisterType<AccountsModel>("org.nemomobile.qmlmessages", 1, 0, "AccountsModel");
     qmlRegisterUncreatableType<ChatModel>("org.nemomobile.qmlmessages", 1, 0, "ChatModel", "Cannot be created");
 
     // Set up view

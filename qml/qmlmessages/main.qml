@@ -8,6 +8,7 @@
 
 import QtQuick 1.1
 import com.nokia.meego 1.0
+import org.nemomobile.qmlmessages 1.0
 
 PageStackWindow {
     id: window 
@@ -19,6 +20,11 @@ PageStackWindow {
         onNewChatModel: {
             pageStack.push(Qt.resolvedUrl("ConversationPage.qml"), { model: chatModel })
         }
+    }
+
+    // Shared AccountsModel
+    AccountsModel {
+        id: accountsModel
     }
 }
 

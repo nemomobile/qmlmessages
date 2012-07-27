@@ -9,5 +9,6 @@
         <file>qmlmessages/ConversationListDelegate.qml</file>
         <file>qmlmessages/MessagesView.qml</file>
         <file>qmlmessages/TargetEditBox.qml</file>
+        <file>qmlmessages/AccountSelector.qml</file>
     </qresource>
 </RCC>

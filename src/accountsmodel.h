@@ -9,11 +9,26 @@ class AccountsModel : public QAbstractListModel
 {
     Q_OBJECT
 
+    // Hack necessary for SelectionDialog in AccountSelector.qml.
+    // The Qt Components dialog expects the model to have a count
+    // property, and won't show any items if it doesn't.
+    Q_PROPERTY(int count READ count NOTIFY countChanged);
+
 public:
     AccountsModel(QObject *parent = 0);
 
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
-    virtual QVariant data(const QModelIndex &index, int role) const;
+    virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+
+    Q_INVOKABLE QVariant get(int row, int role = Qt::DisplayRole) const
+    {
+        return data(index(row, 0), role);
+    }
+
+    int count() const { return rowCount(); }
+
+signals:
+    void countChanged();
 
 private slots:
     void accountManagerReady(Tp::PendingOperation *op);
@@ -21,6 +36,7 @@ private slots:
 
 private:
     Tp::AccountManagerPtr mAccountManager;
+    QList<Tp::AccountPtr> mAccounts;
 };
 
 #endif
