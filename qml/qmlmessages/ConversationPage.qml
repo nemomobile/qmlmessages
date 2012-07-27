@@ -10,6 +10,10 @@ import QtQuick 1.1
 import com.nokia.meego 1.0
 import org.nemomobile.qmlmessages 1.0
 
+/* ConversationPage has two states, depending on if it has an active
+ * conversation or not. This is determined by whether the model property
+ * is set. If unset, this is the new conversation page, and some elements
+ * are different. */
 Page {
     id: conversationPage
     property variant model
@@ -40,7 +44,7 @@ Page {
             elide: Text.ElideRight
             smooth: true
             color: "#111111"
-            text: model.contactId
+            text: model == undefined ? "" : model.contactId
             style: Text.Raised
             styleColor: "white"
 
@@ -58,22 +62,25 @@ Page {
         }
     }
 
-    Item {
-        id: conversationThread
+    TargetEditBox {
+        id: targetEditor
         anchors.top: header.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.bottom: textArea.top
-        anchors.leftMargin: 5
-        anchors.rightMargin: 5
-        anchors.topMargin: 10
-        anchors.bottomMargin: 10
+        visible: false
+    }
 
-        MessagesView {
-            id: messagesView
-            anchors.fill: parent
-            model: conversationPage.model
+    MessagesView {
+        id: messagesView
+        anchors {
+            top: header.bottom
+            bottom: textArea.top
+            left: parent.left; right: parent.right
+            topMargin: 10; bottomMargin: 10
+            leftMargin: 5; rightMargin: 5
         }
+
+        model: conversationPage.model
     }
 
     Image {
@@ -102,12 +109,15 @@ Page {
                 anchors.verticalCenterOffset: textInput.hasFocus ? 0 : 1
 
                 text: qsTr("Send")
+                enabled: textInput.text.length > 0
                 
                 platformStyle: ButtonStyle {
                     buttonWidth: 100
                     buttonHeight: textInput.height - 10
                     background: "image://theme/meegotouch-button-inverted-background"
+                    disabledBackground: background
                     textColor: "white"
+                    disabledTextColor: "lightgray"
                 }
 
                 onClicked: {
@@ -119,5 +129,36 @@ Page {
             }
         }
     }
+
+    states: [
+        State {
+            name: "active"
+            when: conversationPage.model !== undefined
+        },
+        State {
+            name: "new"
+            when: conversationPage.model == undefined
+
+            PropertyChanges {
+                target: targetEditor
+                visible: true
+            }
+
+            PropertyChanges {
+                target: avatar
+                visible: false
+            }
+
+            AnchorChanges {
+                target: messagesView
+                anchors.top: targetEditor.bottom
+            }
+
+            PropertyChanges {
+                target: sendBtn
+                enabled: textInput.text.length > 0 && targetEditor.targetText.length > 0
+            }
+        }
+    ]
 }
 

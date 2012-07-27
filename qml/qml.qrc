@@ -8,5 +8,6 @@
         <file>qmlmessages/ConversationListPage.qml</file>
         <file>qmlmessages/ConversationListDelegate.qml</file>
         <file>qmlmessages/MessagesView.qml</file>
+        <file>qmlmessages/TargetEditBox.qml</file>
     </qresource>
 </RCC>
