@@ -37,8 +37,12 @@ int main(int argc, char **argv)
 
     // Set up Telepathy
     Tp::registerTypes();
-    Tp::enableDebug(true);
     Tp::enableWarnings(true);
+
+    foreach (QString arg, qApp->arguments()) {
+        if (arg == "-debug")
+            Tp::enableDebug(true);
+    }
 
     //AccountsModel *m = new AccountsModel;
 
