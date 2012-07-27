@@ -14,6 +14,7 @@
 #include "src/accountsmodel.h"
 #include "src/clienthandler.h"
 #include "src/chatmodel.h"
+#include "src/conversationsmodel.h"
 
 using namespace Tp;
 
@@ -53,6 +54,7 @@ int main(int argc, char **argv)
 
     // Set up QML
     qRegisterMetaType<ChatModel*>();
+    qmlRegisterType<ConversationsModel>("org.nemomobile.qmlmessages", 1, 0, "ConversationsModel");
     qmlRegisterUncreatableType<ChatModel>("org.nemomobile.qmlmessages", 1, 0, "ChatModel", "Cannot be created");
 
     // Set up view

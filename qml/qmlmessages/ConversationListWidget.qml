@@ -8,6 +8,7 @@
 
 import QtQuick 1.1
 import com.nokia.meego 1.0
+import org.nemomobile.qmlmessages 1.0
 
 Item {
     EmptyConversations {
@@ -36,6 +37,14 @@ Item {
         }
     }
 
+    ConversationsModel {
+        id: conversationsModel
+
+        Component.onCompleted: {
+            clientHandler.newChatModel.connect(conversationsModel.addChat)
+        }
+    }
+
     ListView {
         id: cardListView
         anchors.fill: parent
@@ -45,11 +54,11 @@ Item {
         keyNavigationWraps: false
         clip: true
         opacity: 0
-        model: peopleModel
+        model: conversationsModel
 
         delegate: ConversationListDelegate {
             onClicked: {
-                pageStack.push(Qt.resolvedUrl("ConversationPage.qml"))
+                pageStack.push(Qt.resolvedUrl("ConversationPage.qml"), { model: model.chatModel })
             }
         }
     }

@@ -11,11 +11,13 @@ INSTALLS += target
 SOURCES += src/main.cpp \
     src/accountsmodel.cpp \
     src/clienthandler.cpp \
-    src/chatmodel.cpp
+    src/chatmodel.cpp \
+    src/conversationsmodel.cpp
 
 HEADERS += src/accountsmodel.h \
     src/clienthandler.h \
-    src/chatmodel.h
+    src/chatmodel.h \
+    src/conversationsmodel.h
 
 RESOURCES += res/res.qrc qml/qml.qrc
 

@@ -31,6 +31,7 @@ Item {
             id: messageBox
             height: messageContent.height + 20
             width: parent.width * 0.8
+            cache: true
 
             Item {
                 id: messageContent

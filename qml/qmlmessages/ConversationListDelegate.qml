@@ -24,7 +24,7 @@ Item {
 
     Image {
         id: photo
-        source: model.avatarPath
+        source: (model.avatarPath == undefined) ? "image://theme/icon-m-telephony-contact-avatar" : model.avatarPath
         sourceSize: Qt.size(80, 80)
         anchors.verticalCenter: parent.verticalCenter
     }
@@ -53,7 +53,8 @@ Item {
 
             Label {
                 id: messageDate
-                text: model.messageDate
+                // XXX This should be something more natural/useful
+                text: Qt.formatDateTime(model.messageDate, "M/d")
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
 

@@ -16,6 +16,7 @@ ChatModel::ChatModel(const Tp::TextChannelPtr &channel, QObject *parent)
     QHash<int,QByteArray> roles;
     roles[Qt::DisplayRole] = "text";
     roles[ChatDirectionRole] = "direction";
+    roles[MessageDateRole] = "date";
     setRoleNames(roles);
 }
 
@@ -71,6 +72,7 @@ QVariant ChatModel::data(const QModelIndex &index, int role) const
     switch (role) {
         case Qt::DisplayRole: return message.text;
         case ChatDirectionRole: return message.direction;
+        case MessageDateRole: return message.date;
     }
 
     return QVariant();

@@ -12,7 +12,8 @@ class ChatModel : public QAbstractListModel
 
 public:
     enum {
-        ChatDirectionRole = Qt::UserRole
+        ChatDirectionRole = Qt::UserRole,
+        MessageDateRole
     };
 
     enum Direction {
