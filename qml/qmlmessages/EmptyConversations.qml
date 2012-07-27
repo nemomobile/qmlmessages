@@ -12,32 +12,34 @@ import com.nokia.meego 1.0
 
 Item {
     id: root
-    width: parent.width
-    height: parent.height
+    anchors.centerIn: parent
+    width: textColumn.width
+    height: textColumn.height
 
     property string subText: qsTr("You haven't had any chats yet.")
     property string addConversation: qsTr("Start a chat")
 
-    anchors { top: parent.top; right: parent.right; }
     signal clicked()
 
-    Label {
-        id: no_conversations
-        text: subText
-        smooth: true
-        anchors {verticalCenter: parent.verticalCenter; topMargin: 40; horizontalCenter: parent.horizontalCenter;}
-        opacity: 1
-    }
+    Column {
+        id: textColumn
+        width: childrenRect.width
+        height: childrenRect.height
+        spacing: 15
 
-    Button {
-        id: button
-        text: addConversation
-        enabled: true
-        anchors{ top: no_conversations.bottom; topMargin: 30; horizontalCenter: no_conversations.horizontalCenter;}
-        height: 60
-        opacity: 1
-        onClicked: {
-            root.clicked()
+        Label {
+            id: no_conversations
+            text: subText
+            smooth: true
+        }
+
+        Button {
+            id: button
+            text: addConversation
+            height: 60
+            onClicked: {
+                root.clicked()
+            }
         }
     }
 }

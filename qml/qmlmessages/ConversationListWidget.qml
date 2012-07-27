@@ -13,7 +13,6 @@ import org.nemomobile.qmlmessages 1.0
 Item {
     EmptyConversations {
         id: emptyListView
-        anchors.fill: parent
         onClicked: {
             pageStack.push(Qt.resolvedUrl("ConversationPage.qml"))
         }
