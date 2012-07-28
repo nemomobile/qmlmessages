@@ -5,6 +5,8 @@
 #include <TelepathyQt4/Types>
 #include <TelepathyQt4/AccountManager>
 
+class QmlChannelRequest;
+
 class AccountsModel : public QAbstractListModel
 {
     Q_OBJECT
@@ -15,6 +17,10 @@ class AccountsModel : public QAbstractListModel
     Q_PROPERTY(int count READ count NOTIFY countChanged);
 
 public:
+    enum {
+        AccountPtrRole = Qt::UserRole
+    };
+
     AccountsModel(QObject *parent = 0);
 
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -26,6 +32,15 @@ public:
     }
 
     int count() const { return rowCount(); }
+
+public slots:
+    /* For convenience; call ensureTextChat on the account at row to create
+     * a text conversation with contactId. Returns a QmlChannelRequest, which
+     * wraps the Tp::PendingChannelRequest and ChannelRequest. 
+     *
+     * The QmlChannelRequest instance will be deleted after the finished()
+     * signal. */
+    QmlChannelRequest *ensureTextChat(int row, const QString &contactId);
 
 signals:
     void countChanged();

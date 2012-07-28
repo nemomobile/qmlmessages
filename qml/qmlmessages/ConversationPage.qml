@@ -80,6 +80,27 @@ Page {
         anchors.left: parent.left
         anchors.right: parent.right
         visible: false
+
+        function startConversation() {
+            if (targetEditor.text.length < 1 || accountSelector.model == undefined
+                || accountSelector.model.selectedIndex < 0)
+                return
+            console.log("startConversation");
+            var pendingChannelRequest = accountSelector.model.ensureTextChat(
+                    accountSelector.model.selectedIndex, targetEditor.text)
+            pendingChannelRequest.chatModelReady.connect(
+                function(model) {
+                    console.log("chatModelReady")
+                    conversationPage.model = model
+                }
+            )
+            // XXX Handle errors in the UI...
+            pendingChannelRequest.failed.connect(
+                function(errorName, errorMessage) {
+                    console.log("pendingChannelRequest error:", errorName, errorMessage)
+                }
+            )
+        }
     }
 
     MessagesView {
@@ -133,9 +154,11 @@ Page {
                 }
 
                 onClicked: {
-                    if (textInput.text.length > 0) {
+                    if (conversationPage.state == "active" && textInput.text.length > 0) {
                         conversationPage.model.sendMessage(textInput.text)
                         textInput.text = ""
+                    } else if (conversationPage.state == "new" && targetEditor.text.length > 0) {
+                        targetEditor.startConversation()
                     }
                 }
             }
@@ -174,7 +197,7 @@ Page {
 
             PropertyChanges {
                 target: sendBtn
-                enabled: textInput.text.length > 0 && targetEditor.targetText.length > 0
+                enabled: textInput.text.length > 0 && targetEditor.text.length > 0
             }
         }
     ]

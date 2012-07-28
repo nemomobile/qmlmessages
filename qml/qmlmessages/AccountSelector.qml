@@ -6,6 +6,7 @@ Button {
     id: selectBtn
     
     property alias model: dialog.model
+    property alias selectedIndex: dialog.selectedIndex
 
     SelectionDialog {
         id: dialog

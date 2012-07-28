@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <TelepathyQt4/AbstractClientHandler>
+#include <TelepathyQt4/PendingChannelRequest>
 
 class ChatModel;
 
@@ -13,14 +14,23 @@ public:
     ClientHandler();
     virtual ~ClientHandler();
 
+    static ClientHandler *instance();
+
     virtual bool bypassApproval() const;
     virtual void handleChannels(const Tp::MethodInvocationContextPtr<> &context, const Tp::AccountPtr &account,
                                 const Tp::ConnectionPtr &connection, const QList<Tp::ChannelPtr> &channels,
                                 const QList<Tp::ChannelRequestPtr> &requestsSatisfied, const QDateTime &userActionTime,
                                 const HandlerInfo &handlerInfo);
 
+public slots:
+    ChatModel *addChannelRequest(const Tp::ChannelRequestPtr &request);
+
 signals:
-    void newChatModel(ChatModel *chatModel);
+    void incomingChat(ChatModel *chatModel);
+    void outgoingChat(ChatModel *chatModel);
+
+private:
+    QHash<QString,ChatModel*> requestPendingModels;
 };
 
 #endif

@@ -27,7 +27,10 @@ public:
         Outgoing
     };
 
+    ChatModel(QObject *parent = 0);
     ChatModel(const Tp::TextChannelPtr &channel, QObject *parent = 0);
+
+    void setChannel(const Tp::TextChannelPtr &channel);
 
     QString contactId() const;
 

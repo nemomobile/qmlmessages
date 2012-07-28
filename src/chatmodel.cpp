@@ -5,20 +5,41 @@
 #include <TelepathyQt4/PendingReady>
 #include <TelepathyQt4/Contact>
 
-ChatModel::ChatModel(const Tp::TextChannelPtr &channel, QObject *parent)
-    : QAbstractListModel(parent), mChannel(channel)
+ChatModel::ChatModel(QObject *parent)
+    : QAbstractListModel(parent)
 {
-    connect(mChannel.data(), SIGNAL(messageReceived(Tp::ReceivedMessage)),
-            SLOT(messageReceived(Tp::ReceivedMessage)));
-    connect(mChannel->becomeReady(Tp::TextChannel::FeatureMessageQueue),
-            SIGNAL(finished(Tp::PendingOperation*)),
-            SLOT(channelReady(Tp::PendingOperation*)));
-
     QHash<int,QByteArray> roles;
     roles[Qt::DisplayRole] = "text";
     roles[ChatDirectionRole] = "direction";
     roles[MessageDateRole] = "date";
     setRoleNames(roles);
+}
+
+ChatModel::ChatModel(const Tp::TextChannelPtr &channel, QObject *parent)
+    : QAbstractListModel(parent)
+{
+    QHash<int,QByteArray> roles;
+    roles[Qt::DisplayRole] = "text";
+    roles[ChatDirectionRole] = "direction";
+    roles[MessageDateRole] = "date";
+    setRoleNames(roles);
+
+    setChannel(channel);
+}
+
+void ChatModel::setChannel(const Tp::TextChannelPtr &channel)
+{
+    Q_ASSERT(mChannel.isNull());
+    if (!mChannel.isNull())
+        return;
+
+    mChannel = channel;
+
+    connect(mChannel.data(), SIGNAL(messageReceived(Tp::ReceivedMessage)),
+            SLOT(messageReceived(Tp::ReceivedMessage)));
+    connect(mChannel->becomeReady(Tp::TextChannel::FeatureMessageQueue),
+            SIGNAL(finished(Tp::PendingOperation*)),
+            SLOT(channelReady(Tp::PendingOperation*)));
 }
 
 void ChatModel::channelReady(Tp::PendingOperation *op)
@@ -45,6 +66,11 @@ void ChatModel::messageReceived(const Tp::ReceivedMessage &message)
 
 void ChatModel::sendMessage(const QString &text)
 {
+    if (mChannel.isNull()) {
+        qWarning() << "ChatModel: WARN: Cannot sendMessage with no channel";
+        return;
+    }
+
     qDebug() << "ChatModel: sending" << text;
 
     Q_ASSERT(mChannel->isReady());
@@ -60,7 +86,7 @@ void ChatModel::sendMessage(const QString &text)
 
 QString ChatModel::contactId() const
 {
-    if (!mChannel->isReady())
+    if (mChannel.isNull() || !mChannel->isReady())
         return QString();
 
     Tp::ContactPtr contact = mChannel->targetContact();

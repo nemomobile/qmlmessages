@@ -22,7 +22,8 @@ Item {
         id: conversationsModel
 
         Component.onCompleted: {
-            clientHandler.newChatModel.connect(conversationsModel.addChat)
+            clientHandler.incomingChat.connect(conversationsModel.addChat)
+            clientHandler.outgoingChat.connect(conversationsModel.addChat)
         }
     }
 

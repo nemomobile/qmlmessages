@@ -5,7 +5,7 @@ Rectangle {
     color: "white"
     height: targetInput.height + 22
 
-    property alias targetText: targetInput.text
+    property alias text: targetInput.text
 
     TextField {
         id: "targetInput"
