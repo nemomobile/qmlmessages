@@ -81,6 +81,8 @@ private:
     State mState;
     ChatModel *mModel;
 
+    QList<QString> mPendingMessages;
+
     void setState(State newState);
 };
 

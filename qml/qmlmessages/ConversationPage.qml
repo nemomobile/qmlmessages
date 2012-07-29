@@ -140,11 +140,13 @@ Page {
                 }
 
                 onClicked: {
-                    if (conversationPage.state == "active" && textInput.text.length > 0) {
+                    if (conversationPage.state == "new" && targetEditor.text.length > 0) {
+                        targetEditor.startConversation()
+                    }
+
+                    if (conversationPage.channel !== null && textInput.text.length > 0) {
                         conversationPage.channel.sendMessage(textInput.text)
                         textInput.text = ""
-                    } else if (conversationPage.state == "new" && targetEditor.text.length > 0) {
-                        targetEditor.startConversation()
                     }
                 }
             }

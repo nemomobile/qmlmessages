@@ -69,6 +69,8 @@ void ConversationChannel::channelRequestCreated(const Tp::ChannelRequestPtr &r)
 
     // XXX is this the best place to create? And object lifetime may be wrong.
     mModel = new ChatModel(this);
+    foreach (QString msg, mPendingMessages)
+        mModel->messageSent(msg);
     emit chatModelReady(mModel);
 
     ClientHandler::instance()->addChannelRequest(mRequest, this);
@@ -115,6 +117,12 @@ void ConversationChannel::channelReady()
 
     emit contactIdChanged();
     setState(Ready);
+
+    if (!mPendingMessages.isEmpty())
+        qDebug() << Q_FUNC_INFO << "Sending buffered messages";
+    foreach (QString msg, mPendingMessages)
+        textChannel->send(msg);
+    mPendingMessages.clear();
 }
 
 void ConversationChannel::setState(State newState)
@@ -143,7 +151,9 @@ void ConversationChannel::sendMessage(const QString &text)
 {
     if (mChannel.isNull() || !mChannel->isReady()) {
         Q_ASSERT(state() != Ready);
-        qWarning() << Q_FUNC_INFO << "Channel is not ready, and messages aren't buffered yet";
+        qDebug() << Q_FUNC_INFO << "Buffering:" << text;
+        mPendingMessages.append(text);
+        emit messageSending(text);
         return;
     }
 

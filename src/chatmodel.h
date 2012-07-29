@@ -34,7 +34,7 @@ public:
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
     virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
-private slots:
+public slots:
     void messageReceived(const Tp::ReceivedMessage &message);
     void messageSent(const QString &text);
 
