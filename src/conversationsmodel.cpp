@@ -20,6 +20,7 @@ void ConversationsModel::addChat(ConversationChannel *conversation)
 
     Q_ASSERT(conversation->model());
     connect(conversation->model(), SIGNAL(rowsInserted(QModelIndex,int,int)), SLOT(messagesChanged()));
+    connect(conversation, SIGNAL(contactIdChanged()), SLOT(conversationChanged()));
 
     beginInsertRows(QModelIndex(), 0, 0);
     mChats.insert(0, conversation);
@@ -40,6 +41,21 @@ void ConversationsModel::messagesChanged()
     }
     Q_ASSERT(row < mChats.size());
     if (row >= mChats.size())
+        return;
+
+    emit dataChanged(index(row, 0), index(row, 0));
+}
+
+void ConversationsModel::conversationChanged()
+{
+    ConversationChannel *channel = qobject_cast<ConversationChannel*>(sender());
+    Q_ASSERT(channel);
+    if (!channel)
+        return;
+
+    int row = mChats.indexOf(channel);
+    Q_ASSERT(row >= 0);
+    if (row < 0)
         return;
 
     emit dataChanged(index(row, 0), index(row, 0));

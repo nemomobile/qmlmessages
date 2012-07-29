@@ -24,6 +24,7 @@ public:
 public slots:
     void addChat(ConversationChannel *channel);
     void messagesChanged();
+    void conversationChanged();
 
 private:
     QList<ConversationChannel*> mChats;
