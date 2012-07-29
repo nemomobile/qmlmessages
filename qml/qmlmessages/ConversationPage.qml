@@ -11,12 +11,12 @@ import com.nokia.meego 1.0
 import org.nemomobile.qmlmessages 1.0
 
 /* ConversationPage has two states, depending on if it has an active
- * conversation or not. This is determined by whether the model property
+ * conversation or not. This is determined by whether the channel property
  * is set. If unset, this is the new conversation page, and some elements
  * are different. */
 Page {
     id: conversationPage
-    property variant model
+    property ConversationChannel channel
 
     PageHeader {
         id: header
@@ -44,7 +44,7 @@ Page {
             elide: Text.ElideRight
             smooth: true
             color: "#111111"
-            text: model == undefined ? "" : model.contactId
+            text: channel == null ? "" : channel.contactId
             style: Text.Raised
             styleColor: "white"
 
@@ -86,20 +86,8 @@ Page {
                 || accountSelector.model.selectedIndex < 0)
                 return
             console.log("startConversation");
-            var pendingChannelRequest = accountSelector.model.ensureTextChat(
+            channel = accountSelector.model.ensureTextChat(
                     accountSelector.model.selectedIndex, targetEditor.text)
-            pendingChannelRequest.chatModelReady.connect(
-                function(model) {
-                    console.log("chatModelReady")
-                    conversationPage.model = model
-                }
-            )
-            // XXX Handle errors in the UI...
-            pendingChannelRequest.failed.connect(
-                function(errorName, errorMessage) {
-                    console.log("pendingChannelRequest error:", errorName, errorMessage)
-                }
-            )
         }
     }
 
@@ -112,8 +100,6 @@ Page {
             topMargin: 10; bottomMargin: 10
             leftMargin: 5; rightMargin: 5
         }
-
-        model: conversationPage.model
     }
 
     Image {
@@ -155,7 +141,7 @@ Page {
 
                 onClicked: {
                     if (conversationPage.state == "active" && textInput.text.length > 0) {
-                        conversationPage.model.sendMessage(textInput.text)
+                        conversationPage.channel.sendMessage(textInput.text)
                         textInput.text = ""
                     } else if (conversationPage.state == "new" && targetEditor.text.length > 0) {
                         targetEditor.startConversation()
@@ -168,11 +154,16 @@ Page {
     states: [
         State {
             name: "active"
-            when: conversationPage.model !== undefined
+            when: conversationPage.channel !== null
+
+            PropertyChanges {
+                target: messagesView
+                model: channel.model
+            }
         },
         State {
             name: "new"
-            when: conversationPage.model == undefined
+            when: conversationPage.channel == null
 
             PropertyChanges {
                 target: targetEditor

@@ -5,7 +5,7 @@
 #include <TelepathyQt4/Types>
 #include <TelepathyQt4/AccountManager>
 
-class QmlChannelRequest;
+class ConversationChannel;
 
 class AccountsModel : public QAbstractListModel
 {
@@ -35,12 +35,9 @@ public:
 
 public slots:
     /* For convenience; call ensureTextChat on the account at row to create
-     * a text conversation with contactId. Returns a QmlChannelRequest, which
-     * wraps the Tp::PendingChannelRequest and ChannelRequest. 
-     *
-     * The QmlChannelRequest instance will be deleted after the finished()
-     * signal. */
-    QmlChannelRequest *ensureTextChat(int row, const QString &contactId);
+     * a text conversation with contactId. Returns a ConversationChannel.
+     */
+    ConversationChannel *ensureTextChat(int row, const QString &contactId);
 
 signals:
     void countChanged();

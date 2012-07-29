@@ -5,7 +5,7 @@
 #include <TelepathyQt4/AbstractClientHandler>
 #include <TelepathyQt4/PendingChannelRequest>
 
-class ChatModel;
+class ConversationChannel;
 
 class ClientHandler : public QObject, public Tp::AbstractClientHandler
 {
@@ -23,14 +23,14 @@ public:
                                 const HandlerInfo &handlerInfo);
 
 public slots:
-    ChatModel *addChannelRequest(const Tp::ChannelRequestPtr &request);
+    void addChannelRequest(const Tp::ChannelRequestPtr &request, ConversationChannel *conversation);
 
 signals:
-    void incomingChat(ChatModel *chatModel);
-    void outgoingChat(ChatModel *chatModel);
+    void incomingChat(ConversationChannel *conversation);
+    void outgoingChat(ConversationChannel *conversation);
 
 private:
-    QHash<QString,ChatModel*> requestPendingModels;
+    QHash<QString,ConversationChannel*> pendingRequests;
 };
 
 #endif

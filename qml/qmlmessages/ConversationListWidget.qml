@@ -40,7 +40,7 @@ Item {
 
         delegate: ConversationListDelegate {
             onClicked: {
-                pageStack.push(Qt.resolvedUrl("ConversationPage.qml"), { model: model.chatModel })
+                pageStack.push(Qt.resolvedUrl("ConversationPage.qml"), { channel: model.conversation })
             }
         }
     }

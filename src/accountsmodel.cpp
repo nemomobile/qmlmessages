@@ -1,5 +1,5 @@
 #include "accountsmodel.h"
-#include "qmlchannelrequest.h"
+#include "conversationchannel.h"
 #include <QDBusConnection>
 #include <QDebug>
 
@@ -40,7 +40,7 @@ void AccountsModel::newAccount(const Tp::AccountPtr &account)
     emit countChanged();
 }
 
-QmlChannelRequest *AccountsModel::ensureTextChat(int row, const QString &contactId) 
+ConversationChannel *AccountsModel::ensureTextChat(int row, const QString &contactId) 
 {
     Q_ASSERT(row >= 0 && row < mAccounts.size());
     if (row < 0 || row >= mAccounts.size())
@@ -59,8 +59,7 @@ QmlChannelRequest *AccountsModel::ensureTextChat(int row, const QString &contact
     if (!pr)
         return 0;
 
-    QmlChannelRequest *re = new QmlChannelRequest;
-    connect(re, SIGNAL(finished()), re, SLOT(deleteLater()));
+    ConversationChannel *re = new ConversationChannel;
     re->start(pr);
     return re;
 }

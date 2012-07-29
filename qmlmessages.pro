@@ -13,13 +13,13 @@ SOURCES += src/main.cpp \
     src/clienthandler.cpp \
     src/chatmodel.cpp \
     src/conversationsmodel.cpp \
-    src/qmlchannelrequest.cpp
+    src/conversationchannel.cpp
 
 HEADERS += src/accountsmodel.h \
     src/clienthandler.h \
     src/chatmodel.h \
     src/conversationsmodel.h \
-    src/qmlchannelrequest.h
+    src/conversationchannel.h
 
 RESOURCES += res/res.qrc qml/qml.qrc
 

@@ -1,5 +1,5 @@
 #include "clienthandler.h"
-#include "chatmodel.h"
+#include "conversationchannel.h"
 
 #include <TelepathyQt4/ChannelClassSpec>
 #include <TelepathyQt4/ReceivedMessage>
@@ -37,40 +37,36 @@ void ClientHandler::handleChannels(const MethodInvocationContextPtr<> &context, 
                                    const QList<ChannelRequestPtr> &requestsSatisfied, const QDateTime &userActionTime,
                                    const HandlerInfo &handlerInfo)
 {
-    /* This function assumes that no more than one model's channels can be satisfied in
+    /* This function assumes that no more than one conversation's channels can be satisfied in
      * a single call. To my knowledge, that is safe, but there's no easy way to assert
      * on it, and implementing it otherwise is very difficult. */
-    ChatModel *existingModel = 0;
+    ConversationChannel *existingConversation = 0;
 
     foreach (const ChannelRequestPtr &r, requestsSatisfied) {
-        QHash<QString,ChatModel*>::Iterator it = requestPendingModels.find(r->objectPath());
-        if (it != requestPendingModels.end()) {
-            Q_ASSERT(!existingModel);
-            existingModel = *it;
-            requestPendingModels.erase(it);
+        QHash<QString,ConversationChannel*>::Iterator it = pendingRequests.find(r->objectPath());
+        if (it != pendingRequests.end()) {
+            Q_ASSERT(!existingConversation);
+            existingConversation = *it;
+            pendingRequests.erase(it);
         }
     }
 
     foreach (const ChannelPtr &c, channels) {
-        TextChannelPtr channel = SharedPtr<TextChannel>::dynamicCast<Channel>(c);
-
-        if (existingModel) {
-            existingModel->setChannel(channel);
-            existingModel = 0;
-        } else {
-            ChatModel *model = new ChatModel(channel, this);
-            emit incomingChat(model);
+        if (!existingConversation) {
+            ConversationChannel *conversation = new ConversationChannel(this);
+            conversation->setChannel(c);
+            emit incomingChat(conversation);
         }
+        // XXX Do we ever need to pass the channel? It would work around the succeeded() thing.
     }
 
     context->setFinished();
 }
 
-ChatModel *ClientHandler::addChannelRequest(const ChannelRequestPtr &request)
+void ClientHandler::addChannelRequest(const ChannelRequestPtr &request, ConversationChannel *c)
 {
-    ChatModel *model = new ChatModel(this);
-    requestPendingModels.insert(request->objectPath(), model);
-    emit outgoingChat(model);
-    return model;
+    // XXX Crashable if the ConversationChannel is deleted...
+    pendingRequests.insert(request->objectPath(), c);
+    emit outgoingChat(c);
 }
 

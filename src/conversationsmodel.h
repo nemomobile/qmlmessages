@@ -3,7 +3,7 @@
 
 #include <QAbstractListModel>
 
-class ChatModel;
+class ConversationChannel;
 
 class ConversationsModel : public QAbstractListModel
 {
@@ -11,7 +11,7 @@ class ConversationsModel : public QAbstractListModel
 
 public:
     enum {
-        ChatModelRole = Qt::UserRole,
+        ConversationRole = Qt::UserRole,
         MessagePreviewRole,
         LastMessageDateRole,
     };
@@ -22,11 +22,11 @@ public:
     virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
 public slots:
-    void addChat(ChatModel *model);
+    void addChat(ConversationChannel *channel);
     void messagesChanged();
 
 private:
-    QList<ChatModel*> mChats;
+    QList<ConversationChannel*> mChats;
 };
 
 #endif

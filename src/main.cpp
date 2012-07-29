@@ -16,7 +16,7 @@
 #include "src/clienthandler.h"
 #include "src/chatmodel.h"
 #include "src/conversationsmodel.h"
-#include "src/qmlchannelrequest.h"
+#include "src/conversationchannel.h"
 
 using namespace Tp;
 
@@ -63,7 +63,7 @@ int main(int argc, char **argv)
     qmlRegisterType<ConversationsModel>("org.nemomobile.qmlmessages", 1, 0, "ConversationsModel");
     qmlRegisterType<AccountsModel>("org.nemomobile.qmlmessages", 1, 0, "AccountsModel");
     qmlRegisterUncreatableType<ChatModel>("org.nemomobile.qmlmessages", 1, 0, "ChatModel", "Cannot be created");
-    qmlRegisterType<QmlChannelRequest>("org.nemomobile.qmlmessages", 1, 0, "ChannelRequest");
+    qmlRegisterType<ConversationChannel>("org.nemomobile.qmlmessages", 1, 0, "ConversationChannel");
 
     // Set up view
     view->rootContext()->setContextProperty("clientHandler", QVariant::fromValue<QObject*>(clientHandler));

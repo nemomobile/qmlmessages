@@ -18,7 +18,7 @@ PageStackWindow {
     Connections {
         target: clientHandler
         onIncomingChat: {
-            pageStack.push(Qt.resolvedUrl("ConversationPage.qml"), { model: chatModel })
+            pageStack.push(Qt.resolvedUrl("ConversationPage.qml"), { channel: conversation })
         }
     }
 

@@ -1,4 +1,5 @@
 #include "chatmodel.h"
+#include "conversationchannel.h"
 #include <QDebug>
 
 #include <TelepathyQt4/ReceivedMessage>
@@ -15,38 +16,18 @@ ChatModel::ChatModel(QObject *parent)
     setRoleNames(roles);
 }
 
-ChatModel::ChatModel(const Tp::TextChannelPtr &channel, QObject *parent)
-    : QAbstractListModel(parent)
-{
-    QHash<int,QByteArray> roles;
-    roles[Qt::DisplayRole] = "text";
-    roles[ChatDirectionRole] = "direction";
-    roles[MessageDateRole] = "date";
-    setRoleNames(roles);
-
-    setChannel(channel);
-}
-
-void ChatModel::setChannel(const Tp::TextChannelPtr &channel)
+void ChatModel::setChannel(const Tp::TextChannelPtr &channel, ConversationChannel *c)
 {
     Q_ASSERT(mChannel.isNull());
     if (!mChannel.isNull())
         return;
 
+    Q_ASSERT(channel->isReady(Tp::TextChannel::FeatureMessageQueue));
     mChannel = channel;
 
     connect(mChannel.data(), SIGNAL(messageReceived(Tp::ReceivedMessage)),
             SLOT(messageReceived(Tp::ReceivedMessage)));
-    connect(mChannel->becomeReady(Tp::TextChannel::FeatureMessageQueue),
-            SIGNAL(finished(Tp::PendingOperation*)),
-            SLOT(channelReady(Tp::PendingOperation*)));
-}
-
-void ChatModel::channelReady(Tp::PendingOperation *op)
-{
-    Q_UNUSED(op);
-
-    emit contactIdChanged();
+    connect(c, SIGNAL(messageSending(QString)), SLOT(messageSent(QString)));
 
     QList<Tp::ReceivedMessage> messages = mChannel->messageQueue();
     foreach (Tp::ReceivedMessage msg, messages)
@@ -64,37 +45,12 @@ void ChatModel::messageReceived(const Tp::ReceivedMessage &message)
     mChannel->acknowledge(QList<Tp::ReceivedMessage>() << message);
 }
 
-void ChatModel::sendMessage(const QString &text)
+void ChatModel::messageSent(const QString &text)
 {
-    if (mChannel.isNull()) {
-        qWarning() << "ChatModel: WARN: Cannot sendMessage with no channel";
-        return;
-    }
-
-    qDebug() << "ChatModel: sending" << text;
-
-    Q_ASSERT(mChannel->isReady());
-    mChannel->send(text);
-
-    // XXX This maybe should use Tp::TextChannel::messageSent to find
-    // what was actually sent. Although, this might not be best in the
-    // model to begin with.
+    // XXX should have notification of when the message is actually sent
     beginInsertRows(QModelIndex(), mMessages.size(), mMessages.size());
     mMessages.append(Message(text, QDateTime::currentDateTime(), Outgoing));
     endInsertRows();
-}
-
-QString ChatModel::contactId() const
-{
-    if (mChannel.isNull() || !mChannel->isReady())
-        return QString();
-
-    Tp::ContactPtr contact = mChannel->targetContact();
-    // XXX Can happen if target is not a single contact type
-    if (contact.isNull())
-        return tr("Unknown Contact");
-
-    return contact->id();
 }
 
 int ChatModel::rowCount(const QModelIndex &parent) const
