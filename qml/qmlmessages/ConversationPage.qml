@@ -60,30 +60,29 @@ Page {
             source: "image://theme/icon-m-telephony-contact-avatar"
             sourceSize: Qt.size(55, 55)
         }
+    }
 
-        // For the new conversation state
-        AccountSelector {
-            id: accountSelector
-            anchors.left: backBtn.right
-            anchors.right: parent.right
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            anchors.margins: 10
+    // For the new conversation state
+    AccountSelector {
+        id: accountSelector
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: header.bottom
+        height: targetEditor.height
 
-            visible: false
-        }
+        visible: false
     }
 
     TargetEditBox {
         id: targetEditor
-        anchors.top: header.bottom
+        anchors.top: accountSelector.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         visible: false
 
         function startConversation() {
             if (targetEditor.text.length < 1 || accountSelector.model == undefined
-                || accountSelector.model.selectedIndex < 0)
+                || accountSelector.selectedIndex < 0)
                 return
             console.log("startConversation");
             channel = accountSelector.model.ensureTextChat(
