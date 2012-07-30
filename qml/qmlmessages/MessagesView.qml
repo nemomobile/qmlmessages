@@ -35,27 +35,15 @@ import org.nemomobile.qmlmessages 1.0
 Item {
     property alias model: view.model
 
-    onHeightChanged: view.updateHeight()
-
     ListView {
         id: view
         spacing: 20
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        height: 1
+        anchors.fill: parent
         cacheBuffer: parent.height
 
-        // Bottom-align chat items when contentHeight is less than the screen.
-        // This requires a hack - adjusting the height of the view and anchoring
-        // it to the bottom, while disabling interactive scrolling.
-        // Also, update contentY to keep the latest item at the bottom.
-        onContentHeightChanged: { updateHeight() }
-        function updateHeight() {
-            height = Math.max(1, Math.min(parent.height, contentHeight))
-            interactive = parent.height < contentHeight
-            contentY = contentHeight - height
-        }
+        onCountChanged: view.positionViewAtEnd()
+        // Necessary when opening VKB, for example
+        onHeightChanged: view.positionViewAtEnd()
 
         delegate: BorderImage {
             id: messageBox
