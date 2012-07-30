@@ -8,6 +8,10 @@ CXXFLAGS += -fPIC
 target.path = $$INSTALL_ROOT/usr/bin
 INSTALLS += target
 
+desktop.files = $${PROJECT_NAME}.desktop
+desktop.path = $$INSTALL_ROOT/usr/share/applications
+INSTALLS += desktop
+
 SOURCES += src/main.cpp \
     src/accountsmodel.cpp \
     src/clienthandler.cpp \

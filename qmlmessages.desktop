@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Messages
+Icon=icons-Applications-sms
+Exec=invoker -s --type=d /usr/bin/qmlmessages -fullscreen
+Comment=Nemo messaging application
