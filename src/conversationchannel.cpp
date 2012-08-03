@@ -43,7 +43,8 @@ ConversationChannel::ConversationChannel(QObject *parent)
 {
 }
 
-void ConversationChannel::start(Tp::PendingChannelRequest *pendingRequest)
+void ConversationChannel::start(Tp::PendingChannelRequest *pendingRequest,
+        const QString &contactId)
 {
     Q_ASSERT(state() == Null || state() == Error);
     Q_ASSERT(!mPendingRequest);
@@ -53,6 +54,9 @@ void ConversationChannel::start(Tp::PendingChannelRequest *pendingRequest)
     mPendingRequest = pendingRequest;
     connect(mPendingRequest, SIGNAL(channelRequestCreated(Tp::ChannelRequestPtr)),
             SLOT(channelRequestCreated(Tp::ChannelRequestPtr)));
+
+    mContactId = contactId;
+    emit contactIdChanged();
 
     setState(PendingRequest);
 }
@@ -145,7 +149,13 @@ void ConversationChannel::channelReady()
     if (!textChannel.isNull())
         mModel->setChannel(textChannel, this);
 
+    Tp::ContactPtr contact = mChannel->targetContact();
+    if (contact.isNull())
+        mContactId = tr("Unknown Contact");
+    else
+        mContactId = contact->id();
     emit contactIdChanged();
+
     setState(Ready);
 
     if (!mPendingMessages.isEmpty())
@@ -162,19 +172,6 @@ void ConversationChannel::setState(State newState)
 
     mState = newState;
     emit stateChanged(newState);
-}
-
-QString ConversationChannel::contactId() const
-{
-    if (mChannel.isNull() || !mChannel->isReady())
-        return QString();
-
-    Tp::ContactPtr contact = mChannel->targetContact();
-    // XXX Can happen if target is not a single contact type
-    if (contact.isNull())
-        return tr("Unknown Contact");
-
-    return contact->id();
 }
 
 void ConversationChannel::sendMessage(const QString &text)

@@ -78,11 +78,11 @@ public:
 
     ConversationChannel(QObject *parent = 0);
 
-    Q_INVOKABLE void start(Tp::PendingChannelRequest *request);
+    Q_INVOKABLE void start(Tp::PendingChannelRequest *request, const QString &contactId);
     void setChannel(const Tp::ChannelPtr &channel);
 
     State state() const { return mState; }
-    QString contactId() const;
+    QString contactId() const { return mContactId; }
     ChatModel *model() const { return mModel; }
 
 public slots:
@@ -110,6 +110,8 @@ private:
     Tp::ChannelPtr mChannel;
     State mState;
     ChatModel *mModel;
+
+    QString mContactId;
 
     QList<QString> mPendingMessages;
 

@@ -90,7 +90,7 @@ ConversationChannel *AccountsModel::ensureTextChat(int row, const QString &conta
         return 0;
 
     ConversationChannel *re = new ConversationChannel;
-    re->start(pr);
+    re->start(pr, contactId);
     return re;
 }
 
