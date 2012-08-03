@@ -109,7 +109,7 @@ Page {
                 return
             console.log("startConversation");
             channel = accountSelector.model.ensureTextChat(
-                    accountSelector.model.selectedIndex, targetEditor.text)
+                    accountSelector.selectedIndex, targetEditor.text)
         }
     }
 

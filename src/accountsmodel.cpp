@@ -81,7 +81,7 @@ ConversationChannel *AccountsModel::ensureTextChat(int row, const QString &conta
     if (account.isNull())
         return 0;
 
-    qDebug() << "ensureTextChat with" << contactId;
+    qDebug() << "ensureTextChat with" << contactId << "on account" << account->displayName();
     Tp::PendingChannelRequest *pr = account->ensureTextChat(contactId,
             QDateTime::currentDateTime(),
             QLatin1String("org.freedesktop.Telepathy.Client.qmlmessages"));

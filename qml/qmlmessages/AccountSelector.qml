@@ -66,13 +66,13 @@ Rectangle {
         when: dialog.model !== undefined && dialog.model.count > 0
 
         PropertyChanges {
-            target: selectBtn
-            text: dialog.model.get(dialog.selectedIndex)
+            target: dialog
+            selectedIndex: 0
         }
 
         PropertyChanges {
-            target: dialog
-            selectedIndex: 0
+            target: selectBtn
+            text: dialog.model.get(dialog.selectedIndex)
         }
     }
 }
