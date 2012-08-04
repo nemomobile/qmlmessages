@@ -35,6 +35,7 @@
 #include <TelepathyQt4/PendingChannelRequest>
 #include <TelepathyQt4/ChannelRequest>
 #include <TelepathyQt4/Channel>
+#include <TelepathyQt4/PendingSendMessage>
 
 class ChatModel;
 
@@ -96,7 +97,7 @@ signals:
     void requestSucceeded();
     void requestFailed(const QString &errorName, const QString &errorMessage);
 
-    void messageSending(const QString &text);
+    void messageSending(const QString &text, Tp::PendingSendMessage *message);
 
 private slots:
     void channelRequestCreated(const Tp::ChannelRequestPtr &request);

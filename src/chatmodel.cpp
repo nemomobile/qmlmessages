@@ -36,17 +36,23 @@
 #include <TelepathyQt4/PendingReady>
 #include <TelepathyQt4/Contact>
 
-ChatModel::ChatModel(QObject *parent)
-    : QAbstractListModel(parent)
+ChatModel::ChatModel(ConversationChannel *c)
+    : QAbstractListModel(c), mConversation(c)
 {
     QHash<int,QByteArray> roles;
     roles[Qt::DisplayRole] = "text";
     roles[ChatDirectionRole] = "direction";
     roles[MessageDateRole] = "date";
+    roles[StatusRole] = "status";
     setRoleNames(roles);
+
+    connect(c, SIGNAL(messageSending(QString,Tp::PendingSendMessage*)),
+            SLOT(messageSending(QString,Tp::PendingSendMessage*)));
+    connect(c, SIGNAL(requestFailed(QString,QString)),
+            SLOT(channelRequestFailed(QString,QString)));
 }
 
-void ChatModel::setChannel(const Tp::TextChannelPtr &channel, ConversationChannel *c)
+void ChatModel::setChannel(const Tp::TextChannelPtr &channel)
 {
     Q_ASSERT(mChannel.isNull());
     if (!mChannel.isNull())
@@ -57,7 +63,6 @@ void ChatModel::setChannel(const Tp::TextChannelPtr &channel, ConversationChanne
 
     connect(mChannel.data(), SIGNAL(messageReceived(Tp::ReceivedMessage)),
             SLOT(messageReceived(Tp::ReceivedMessage)));
-    connect(c, SIGNAL(messageSending(QString)), SLOT(messageSent(QString)));
 
     QList<Tp::ReceivedMessage> messages = mChannel->messageQueue();
     foreach (Tp::ReceivedMessage msg, messages)
@@ -69,18 +74,32 @@ void ChatModel::messageReceived(const Tp::ReceivedMessage &message)
     qDebug() << "ChatModel:" << message.received() << message.text();
 
     beginInsertRows(QModelIndex(), mMessages.size(), mMessages.size());
-    mMessages.append(Message(message.text(), message.received(), Incoming));
+    mMessages.append(Message(message.text(), message.messageToken(), message.received(), Incoming));
     endInsertRows();
 
     mChannel->acknowledge(QList<Tp::ReceivedMessage>() << message);
 }
 
-void ChatModel::messageSent(const QString &text)
+void ChatModel::messageSending(const QString &text, Tp::PendingSendMessage *message)
 {
     // XXX should have notification of when the message is actually sent
+    QString id = message ? message->sentMessageToken() : QString();
+
     beginInsertRows(QModelIndex(), mMessages.size(), mMessages.size());
-    mMessages.append(Message(text, QDateTime::currentDateTime(), Outgoing));
+    mMessages.append(Message(text, id, QDateTime::currentDateTime(), Outgoing));
     endInsertRows();
+}
+
+void ChatModel::channelRequestFailed(const QString &errorName, const QString &errorMessage)
+{
+    Q_UNUSED(errorName);
+
+    for (int row = 0; row < mMessages.size(); row++) {
+        if (mMessages[row].uniqueId.isNull()) {
+            mMessages[row].status = -1;
+            emit dataChanged(index(row, 0), index(row, 0));
+        }
+    }
 }
 
 int ChatModel::rowCount(const QModelIndex &parent) const
@@ -101,13 +120,27 @@ QVariant ChatModel::data(const QModelIndex &index, int role) const
         case Qt::DisplayRole: return message.text;
         case ChatDirectionRole: return message.direction;
         case MessageDateRole: return message.date;
+        case StatusRole: return message.status;
     }
 
     return QVariant();
 }
 
-ChatModel::Message::Message(const QString &t, const QDateTime &dt, Direction d)
-    : text(t), date(dt), direction(d)
+int ChatModel::rowForUniqueId(const QString &uniqueId) const
 {
+    for (int i = mMessages.size()-1; i >= 0; i--) {
+        if (mMessages[i].uniqueId == uniqueId)
+            return i;
+    }
+    return -1;
+}
+
+ChatModel::Message::Message(const QString &t, const QString &id, const QDateTime &dt, Direction d)
+    : text(t), uniqueId(id), date(dt), direction(d)
+{
+    if (d == Incoming)
+        status = 1;
+    else
+        status = 0;
 }
 

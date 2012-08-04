@@ -45,11 +45,14 @@ class ChatModel : public QAbstractListModel
 {
     Q_OBJECT
     Q_ENUMS(Direction)
+    
+    Q_PROPERTY(ConversationChannel* conversation READ conversation CONSTANT);
 
 public:
     enum {
         ChatDirectionRole = Qt::UserRole,
-        MessageDateRole
+        MessageDateRole,
+        StatusRole
     };
 
     enum Direction {
@@ -57,28 +60,37 @@ public:
         Outgoing
     };
 
-    ChatModel(QObject *parent = 0);
+    ChatModel(ConversationChannel *conversation);
 
-    void setChannel(const Tp::TextChannelPtr &channel, ConversationChannel *c);
+    ConversationChannel *conversation() const { return mConversation; }
+    void setChannel(const Tp::TextChannelPtr &channel);
 
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
     virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
 public slots:
+    void messageSending(const QString &text, Tp::PendingSendMessage *message);
+
+private slots:
     void messageReceived(const Tp::ReceivedMessage &message);
-    void messageSent(const QString &text);
+    void channelRequestFailed(const QString &errorName, const QString &errorMessage);
 
 private:
     struct Message {
         QString text;
+        QString uniqueId;
         QDateTime date;
         Direction direction;
+        qint8 status;
 
-        Message(const QString &text, const QDateTime &date, Direction direction);
+        Message(const QString &text, const QString &uniqueId, const QDateTime &date, Direction direction);
     };
 
+    ConversationChannel * const mConversation;
     Tp::TextChannelPtr mChannel;
     QList<Message> mMessages;
+
+    int rowForUniqueId(const QString &uniqueId) const;
 };
 
 Q_DECLARE_METATYPE(ChatModel*)

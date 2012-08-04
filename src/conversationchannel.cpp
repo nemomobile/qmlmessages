@@ -104,7 +104,7 @@ void ConversationChannel::channelRequestCreated(const Tp::ChannelRequestPtr &r)
     // XXX is this the best place to create? And object lifetime may be wrong.
     mModel = new ChatModel(this);
     foreach (QString msg, mPendingMessages)
-        mModel->messageSent(msg);
+        mModel->messageSending(msg, NULL);
     emit chatModelReady(mModel);
 
     ClientHandler::instance()->addChannelRequest(mRequest, this);
@@ -134,6 +134,8 @@ void ConversationChannel::channelRequestFailed(const QString &errorName,
     mRequest.reset();
     setState(Error);
     emit requestFailed(errorName, errorMessage);
+
+    qDebug() << Q_FUNC_INFO << errorName << errorMessage;
 }
 
 void ConversationChannel::channelReady()
@@ -147,7 +149,7 @@ void ConversationChannel::channelReady()
     Tp::TextChannelPtr textChannel = Tp::SharedPtr<Tp::TextChannel>::dynamicCast(mChannel);
     Q_ASSERT(!textChannel.isNull());
     if (!textChannel.isNull())
-        mModel->setChannel(textChannel, this);
+        mModel->setChannel(textChannel);
 
     Tp::ContactPtr contact = mChannel->targetContact();
     if (contact.isNull())
@@ -180,7 +182,7 @@ void ConversationChannel::sendMessage(const QString &text)
         Q_ASSERT(state() != Ready);
         qDebug() << Q_FUNC_INFO << "Buffering:" << text;
         mPendingMessages.append(text);
-        emit messageSending(text);
+        emit messageSending(text, NULL);
         return;
     }
 
@@ -192,7 +194,7 @@ void ConversationChannel::sendMessage(const QString &text)
     }
 
     qDebug() << Q_FUNC_INFO << text;
-    textChannel->send(text);
-    emit messageSending(text);
+    Tp::PendingSendMessage *msg = textChannel->send(text);
+    emit messageSending(text, msg);
 }
 

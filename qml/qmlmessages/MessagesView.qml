@@ -47,9 +47,11 @@ Item {
 
         delegate: BorderImage {
             id: messageBox
-            height: messageContent.height + 20
-            width: messageContent.width + 30
+            height: childrenRect.height + 20
+            width: childrenRect.width + 30
             cache: true
+
+            property int status: model.status
 
             Item {
                 id: messageContent
@@ -64,7 +66,7 @@ Item {
                     width: messageBox.parent.width * 0.7
                     wrapMode: Text.Wrap
                     style: Text.Raised
-                    styleColor: "white"
+                    styleColor: "#eeeeee"
                     font.family: labelStyle.fontFamily
                     font.pixelSize: labelStyle.fontPixelSize
 
@@ -74,6 +76,14 @@ Item {
                         id: labelStyle
                     }
                 }
+            }
+
+            function showError(msg) {
+                errorComponent.createObject(messageBox, { text: msg })
+            }
+            onStatusChanged: {
+                if (status < 0)
+                    showError("Failed to deliver message")
             }
 
             // This should use meegotouch's speechbubble theme elements, but those SVG group
@@ -113,6 +123,39 @@ Item {
                     }
                 }
             ]
+
+            Component {
+                id: errorComponent
+
+                Item {
+                    id: errorContent
+                    anchors.top: messageContent.bottom
+                    anchors.topMargin: 5
+                    anchors.left: messageContent.left
+                    width: Math.max(errorText.paintedWidth, messageText.paintedWidth)
+                    height: errorText.paintedHeight + 6
+
+                    property alias text: errorText.text
+
+                    Rectangle {
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        height: 1
+                        color: "#afafaf"
+                    }
+
+                    Label {
+                        id: errorText
+                        width: messageText.width
+                        anchors.top: parent.top
+                        anchors.topMargin: 5
+
+                        platformStyle: LabelStyle {
+                            textColor: "red"
+                        }
+                    }
+                }
+            }
         }
     }
 
