@@ -97,6 +97,7 @@ int main(int argc, char **argv)
     qmlRegisterType<ConversationChannel>("org.nemomobile.qmlmessages", 1, 0, "ConversationChannel");
 
     // Set up view
+    view->setWindowTitle(qApp->translate("Window", "Messages"));
     view->rootContext()->setContextProperty("clientHandler", QVariant::fromValue<QObject*>(clientHandler));
     view->setSource(QUrl("qrc:qml/qmlmessages/main.qml"));
     view->setAttribute(Qt::WA_OpaquePaintEvent);
