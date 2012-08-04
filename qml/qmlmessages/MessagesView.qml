@@ -48,21 +48,31 @@ Item {
         delegate: BorderImage {
             id: messageBox
             height: messageContent.height + 20
-            width: parent.width * 0.8
+            width: messageContent.width + 30
             cache: true
 
             Item {
                 id: messageContent
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.margins: 10
-                height: Math.max(messageText.height, 60)
+                height: messageText.paintedHeight
+                width: messageText.paintedWidth
                 y: 10
+                x: 10
 
-                Label {
+                Text {
                     id: messageText
                     text: model.text
-                    width: parent.width
+                    width: messageBox.parent.width * 0.7
+                    wrapMode: Text.Wrap
+                    style: Text.Raised
+                    styleColor: "white"
+                    font.family: labelStyle.fontFamily
+                    font.pixelSize: labelStyle.fontPixelSize
+
+                    // Cannot use Label, because it shadows the 'style' property.
+                    // Copy its text formatting instead.
+                    LabelStyle {
+                        id: labelStyle
+                    }
                 }
             }
 
@@ -83,11 +93,6 @@ Item {
                         border.top: 24
                         border.bottom: 24
                     }
-
-                    PropertyChanges {
-                        target: messageContent
-                        anchors.rightMargin: 20
-                    }
                 },
                 State {
                     name: "outgoing"
@@ -104,7 +109,7 @@ Item {
 
                     PropertyChanges {
                         target: messageContent
-                        anchors.leftMargin: 20
+                        x: 20
                     }
                 }
             ]
