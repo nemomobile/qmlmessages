@@ -97,6 +97,7 @@ signals:
     void requestSucceeded();
     void requestFailed(const QString &errorName, const QString &errorMessage);
 
+    // message may be null for buffered messages 
     void messageSending(const QString &text, Tp::PendingSendMessage *message);
 
 private slots:

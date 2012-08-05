@@ -52,7 +52,8 @@ public:
     enum {
         ChatDirectionRole = Qt::UserRole,
         MessageDateRole,
-        StatusRole
+        StatusRole,
+        StatusMessageRole
     };
 
     enum Direction {
@@ -82,6 +83,7 @@ private:
         QDateTime date;
         Direction direction;
         qint8 status;
+        QString statusDetails;
 
         Message(const QString &text, const QString &uniqueId, const QDateTime &date, Direction direction);
     };

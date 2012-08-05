@@ -44,6 +44,7 @@ ChatModel::ChatModel(ConversationChannel *c)
     roles[ChatDirectionRole] = "direction";
     roles[MessageDateRole] = "date";
     roles[StatusRole] = "status";
+    roles[StatusMessageRole] = "statusMessage";
     setRoleNames(roles);
 
     connect(c, SIGNAL(messageSending(QString,Tp::PendingSendMessage*)),
@@ -71,18 +72,48 @@ void ChatModel::setChannel(const Tp::TextChannelPtr &channel)
 
 void ChatModel::messageReceived(const Tp::ReceivedMessage &message)
 {
-    qDebug() << "ChatModel:" << message.received() << message.text();
+    if (message.isDeliveryReport()) {
+        Tp::ReceivedMessage::DeliveryDetails report = message.deliveryDetails();
 
-    beginInsertRows(QModelIndex(), mMessages.size(), mMessages.size());
-    mMessages.append(Message(message.text(), message.messageToken(), message.received(), Incoming));
-    endInsertRows();
+        int row = -1;
+        if (report.hasOriginalToken())
+            row = rowForUniqueId(report.originalToken());
+        if (row < 0 && report.hasEchoedMessage()) {
+            Tp::Message echo = report.echoedMessage();
+            if (!echo.messageToken().isEmpty())
+                row = rowForUniqueId(echo.messageToken());
 
-    mChannel->acknowledge(QList<Tp::ReceivedMessage>() << message);
+            for (int i = mMessages.size()-1; row < 0 && i >= 0; i--) {
+                if (mMessages[i].text == report.echoedMessage().text())
+                    row = i;
+            }
+        }
+
+        if (report.isError())
+            qDebug() << "Delivery error:" << row << report.error() << report.debugMessage() << report.dbusError();
+        else
+            qDebug() << "Delivery success" << row;
+
+        if (row >= 0) {
+            mMessages[row].status = report.isError() ? -1 : 1;
+            // XXX Figure out decent message text for this case
+            mMessages[row].statusDetails = QString("error: %1\ndebug: %2\ndbus: %3")
+                .arg(report.error())
+                .arg(report.debugMessage())
+                .arg(report.dbusError());
+            emit dataChanged(index(row, 0), index(row, 0));
+        }
+    } else {
+        beginInsertRows(QModelIndex(), mMessages.size(), mMessages.size());
+        mMessages.append(Message(message.text(), message.messageToken(), message.received(), Incoming));
+        endInsertRows();
+
+        mChannel->acknowledge(QList<Tp::ReceivedMessage>() << message);
+    }
 }
 
 void ChatModel::messageSending(const QString &text, Tp::PendingSendMessage *message)
 {
-    // XXX should have notification of when the message is actually sent
     QString id = message ? message->sentMessageToken() : QString();
 
     beginInsertRows(QModelIndex(), mMessages.size(), mMessages.size());
@@ -97,6 +128,7 @@ void ChatModel::channelRequestFailed(const QString &errorName, const QString &er
     for (int row = 0; row < mMessages.size(); row++) {
         if (mMessages[row].uniqueId.isNull()) {
             mMessages[row].status = -1;
+            mMessages[row].statusDetails = errorMessage;
             emit dataChanged(index(row, 0), index(row, 0));
         }
     }
@@ -121,6 +153,7 @@ QVariant ChatModel::data(const QModelIndex &index, int role) const
         case ChatDirectionRole: return message.direction;
         case MessageDateRole: return message.date;
         case StatusRole: return message.status;
+        case StatusMessageRole: return message.statusDetails;
     }
 
     return QVariant();
