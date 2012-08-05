@@ -78,12 +78,13 @@ Item {
                 }
             }
 
-            function showError(msg) {
-                errorComponent.createObject(messageBox, { text: msg })
+            function showError(details) {
+                details = "Cannot send message\n\n" + details
+                errorComponent.createObject(messageBox, { text: details })
             }
             onStatusChanged: {
                 if (status < 0)
-                    showError("Failed to deliver message")
+                    showError(model.statusMessage)
             }
 
             // This should use meegotouch's speechbubble theme elements, but those SVG group
