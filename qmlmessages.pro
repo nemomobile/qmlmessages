@@ -5,6 +5,9 @@ INCLUDEPATH += /usr/include/telepathy-1.0/
 LIBS += -ltelepathy-qt4
 CXXFLAGS += -fPIC
 
+CONFIG += link_pkgconfig
+PKGCONFIG += commhistory
+
 target.path = $$INSTALL_ROOT/usr/bin
 INSTALLS += target
 
