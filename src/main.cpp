@@ -48,6 +48,8 @@
 #include "src/chatmodel.h"
 #include "src/conversationsmodel.h"
 #include "src/conversationchannel.h"
+#include "src/qmlgroupmodel.h"
+#include "src/qmlchatmodel.h"
 
 using namespace Tp;
 
@@ -91,7 +93,7 @@ int main(int argc, char **argv)
 
     // Set up QML
     qRegisterMetaType<ChatModel*>();
-    qmlRegisterType<ConversationsModel>("org.nemomobile.qmlmessages", 1, 0, "ConversationsModel");
+    qmlRegisterType<QmlGroupModel>("org.nemomobile.qmlmessages", 1, 0, "ConversationsModel");
     qmlRegisterType<AccountsModel>("org.nemomobile.qmlmessages", 1, 0, "AccountsModel");
     qmlRegisterUncreatableType<ChatModel>("org.nemomobile.qmlmessages", 1, 0, "ChatModel", "Cannot be created");
     qmlRegisterType<ConversationChannel>("org.nemomobile.qmlmessages", 1, 0, "ConversationChannel");
