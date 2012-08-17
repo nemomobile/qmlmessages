@@ -39,7 +39,7 @@ import org.nemomobile.qmlmessages 1.0
  * are different. */
 Page {
     id: conversationPage
-    property QtObject channel
+    property ConversationChannel channel
 
     PageHeader {
         id: header
@@ -182,7 +182,7 @@ Page {
 
             PropertyChanges {
                 target: messagesView
-                model: channel
+                model: channel.model
             }
         },
         State {

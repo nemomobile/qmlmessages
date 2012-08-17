@@ -43,11 +43,6 @@ Item {
 
     ConversationsModel {
         id: conversationsModel
-
-        Component.onCompleted: {
-            clientHandler.incomingChat.connect(conversationsModel.addChat)
-            clientHandler.outgoingChat.connect(conversationsModel.addChat)
-        }
     }
 
     ListView {

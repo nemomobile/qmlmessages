@@ -36,8 +36,9 @@
 #include <TelepathyQt4/ChannelRequest>
 #include <TelepathyQt4/Channel>
 #include <TelepathyQt4/PendingSendMessage>
+#include <CommHistory/Group>
 
-class ChatModel;
+class QmlChatModel;
 
 /* ConversationChannel represents a Tp::Channel, from pending requests
  * through to the lifetime of the channel itself, and provides operations
@@ -65,7 +66,7 @@ class ConversationChannel : public QObject
     Q_PROPERTY(State state READ state NOTIFY stateChanged)
     Q_PROPERTY(QString contactId READ contactId NOTIFY contactIdChanged)
 
-    Q_PROPERTY(ChatModel* model READ model NOTIFY chatModelReady)
+    Q_PROPERTY(QmlChatModel* model READ model NOTIFY chatModelReady)
 
 public:
     enum State {
@@ -77,21 +78,28 @@ public:
         Error
     };
 
+    static ConversationChannel *channelForGroup(const CommHistory::Group &group);
+    // XXX look at Group::url(), which claims to be the "tracker id" for a group.
+    static ConversationChannel *channelForTpChannel(const QString &telepathyId); // XXX needed?
+
     ConversationChannel(QObject *parent = 0);
+    virtual ~ConversationChannel();
+
+    void setCommGroup(const CommHistory::Group &group);
 
     Q_INVOKABLE void start(Tp::PendingChannelRequest *request, const QString &contactId);
     void setChannel(const Tp::ChannelPtr &channel);
 
     State state() const { return mState; }
     QString contactId() const { return mContactId; }
-    ChatModel *model() const { return mModel; }
+    QmlChatModel *model() const { return mModel; }
 
 public slots:
     void sendMessage(const QString &text);
 
 signals:
     void stateChanged(int newState);
-    void chatModelReady(ChatModel *model);
+    void chatModelReady(QmlChatModel *model);
     void contactIdChanged();
 
     void requestSucceeded();
@@ -107,11 +115,14 @@ private slots:
     void channelReady();
 
 private:
+    static QHash<int,ConversationChannel*> groupIdMap;
+
     Tp::PendingChannelRequest *mPendingRequest;
     Tp::ChannelRequestPtr mRequest;
     Tp::ChannelPtr mChannel;
     State mState;
-    ChatModel *mModel;
+    QmlChatModel *mModel;
+    CommHistory::Group mGroup;
 
     QString mContactId;
 

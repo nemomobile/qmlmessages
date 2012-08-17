@@ -30,17 +30,67 @@
 
 #include "conversationchannel.h"
 #include "clienthandler.h"
-#include "chatmodel.h"
+#include "qmlchatmodel.h"
 
 #include <TelepathyQt4/ChannelRequest>
 #include <TelepathyQt4/TextChannel>
 #include <TelepathyQt4/Channel>
 #include <TelepathyQt4/PendingReady>
 #include <TelepathyQt4/Contact>
+#include <TelepathyQt4/Account>
+#include <TelepathyQt4/AccountManager>
+
+QHash<int,ConversationChannel*> ConversationChannel::groupIdMap;
+
+// XXX
+extern Tp::AccountManagerPtr accountManager;
+
+ConversationChannel *ConversationChannel::channelForGroup(const CommHistory::Group &group)
+{
+    Q_ASSERT(group.isValid());
+    ConversationChannel *re = groupIdMap.value(group.id());
+    if (!re) {
+        re = new ConversationChannel;
+        re->setCommGroup(group);
+        Q_ASSERT(groupIdMap.value(group.id()) == re);
+    }
+    return re;
+}
 
 ConversationChannel::ConversationChannel(QObject *parent)
     : QObject(parent), mPendingRequest(0), mState(Null), mModel(0)
 {
+}
+
+ConversationChannel::~ConversationChannel()
+{
+    if (mGroup.isValid()) {
+        Q_ASSERT(groupIdMap.value(mGroup.id()) == this);
+        groupIdMap.remove(mGroup.id());
+    }
+    Q_ASSERT(!groupIdMap.values().contains(this));
+}
+
+void ConversationChannel::setCommGroup(const CommHistory::Group &group)
+{
+    Q_ASSERT(!mGroup.isValid());
+    mGroup = group;
+    Q_ASSERT(!groupIdMap.contains(group.id()));
+    groupIdMap.insert(group.id(), this);
+
+    mModel = new QmlChatModel(group.id(), this);
+    emit chatModelReady(mModel);
+
+    qDebug() << Q_FUNC_INFO << mGroup.localUid() << mGroup.remoteUids().value(0);
+
+    // XXX wait for account manager if necessary?
+    Tp::AccountPtr account = accountManager->accountForPath(mGroup.localUid());
+    Q_ASSERT(account);
+    Q_ASSERT(account->isReady());
+    Tp::PendingChannelRequest *req = account->ensureTextChat(mGroup.remoteUids().value(0),
+            QDateTime::currentDateTime(),
+            QLatin1String("org.freedesktop.Telepathy.Client.qmlmessages"));
+    start(req, mGroup.remoteUids().value(0));
 }
 
 void ConversationChannel::start(Tp::PendingChannelRequest *pendingRequest,
@@ -73,14 +123,6 @@ void ConversationChannel::setChannel(const Tp::ChannelPtr &c)
             SIGNAL(finished(Tp::PendingOperation*)),
             SLOT(channelReady()));
 
-    if (!mModel) {
-        // XXX This is ugly repetition, necessary for incoming chats
-        // which don't hit channelRequestCreated (but that can't be
-        // moved either, due to ClientHandler::addChannelRequest)
-        mModel = new ChatModel(this);
-        emit chatModelReady(mModel);
-    }
-
     setState(PendingReady);
 }
 
@@ -92,6 +134,8 @@ void ConversationChannel::channelRequestCreated(const Tp::ChannelRequestPtr &r)
     if (state() != PendingRequest)
         return;
 
+    qDebug() << Q_FUNC_INFO;
+
     mRequest = r;
     connect(mRequest.data(), SIGNAL(succeeded(Tp::ChannelPtr)),
             SLOT(channelRequestSucceeded(Tp::ChannelPtr)));
@@ -100,12 +144,6 @@ void ConversationChannel::channelRequestCreated(const Tp::ChannelRequestPtr &r)
 
     mPendingRequest = 0;
     setState(Requested);
-
-    // XXX is this the best place to create? And object lifetime may be wrong.
-    mModel = new ChatModel(this);
-    foreach (QString msg, mPendingMessages)
-        mModel->messageSending(msg, NULL);
-    emit chatModelReady(mModel);
 
     ClientHandler::instance()->addChannelRequest(mRequest, this);
 }
@@ -121,6 +159,7 @@ void ConversationChannel::channelRequestSucceeded(const Tp::ChannelPtr &channel)
         return;
     }
 
+    qDebug() << Q_FUNC_INFO;
     setChannel(channel);
     mRequest.reset();
     emit requestSucceeded();
@@ -145,11 +184,8 @@ void ConversationChannel::channelReady()
     if (state() != PendingReady || mChannel.isNull())
         return;
 
-    Q_ASSERT(mModel);
     Tp::TextChannelPtr textChannel = Tp::SharedPtr<Tp::TextChannel>::dynamicCast(mChannel);
     Q_ASSERT(!textChannel.isNull());
-    if (!textChannel.isNull())
-        mModel->setChannel(textChannel);
 
     Tp::ContactPtr contact = mChannel->targetContact();
     if (contact.isNull())

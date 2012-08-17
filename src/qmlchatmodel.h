@@ -26,5 +26,7 @@ public:
     virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 };
 
+Q_DECLARE_METATYPE(QmlChatModel*);
+
 #endif
 
