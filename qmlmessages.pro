@@ -19,7 +19,6 @@ SOURCES += src/main.cpp \
     src/accountsmodel.cpp \
     src/clienthandler.cpp \
     src/chatmodel.cpp \
-    src/conversationsmodel.cpp \
     src/conversationchannel.cpp \
     src/qmlgroupmodel.cpp \
     src/qmlchatmodel.cpp
@@ -27,7 +26,6 @@ SOURCES += src/main.cpp \
 HEADERS += src/accountsmodel.h \
     src/clienthandler.h \
     src/chatmodel.h \
-    src/conversationsmodel.h \
     src/conversationchannel.h \
     src/qmlgroupmodel.h \
     src/qmlchatmodel.h

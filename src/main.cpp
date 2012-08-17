@@ -46,7 +46,6 @@
 #include "src/accountsmodel.h"
 #include "src/clienthandler.h"
 #include "src/chatmodel.h"
-#include "src/conversationsmodel.h"
 #include "src/conversationchannel.h"
 #include "src/qmlgroupmodel.h"
 #include "src/qmlchatmodel.h"
