@@ -79,15 +79,19 @@ public:
     };
 
     static ConversationChannel *channelForGroup(const CommHistory::Group &group);
-    // XXX look at Group::url(), which claims to be the "tracker id" for a group.
-    static ConversationChannel *channelForTpChannel(const QString &telepathyId); // XXX needed?
 
     ConversationChannel(QObject *parent = 0);
     virtual ~ConversationChannel();
 
-    void setCommGroup(const CommHistory::Group &group);
+    /* Set commhistory group by ID. Group must exist in the GroupModel. */
+    Q_INVOKABLE void setGroup(int groupid);
+    /* Find commhistory group for the combination of local and remote UIDs.
+     * Does not support multi-target groups currently.
+     *
+     * If the group doesn't exist, it will be created locally. */
+    Q_INVOKABLE void setGroup(const QString &localUid, const QString &remoteUid);
 
-    Q_INVOKABLE void start(Tp::PendingChannelRequest *request, const QString &contactId);
+    void start(Tp::PendingChannelRequest *request, const QString &contactId);
     void setChannel(const Tp::ChannelPtr &channel);
 
     State state() const { return mState; }
@@ -122,13 +126,13 @@ private:
     Tp::ChannelPtr mChannel;
     State mState;
     QmlChatModel *mModel;
-    CommHistory::Group mGroup;
 
     QString mContactId;
 
     QList<QString> mPendingMessages;
 
     void setState(State newState);
+    void setupGroup(const CommHistory::Group &group);
 };
 
 #endif

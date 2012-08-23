@@ -45,6 +45,7 @@ AccountsModel::AccountsModel(QObject *parent)
     QHash<int,QByteArray> roles;
     roles[Qt::DisplayRole] = "name";
     roles[AccountPtrRole] = "accountPtr";
+    roles[AccountUidRole] = "accountUid";
     setRoleNames(roles);
 
     mAccountManager = Tp::AccountManager::create(Tp::AccountFactory::create(QDBusConnection::sessionBus(),
@@ -116,6 +117,7 @@ QVariant AccountsModel::data(const QModelIndex &index, int role) const
     {
         case Qt::DisplayRole: return account->displayName();
         case AccountPtrRole: return QVariant::fromValue(account);
+        case AccountUidRole: return account->objectPath();
     }
 
     return QVariant();

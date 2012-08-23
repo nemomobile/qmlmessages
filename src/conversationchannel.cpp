@@ -30,6 +30,7 @@
 
 #include "conversationchannel.h"
 #include "clienthandler.h"
+#include "qmlgroupmodel.h"
 #include "qmlchatmodel.h"
 
 #include <TelepathyQt4/ChannelRequest>
@@ -44,6 +45,7 @@ QHash<int,ConversationChannel*> ConversationChannel::groupIdMap;
 
 // XXX
 extern Tp::AccountManagerPtr accountManager;
+extern QmlGroupModel *groupModel;
 
 ConversationChannel *ConversationChannel::channelForGroup(const CommHistory::Group &group)
 {
@@ -51,7 +53,7 @@ ConversationChannel *ConversationChannel::channelForGroup(const CommHistory::Gro
     ConversationChannel *re = groupIdMap.value(group.id());
     if (!re) {
         re = new ConversationChannel;
-        re->setCommGroup(group);
+        re->setupGroup(group);
         Q_ASSERT(groupIdMap.value(group.id()) == re);
     }
     return re;
@@ -64,33 +66,86 @@ ConversationChannel::ConversationChannel(QObject *parent)
 
 ConversationChannel::~ConversationChannel()
 {
+    // XXX
+#if 0
     if (mGroup.isValid()) {
         Q_ASSERT(groupIdMap.value(mGroup.id()) == this);
         groupIdMap.remove(mGroup.id());
     }
     Q_ASSERT(!groupIdMap.values().contains(this));
+#endif
 }
 
-void ConversationChannel::setCommGroup(const CommHistory::Group &group)
+void ConversationChannel::setGroup(int groupid)
 {
-    Q_ASSERT(!mGroup.isValid());
-    mGroup = group;
+    CommHistory::Group group;
+
+    for (int i = 0, c = groupModel->rowCount(); i < c; i++) {
+        int id = groupModel->index(i, 0).data(QmlGroupModel::GroupIdRole).toInt();
+        qDebug() << "row" << i << "groupid" << groupid << "id" << id;
+        if (id == groupid) {
+            group = groupModel->group(groupModel->index(i, 0));
+            break;
+        }
+    }
+
+    if (!group.isValid()) {
+        qWarning() << Q_FUNC_INFO << "Cannot find group id" << groupid;
+        return;
+    }
+
+    setupGroup(group);
+}
+
+void ConversationChannel::setGroup(const QString &localUid, const QString &remoteUid)
+{
+    CommHistory::Group group;
+
+    for (int i = 0, c = groupModel->rowCount(); i < c; i++) {
+        const CommHistory::Group &g = groupModel->group(groupModel->index(i, 0));
+        if (g.localUid() == localUid && g.remoteUids().size() == 1
+                && g.remoteUids().first() == remoteUid) {
+            group = g;
+            break;
+        }
+    }
+
+    if (!group.isValid()) {
+        qDebug() << "ConversationChannel::setGroup creating group for" << localUid << remoteUid;
+        group.setLocalUid(localUid);
+        group.setRemoteUids(QStringList() << remoteUid);
+        group.setChatType(CommHistory::Group::ChatTypeP2P);
+        if (!groupModel->addGroup(group)) {
+            qWarning() << "ConversationChannel::setGroup failed creating group" << localUid << remoteUid;
+            return;
+        }
+        Q_ASSERT(group.isValid());
+    }
+
+    setupGroup(group);
+}
+
+void ConversationChannel::setupGroup(const CommHistory::Group &group)
+{
     Q_ASSERT(!groupIdMap.contains(group.id()));
     groupIdMap.insert(group.id(), this);
 
+    Q_ASSERT(!mModel);
     mModel = new QmlChatModel(group.id(), this);
     emit chatModelReady(mModel);
 
-    qDebug() << Q_FUNC_INFO << mGroup.localUid() << mGroup.remoteUids().value(0);
+    qDebug() << Q_FUNC_INFO << group.localUid() << group.remoteUids().value(0);
 
+    // XXX can we use Account::create()? Docs mention it if you know the name. 
     // XXX wait for account manager if necessary?
-    Tp::AccountPtr account = accountManager->accountForPath(mGroup.localUid());
+    Tp::AccountPtr account = accountManager->accountForPath(group.localUid());
+    // XXX error check
     Q_ASSERT(account);
     Q_ASSERT(account->isReady());
-    Tp::PendingChannelRequest *req = account->ensureTextChat(mGroup.remoteUids().value(0),
+    Tp::PendingChannelRequest *req = account->ensureTextChat(group.remoteUids().value(0),
             QDateTime::currentDateTime(),
             QLatin1String("org.freedesktop.Telepathy.Client.qmlmessages"));
-    start(req, mGroup.remoteUids().value(0));
+    start(req, group.remoteUids().value(0));
 }
 
 void ConversationChannel::start(Tp::PendingChannelRequest *pendingRequest,

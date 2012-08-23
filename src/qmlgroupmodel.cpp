@@ -12,6 +12,7 @@ QmlGroupModel::QmlGroupModel(QObject *parent)
     roles[LastMessageTextRole] = "messagePreview";
     roles[LastModifiedRole] = "messageDate";
     roles[ConversationRole] = "conversation";
+    roles[GroupIdRole] = "groupId";
     setRoleNames(roles);
 
     getGroups();
@@ -31,6 +32,7 @@ QVariant QmlGroupModel::data(const QModelIndex &index, int role) const
         }
         case LastMessageTextRole: column = LastMessageText; break;
         case LastModifiedRole: column = LastModified; break;
+        case GroupIdRole: column = GroupId; break;
         case ConversationRole: {
             const CommHistory::Group &g = group(index);
             return QVariant::fromValue<QObject*>(ConversationChannel::channelForGroup(g));

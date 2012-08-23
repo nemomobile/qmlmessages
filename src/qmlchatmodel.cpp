@@ -19,7 +19,6 @@ QmlChatModel::QmlChatModel(int groupid, QObject *parent)
 
 QVariant QmlChatModel::data(const QModelIndex &index, int role) const
 {
-    qDebug() << Q_FUNC_INFO << index << role;
     int column = index.column();
     switch (role) {
         case Qt::DisplayRole: column = FreeText; break;

@@ -39,7 +39,13 @@ import org.nemomobile.qmlmessages 1.0
  * are different. */
 Page {
     id: conversationPage
-    property ConversationChannel channel
+
+    property int group: -1
+    onGroupChanged: if (group >= 0) channel.setGroup(group)
+
+    ConversationChannel {
+        id: channel
+    }
 
     PageHeader {
         id: header
@@ -67,7 +73,7 @@ Page {
             elide: Text.ElideRight
             smooth: true
             color: "#111111"
-            text: channel == null ? "" : channel.contactId
+            text: channel.contactId
             style: Text.Raised
             styleColor: "white"
 
@@ -107,9 +113,8 @@ Page {
             if (targetEditor.text.length < 1 || accountSelector.model == undefined
                 || accountSelector.selectedIndex < 0)
                 return
-            console.log("startConversation");
-            channel = accountSelector.model.ensureTextChat(
-                    accountSelector.selectedIndex, targetEditor.text)
+            console.log("startConversation", accountSelector.selectedUid, targetEditor.text);
+            channel.setGroup(accountSelector.selectedUid, targetEditor.text)
         }
     }
 
@@ -166,8 +171,8 @@ Page {
                         targetEditor.startConversation()
                     }
 
-                    if (conversationPage.channel !== null && textInput.text.length > 0) {
-                        conversationPage.channel.sendMessage(textInput.text)
+                    if (textInput.text.length > 0) {
+                        channel.sendMessage(textInput.text)
                         textInput.text = ""
                     }
                 }
@@ -178,7 +183,7 @@ Page {
     states: [
         State {
             name: "active"
-            when: conversationPage.channel !== null
+            when: channel.state != ConversationChannel.Null
 
             PropertyChanges {
                 target: messagesView
@@ -187,7 +192,7 @@ Page {
         },
         State {
             name: "new"
-            when: conversationPage.channel == null
+            when: channel.state == ConversationChannel.Null
 
             PropertyChanges {
                 target: targetEditor

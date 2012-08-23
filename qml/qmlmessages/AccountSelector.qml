@@ -33,10 +33,12 @@ import com.nokia.meego 1.0
 import org.nemomobile.qmlmessages 1.0
 
 Rectangle {
+    id: selector
     color: "white"
 
     property alias model: dialog.model
     property alias selectedIndex: dialog.selectedIndex
+    property string selectedUid: ""
 
     Button {
         id: selectBtn
@@ -73,6 +75,11 @@ Rectangle {
         PropertyChanges {
             target: selectBtn
             text: dialog.model.get(dialog.selectedIndex)
+        }
+
+        PropertyChanges {
+            target: selector
+            selectedUid: dialog.model.get(dialog.selectedIndex, AccountsModel.AccountUidRole)
         }
     }
 }

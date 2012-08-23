@@ -9,7 +9,8 @@ public:
     enum {
         LastMessageTextRole = Qt::UserRole,
         LastModifiedRole,
-        ConversationRole
+        ConversationRole,
+        GroupIdRole
     };
 
     QmlGroupModel(QObject *parent = 0);

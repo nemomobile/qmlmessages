@@ -41,10 +41,6 @@ Item {
         }
     }
 
-    ConversationsModel {
-        id: conversationsModel
-    }
-
     ListView {
         id: cardListView
         anchors.fill: parent
@@ -54,11 +50,11 @@ Item {
         keyNavigationWraps: false
         clip: true
         opacity: 0
-        model: conversationsModel
+        model: groupModel
 
         delegate: ConversationListDelegate {
             onClicked: {
-                pageStack.push(Qt.resolvedUrl("ConversationPage.qml"), { channel: model.conversation })
+                pageStack.push(Qt.resolvedUrl("ConversationPage.qml"), { group: model.groupId })
             }
         }
     }

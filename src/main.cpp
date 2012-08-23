@@ -54,6 +54,8 @@ using namespace Tp;
 
 Tp::AccountManagerPtr accountManager;
 
+QmlGroupModel *groupModel = 0;
+
 #ifdef HAS_BOOSTER
 Q_DECL_EXPORT
 #endif
@@ -97,14 +99,17 @@ int main(int argc, char **argv)
 
     // Set up QML
     qRegisterMetaType<ChatModel*>();
-    qmlRegisterType<QmlGroupModel>("org.nemomobile.qmlmessages", 1, 0, "ConversationsModel");
     qmlRegisterType<AccountsModel>("org.nemomobile.qmlmessages", 1, 0, "AccountsModel");
     qmlRegisterUncreatableType<QmlChatModel>("org.nemomobile.qmlmessages", 1, 0, "ChatModel", "Cannot be created");
     qmlRegisterType<ConversationChannel>("org.nemomobile.qmlmessages", 1, 0, "ConversationChannel");
 
+    QmlGroupModel gm;
+    groupModel = &gm;
+
     // Set up view
     view->setWindowTitle(qApp->translate("Window", "Messages"));
     view->rootContext()->setContextProperty("clientHandler", QVariant::fromValue<QObject*>(clientHandler));
+    view->rootContext()->setContextProperty("groupModel", QVariant::fromValue<QObject*>(groupModel));
     view->setSource(QUrl("qrc:qml/qmlmessages/main.qml"));
     view->setAttribute(Qt::WA_OpaquePaintEvent);
     view->setAttribute(Qt::WA_NoSystemBackground);

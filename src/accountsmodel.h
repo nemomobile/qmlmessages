@@ -40,6 +40,7 @@ class ConversationChannel;
 class AccountsModel : public QAbstractListModel
 {
     Q_OBJECT
+    Q_ENUMS(Roles)
 
     // Hack necessary for SelectionDialog in AccountSelector.qml.
     // The Qt Components dialog expects the model to have a count
@@ -47,8 +48,9 @@ class AccountsModel : public QAbstractListModel
     Q_PROPERTY(int count READ count NOTIFY countChanged);
 
 public:
-    enum {
-        AccountPtrRole = Qt::UserRole
+    enum Roles {
+        AccountPtrRole = Qt::UserRole,
+        AccountUidRole
     };
 
     AccountsModel(QObject *parent = 0);

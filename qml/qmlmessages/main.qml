@@ -38,13 +38,6 @@ PageStackWindow {
 
     initialPage: ConversationListPage {}
 
-    Connections {
-        target: clientHandler
-        onIncomingChat: {
-            pageStack.push(Qt.resolvedUrl("ConversationPage.qml"), { channel: conversation })
-        }
-    }
-
     // Shared AccountsModel
     AccountsModel {
         id: accountsModel
