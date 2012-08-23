@@ -51,16 +51,6 @@ public:
                                 const Tp::ConnectionPtr &connection, const QList<Tp::ChannelPtr> &channels,
                                 const QList<Tp::ChannelRequestPtr> &requestsSatisfied, const QDateTime &userActionTime,
                                 const HandlerInfo &handlerInfo);
-
-public slots:
-    void addChannelRequest(const Tp::ChannelRequestPtr &request, ConversationChannel *conversation);
-
-signals:
-    void incomingChat(ConversationChannel *conversation);
-    void outgoingChat(ConversationChannel *conversation);
-
-private:
-    QHash<QString,ConversationChannel*> pendingRequests;
 };
 
 #endif

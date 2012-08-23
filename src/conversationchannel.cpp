@@ -144,8 +144,6 @@ void ConversationChannel::channelRequestCreated(const Tp::ChannelRequestPtr &r)
 
     mPendingRequest = 0;
     setState(Requested);
-
-    ClientHandler::instance()->addChannelRequest(mRequest, this);
 }
 
 void ConversationChannel::channelRequestSucceeded(const Tp::ChannelPtr &channel)
