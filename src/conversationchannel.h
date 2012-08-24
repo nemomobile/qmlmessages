@@ -36,6 +36,7 @@
 #include <TelepathyQt4/ChannelRequest>
 #include <TelepathyQt4/Channel>
 #include <TelepathyQt4/PendingSendMessage>
+#include <TelepathyQt4/ReceivedMessage>
 #include <CommHistory/Group>
 
 class QmlChatModel;
@@ -100,6 +101,8 @@ private slots:
     void channelRequestSucceeded(const Tp::ChannelPtr &channel);
     void channelRequestFailed(const QString &errorName, const QString &errorMessage);
     void channelReady();
+
+    void messageReceived(const Tp::ReceivedMessage &message);
 
 private:
     Tp::PendingChannelRequest *mPendingRequest;

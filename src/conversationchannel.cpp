@@ -149,6 +149,8 @@ void ConversationChannel::setChannel(const Tp::ChannelPtr &c)
     connect(mChannel->becomeReady(Tp::TextChannel::FeatureMessageQueue),
             SIGNAL(finished(Tp::PendingOperation*)),
             SLOT(channelReady()));
+    connect(mChannel.data(), SIGNAL(messageReceived(Tp::ReceivedMessage)),
+            SLOT(messageReceived(Tp::ReceivedMessage)));
 
     setState(PendingReady);
 }
@@ -219,6 +221,10 @@ void ConversationChannel::channelReady()
     foreach (QString msg, mPendingMessages)
         textChannel->send(msg);
     mPendingMessages.clear();
+
+    // Blindly acknowledge all messages, assuming commhistory handled them
+    if (!textChannel->messageQueue().isEmpty())
+        textChannel->acknowledge(textChannel->messageQueue());
 }
 
 void ConversationChannel::setState(State newState)
@@ -228,6 +234,17 @@ void ConversationChannel::setState(State newState)
 
     mState = newState;
     emit stateChanged(newState);
+}
+
+void ConversationChannel::messageReceived(const Tp::ReceivedMessage &message)
+{
+    if (mChannel.isNull())
+        return;
+
+    Tp::TextChannelPtr textChannel = Tp::SharedPtr<Tp::TextChannel>::dynamicCast(mChannel);
+    Q_ASSERT(!textChannel.isNull());
+
+    textChannel->acknowledge(QList<Tp::ReceivedMessage>() << message);
 }
 
 void ConversationChannel::sendMessage(const QString &text)
