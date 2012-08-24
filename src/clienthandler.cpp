@@ -68,17 +68,6 @@ void ClientHandler::handleChannels(const MethodInvocationContextPtr<> &context, 
                                    const HandlerInfo &handlerInfo)
 {
     // XXX what do we need to take care of here?
-#if 0
-    foreach (const ChannelPtr &c, channels) {
-        if (!existingConversation) {
-            ConversationChannel *conversation = new ConversationChannel(this);
-            conversation->setChannel(c);
-            emit incomingChat(conversation);
-        }
-        // XXX Do we ever need to pass the channel? It would work around the succeeded() thing.
-    }
-#endif
-
     context->setFinished();
 }
 

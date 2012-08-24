@@ -65,12 +65,6 @@ public:
 
     int count() const { return rowCount(); }
 
-public slots:
-    /* For convenience; call ensureTextChat on the account at row to create
-     * a text conversation with contactId. Returns a ConversationChannel.
-     */
-    ConversationChannel *ensureTextChat(int row, const QString &contactId);
-
 signals:
     void countChanged();
 

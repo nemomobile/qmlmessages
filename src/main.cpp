@@ -45,7 +45,6 @@
 
 #include "src/accountsmodel.h"
 #include "src/clienthandler.h"
-#include "src/chatmodel.h"
 #include "src/conversationchannel.h"
 #include "src/qmlgroupmodel.h"
 #include "src/qmlchatmodel.h"
@@ -83,9 +82,6 @@ int main(int argc, char **argv)
             Tp::enableDebug(true);
     }
 
-    // Features can be requested in the factories here, and are applied to all objects
-    // of that type created under the ClientHandler; list them here if they are needed
-    // often, or immediately after the instance is created.
     const QDBusConnection &dbus = QDBusConnection::sessionBus();
     ClientRegistrarPtr registrar = ClientRegistrar::create(AccountFactory::create(dbus),
             ConnectionFactory::create(dbus), ChannelFactory::create(dbus),
@@ -98,7 +94,6 @@ int main(int argc, char **argv)
                          Tp::Account::FeatureCore));
 
     // Set up QML
-    qRegisterMetaType<ChatModel*>();
     qmlRegisterType<AccountsModel>("org.nemomobile.qmlmessages", 1, 0, "AccountsModel");
     qmlRegisterUncreatableType<QmlChatModel>("org.nemomobile.qmlmessages", 1, 0, "ChatModel", "Cannot be created");
     qmlRegisterType<ConversationChannel>("org.nemomobile.qmlmessages", 1, 0, "ConversationChannel");

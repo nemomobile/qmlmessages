@@ -41,23 +41,9 @@
 #include <TelepathyQt4/Account>
 #include <TelepathyQt4/AccountManager>
 
-QHash<int,ConversationChannel*> ConversationChannel::groupIdMap;
-
 // XXX
 extern Tp::AccountManagerPtr accountManager;
 extern QmlGroupModel *groupModel;
-
-ConversationChannel *ConversationChannel::channelForGroup(const CommHistory::Group &group)
-{
-    Q_ASSERT(group.isValid());
-    ConversationChannel *re = groupIdMap.value(group.id());
-    if (!re) {
-        re = new ConversationChannel;
-        re->setupGroup(group);
-        Q_ASSERT(groupIdMap.value(group.id()) == re);
-    }
-    return re;
-}
 
 ConversationChannel::ConversationChannel(QObject *parent)
     : QObject(parent), mPendingRequest(0), mState(Null), mModel(0)
@@ -66,14 +52,6 @@ ConversationChannel::ConversationChannel(QObject *parent)
 
 ConversationChannel::~ConversationChannel()
 {
-    // XXX
-#if 0
-    if (mGroup.isValid()) {
-        Q_ASSERT(groupIdMap.value(mGroup.id()) == this);
-        groupIdMap.remove(mGroup.id());
-    }
-    Q_ASSERT(!groupIdMap.values().contains(this));
-#endif
 }
 
 void ConversationChannel::setGroup(int groupid)
@@ -82,7 +60,6 @@ void ConversationChannel::setGroup(int groupid)
 
     for (int i = 0, c = groupModel->rowCount(); i < c; i++) {
         int id = groupModel->index(i, 0).data(QmlGroupModel::GroupIdRole).toInt();
-        qDebug() << "row" << i << "groupid" << groupid << "id" << id;
         if (id == groupid) {
             group = groupModel->group(groupModel->index(i, 0));
             break;
@@ -127,8 +104,8 @@ void ConversationChannel::setGroup(const QString &localUid, const QString &remot
 
 void ConversationChannel::setupGroup(const CommHistory::Group &group)
 {
-    Q_ASSERT(!groupIdMap.contains(group.id()));
-    groupIdMap.insert(group.id(), this);
+    mContactId = group.remoteUids().value(0);
+    emit contactIdChanged();
 
     Q_ASSERT(!mModel);
     mModel = new QmlChatModel(group.id(), this);
@@ -136,7 +113,6 @@ void ConversationChannel::setupGroup(const CommHistory::Group &group)
 
     qDebug() << Q_FUNC_INFO << group.localUid() << group.remoteUids().value(0);
 
-    // XXX can we use Account::create()? Docs mention it if you know the name. 
     // XXX wait for account manager if necessary?
     Tp::AccountPtr account = accountManager->accountForPath(group.localUid());
     // XXX error check
@@ -145,11 +121,10 @@ void ConversationChannel::setupGroup(const CommHistory::Group &group)
     Tp::PendingChannelRequest *req = account->ensureTextChat(group.remoteUids().value(0),
             QDateTime::currentDateTime(),
             QLatin1String("org.freedesktop.Telepathy.Client.qmlmessages"));
-    start(req, group.remoteUids().value(0));
+    start(req);
 }
 
-void ConversationChannel::start(Tp::PendingChannelRequest *pendingRequest,
-        const QString &contactId)
+void ConversationChannel::start(Tp::PendingChannelRequest *pendingRequest)
 {
     Q_ASSERT(state() == Null || state() == Error);
     Q_ASSERT(!mPendingRequest);
@@ -159,9 +134,6 @@ void ConversationChannel::start(Tp::PendingChannelRequest *pendingRequest,
     mPendingRequest = pendingRequest;
     connect(mPendingRequest, SIGNAL(channelRequestCreated(Tp::ChannelRequestPtr)),
             SLOT(channelRequestCreated(Tp::ChannelRequestPtr)));
-
-    mContactId = contactId;
-    emit contactIdChanged();
 
     setState(PendingRequest);
 }
@@ -240,13 +212,6 @@ void ConversationChannel::channelReady()
     Tp::TextChannelPtr textChannel = Tp::SharedPtr<Tp::TextChannel>::dynamicCast(mChannel);
     Q_ASSERT(!textChannel.isNull());
 
-    Tp::ContactPtr contact = mChannel->targetContact();
-    if (contact.isNull())
-        mContactId = tr("Unknown Contact");
-    else
-        mContactId = contact->id();
-    emit contactIdChanged();
-
     setState(Ready);
 
     if (!mPendingMessages.isEmpty())
@@ -271,7 +236,6 @@ void ConversationChannel::sendMessage(const QString &text)
         Q_ASSERT(state() != Ready);
         qDebug() << Q_FUNC_INFO << "Buffering:" << text;
         mPendingMessages.append(text);
-        emit messageSending(text, NULL);
         return;
     }
 
@@ -282,8 +246,8 @@ void ConversationChannel::sendMessage(const QString &text)
         return;
     }
 
+    // Note that buffered messages do not use this path. See channelReady.
     qDebug() << Q_FUNC_INFO << text;
     Tp::PendingSendMessage *msg = textChannel->send(text);
-    emit messageSending(text, msg);
 }
 

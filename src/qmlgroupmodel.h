@@ -9,7 +9,6 @@ public:
     enum {
         LastMessageTextRole = Qt::UserRole,
         LastModifiedRole,
-        ConversationRole,
         GroupIdRole
     };
 

@@ -12,9 +12,7 @@ QmlChatModel::QmlChatModel(int groupid, QObject *parent)
     setRoleNames(roles);
 
     setTreeMode(false);
-    qDebug("getEvents");
     getEvents(groupid);
-    qDebug("done with getEvents");
 }
 
 QVariant QmlChatModel::data(const QModelIndex &index, int role) const

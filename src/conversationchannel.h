@@ -40,23 +40,14 @@
 
 class QmlChatModel;
 
-/* ConversationChannel represents a Tp::Channel, from pending requests
- * through to the lifetime of the channel itself, and provides operations
- * on that channel.
+/* ConversationChannel handles the relationship between a commhistory
+ * group and the associated Telepathy channel.
  *
- * They can be created either by starting a new channel, e.g. with
- * Tp::Account::ensureTextChat or AccountsModel::ensureTextChat, and calling
- * start(), or by ClientHandler in response to an incoming channel (which goes
- * through setChannel()).
+ * setGroup associates the instance with a commhistory group, either by
+ * groupId or the combination of localUid and remoteUid. When using
+ * UIDs, if the group does not exist, it will be created immediately.
  *
- * Currently, notification when they're created is done entirely through
- * ClientHandler, but that should probably change. It's also currently
- * responsible for creating the ChatModel, but that might be better done within
- * QML now.
- *
- * XXX The lifetime and deletion of this object is currently undefined, and it's
- * expected to leak.
- * XXX It might be nice to use PIMPL, too.
+ * A text channel and ConversationModel will be automatically established.
  */
 class ConversationChannel : public QObject
 {
@@ -78,8 +69,6 @@ public:
         Error
     };
 
-    static ConversationChannel *channelForGroup(const CommHistory::Group &group);
-
     ConversationChannel(QObject *parent = 0);
     virtual ~ConversationChannel();
 
@@ -90,9 +79,6 @@ public:
      *
      * If the group doesn't exist, it will be created locally. */
     Q_INVOKABLE void setGroup(const QString &localUid, const QString &remoteUid);
-
-    void start(Tp::PendingChannelRequest *request, const QString &contactId);
-    void setChannel(const Tp::ChannelPtr &channel);
 
     State state() const { return mState; }
     QString contactId() const { return mContactId; }
@@ -109,9 +95,6 @@ signals:
     void requestSucceeded();
     void requestFailed(const QString &errorName, const QString &errorMessage);
 
-    // message may be null for buffered messages 
-    void messageSending(const QString &text, Tp::PendingSendMessage *message);
-
 private slots:
     void channelRequestCreated(const Tp::ChannelRequestPtr &request);
     void channelRequestSucceeded(const Tp::ChannelPtr &channel);
@@ -119,8 +102,6 @@ private slots:
     void channelReady();
 
 private:
-    static QHash<int,ConversationChannel*> groupIdMap;
-
     Tp::PendingChannelRequest *mPendingRequest;
     Tp::ChannelRequestPtr mRequest;
     Tp::ChannelPtr mChannel;
@@ -133,6 +114,8 @@ private:
 
     void setState(State newState);
     void setupGroup(const CommHistory::Group &group);
+    void start(Tp::PendingChannelRequest *request);
+    void setChannel(const Tp::ChannelPtr &channel);
 };
 
 #endif

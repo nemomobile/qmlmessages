@@ -56,10 +56,8 @@ AccountsModel::AccountsModel(QObject *parent)
 
 void AccountsModel::accountManagerReady(Tp::PendingOperation *op)
 {
-    foreach (const Tp::AccountPtr &account, mAccountManager->allAccounts()) {
-        qDebug() << "Found account" << account->serviceName() << account->uniqueIdentifier() << account->displayName();
+    foreach (const Tp::AccountPtr &account, mAccountManager->allAccounts())
         newAccount(account);
-    }
 }
 
 void AccountsModel::newAccount(const Tp::AccountPtr &account)
@@ -69,30 +67,6 @@ void AccountsModel::newAccount(const Tp::AccountPtr &account)
     mAccounts.append(account);
     endInsertRows();
     emit countChanged();
-}
-
-ConversationChannel *AccountsModel::ensureTextChat(int row, const QString &contactId) 
-{
-    Q_ASSERT(row >= 0 && row < mAccounts.size());
-    if (row < 0 || row >= mAccounts.size())
-        return 0;
-
-    Tp::AccountPtr account = mAccounts[row];
-    Q_ASSERT(!account.isNull());
-    if (account.isNull())
-        return 0;
-
-    qDebug() << "ensureTextChat with" << contactId << "on account" << account->displayName();
-    Tp::PendingChannelRequest *pr = account->ensureTextChat(contactId,
-            QDateTime::currentDateTime(),
-            QLatin1String("org.freedesktop.Telepathy.Client.qmlmessages"));
-    Q_ASSERT(pr);
-    if (!pr)
-        return 0;
-
-    ConversationChannel *re = new ConversationChannel;
-    re->start(pr, contactId);
-    return re;
 }
 
 int AccountsModel::rowCount(const QModelIndex &parent) const

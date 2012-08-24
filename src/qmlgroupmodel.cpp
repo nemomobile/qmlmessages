@@ -2,7 +2,6 @@
 
 #include "qmlgroupmodel.h"
 #include "qmlchatmodel.h"
-#include "conversationchannel.h"
 
 QmlGroupModel::QmlGroupModel(QObject *parent)
     : CommHistory::GroupModel(parent)
@@ -11,7 +10,6 @@ QmlGroupModel::QmlGroupModel(QObject *parent)
     roles[Qt::DisplayRole] = "displayName";
     roles[LastMessageTextRole] = "messagePreview";
     roles[LastModifiedRole] = "messageDate";
-    roles[ConversationRole] = "conversation";
     roles[GroupIdRole] = "groupId";
     setRoleNames(roles);
 
@@ -33,10 +31,6 @@ QVariant QmlGroupModel::data(const QModelIndex &index, int role) const
         case LastMessageTextRole: column = LastMessageText; break;
         case LastModifiedRole: column = LastModified; break;
         case GroupIdRole: column = GroupId; break;
-        case ConversationRole: {
-            const CommHistory::Group &g = group(index);
-            return QVariant::fromValue<QObject*>(ConversationChannel::channelForGroup(g));
-        }
     }
 
     QVariant re = CommHistory::GroupModel::data(this->index(index.row(), column, index.parent()), Qt::DisplayRole);
