@@ -34,6 +34,10 @@ import org.nemomobile.qmlmessages 1.0
 
 Item {
     property alias model: view.model
+    // The event model is in descending order, but we need to display ascending.
+    // There is no sane way to invert the view, but we can use this incredibly
+    // bad hack: rotate the view, then rotate the delegate to be upright.
+    rotation: 180
 
     ListView {
         id: view
@@ -41,15 +45,17 @@ Item {
         anchors.fill: parent
         cacheBuffer: parent.height
 
-        onCountChanged: view.positionViewAtEnd()
+        onCountChanged: view.positionViewAtBeginning()
         // Necessary when opening VKB, for example
-        onHeightChanged: view.positionViewAtEnd()
+        onHeightChanged: view.positionViewAtBeginning()
 
         delegate: BorderImage {
             id: messageBox
             height: childrenRect.height + 20
             width: childrenRect.width + 30
             cache: true
+            // Fix rotation from the view hack...
+            rotation: 180
 
             property int status: model.status
 
@@ -97,7 +103,6 @@ Item {
 
                     PropertyChanges {
                         target: messageBox
-                        x: parent.width - width
                         source: "qrc:/images/incoming.svg"
                         border.left: 24
                         border.right: 24
@@ -111,6 +116,7 @@ Item {
 
                     PropertyChanges {
                         target: messageBox
+                        x: parent.width - width
                         source: "qrc:/images/outgoing.svg"
                         border.left: 24
                         border.right: 24
@@ -162,6 +168,13 @@ Item {
 
     ScrollDecorator {
         flickableItem: view
+
+        // The rotated view hack screws up ScrollDecorator. This is a (also very bad) workaround.
+        anchors.fill: undefined
+        anchors.right: view.right
+        anchors.rightMargin: view.width - childrenRect.width - 4 - (__hasPageWidth ? __rightPageMargin : 0)
+        anchors.top: view.top
+        anchors.bottom: view.bottom
     }
 }
 
