@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=org.freedesktop.Telepathy.Client.qmlmessages
+Exec=/usr/bin/invoker --type=d -s /usr/bin/qmlmessages -background

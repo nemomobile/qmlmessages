@@ -15,6 +15,8 @@ desktop.files = $${PROJECT_NAME}.desktop
 desktop.path = $$INSTALL_ROOT/usr/share/applications
 INSTALLS += desktop
 
+include(data/data.pri)
+
 SOURCES += src/main.cpp \
     src/accountsmodel.cpp \
     src/clienthandler.cpp \
