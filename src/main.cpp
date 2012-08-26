@@ -102,7 +102,9 @@ int main(int argc, char **argv)
     WindowManager *wm = WindowManager::instance();
     if (showWindow)
         wm->showGroupsWindow();
+    else 
+        // Stay open persistently if not started with UI
+        qApp->setQuitOnLastWindowClosed(false);
 
-    qApp->setQuitOnLastWindowClosed(false);
     return qApp->exec();
 }
