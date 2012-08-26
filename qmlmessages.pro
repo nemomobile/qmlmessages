@@ -11,10 +11,6 @@ PKGCONFIG += commhistory
 target.path = $$INSTALL_ROOT/usr/bin
 INSTALLS += target
 
-desktop.files = $${PROJECT_NAME}.desktop
-desktop.path = $$INSTALL_ROOT/usr/share/applications
-INSTALLS += desktop
-
 include(data/data.pri)
 
 SOURCES += src/main.cpp \
@@ -23,14 +19,16 @@ SOURCES += src/main.cpp \
     src/conversationchannel.cpp \
     src/qmlgroupmodel.cpp \
     src/qmlchatmodel.cpp \
-    src/windowmanager.cpp
+    src/windowmanager.cpp \
+    src/dbusadaptor.cpp
 
 HEADERS += src/accountsmodel.h \
     src/clienthandler.h \
     src/conversationchannel.h \
     src/qmlgroupmodel.h \
     src/qmlchatmodel.h \
-    src/windowmanager.h
+    src/windowmanager.h \
+    src/dbusadaptor.h
 
 RESOURCES += res/res.qrc qml/qml.qrc
 

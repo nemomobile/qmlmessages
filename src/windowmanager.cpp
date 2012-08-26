@@ -31,8 +31,10 @@
 #include "windowmanager.h"
 #include "clienthandler.h"
 #include "qmlgroupmodel.h"
+#include "dbusadaptor.h"
 #include <QDeclarativeView>
 #include <QDeclarativeContext>
+#include <QDBusConnection>
 #ifdef HAS_BOOSTER
 #include <applauncherd/MDeclarativeCache>
 #endif
@@ -49,6 +51,11 @@ WindowManager *WindowManager::instance()
 WindowManager::WindowManager(QObject *parent)
     : QObject(parent)
 {
+    new DBusAdaptor(this);
+    QDBusConnection::sessionBus().registerService("org.nemomobile.qmlmessages");
+    if (!QDBusConnection::sessionBus().registerObject("/", this)) {
+        qWarning() << "Cannot register DBus object!";
+    }
 }
 
 WindowManager::~WindowManager()
