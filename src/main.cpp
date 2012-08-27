@@ -43,6 +43,7 @@
 #include <TelepathyQt4/Types>
 #include <TelepathyQt4/ClientRegistrar>
 
+#include "src/windowmanager.h"
 #include "src/accountsmodel.h"
 #include "src/clienthandler.h"
 #include "src/conversationchannel.h"
@@ -60,26 +61,23 @@ Q_DECL_EXPORT
 #endif
 int main(int argc, char **argv)
 {
-    QApplication *a;
-    QDeclarativeView *view;
 #ifdef HAS_BOOSTER
-    a = MDeclarativeCache::qApplication(argc, argv);
-    view = MDeclarativeCache::qDeclarativeView();
+    MDeclarativeCache::qApplication(argc, argv);
 #else
     qWarning() << Q_FUNC_INFO << "Warning! Running without booster. This may be a bit slower.";
-    QApplication aStack(argc, argv);
-    QDeclarativeView viewStack;
-    a = &aStack;
-    view = &viewStack;
+    QApplication a(argc, argv);
 #endif
 
     // Set up Telepathy
     Tp::registerTypes();
     Tp::enableWarnings(true);
 
+    bool showWindow = true;
     foreach (QString arg, qApp->arguments()) {
         if (arg == "-debug")
             Tp::enableDebug(true);
+        else if (arg == "-background")
+            showWindow = false;
     }
 
     const QDBusConnection &dbus = QDBusConnection::sessionBus();
@@ -101,16 +99,12 @@ int main(int argc, char **argv)
     QmlGroupModel gm;
     groupModel = &gm;
 
-    // Set up view
-    view->setWindowTitle(qApp->translate("Window", "Messages"));
-    view->rootContext()->setContextProperty("clientHandler", QVariant::fromValue<QObject*>(clientHandler));
-    view->rootContext()->setContextProperty("groupModel", QVariant::fromValue<QObject*>(groupModel));
-    view->setSource(QUrl("qrc:qml/qmlmessages/main.qml"));
-    view->setAttribute(Qt::WA_OpaquePaintEvent);
-    view->setAttribute(Qt::WA_NoSystemBackground);
-    view->viewport()->setAttribute(Qt::WA_OpaquePaintEvent);
-    view->viewport()->setAttribute(Qt::WA_NoSystemBackground);
-    view->showFullScreen();
+    WindowManager *wm = WindowManager::instance();
+    if (showWindow)
+        wm->showGroupsWindow();
+    else 
+        // Stay open persistently if not started with UI
+        qApp->setQuitOnLastWindowClosed(false);
 
-    return a->exec();
+    return qApp->exec();
 }
