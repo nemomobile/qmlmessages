@@ -40,12 +40,7 @@ import org.nemomobile.qmlmessages 1.0
 Page {
     id: conversationPage
 
-    property int group: -1
-    onGroupChanged: if (group >= 0) channel.setGroup(group)
-
-    ConversationChannel {
-        id: channel
-    }
+    property QtObject channel: null
 
     PageHeader {
         id: header
@@ -73,7 +68,7 @@ Page {
             elide: Text.ElideRight
             smooth: true
             color: "#111111"
-            text: channel.contactId
+            text: channel == null ? "" : channel.contactId
             style: Text.Raised
             styleColor: "white"
 
@@ -114,7 +109,7 @@ Page {
                 || accountSelector.selectedIndex < 0)
                 return
             console.log("startConversation", accountSelector.selectedUid, targetEditor.text);
-            channel.setGroup(accountSelector.selectedUid, targetEditor.text)
+            channel = groupManager.findGroup(accountSelector.selectedUid, targetEditor.text)
         }
     }
 
@@ -183,7 +178,7 @@ Page {
     states: [
         State {
             name: "active"
-            when: channel.state != ConversationChannel.Null
+            when: channel !== null
 
             PropertyChanges {
                 target: messagesView
@@ -192,7 +187,7 @@ Page {
         },
         State {
             name: "new"
-            when: channel.state == ConversationChannel.Null
+            when: channel == null
 
             PropertyChanges {
                 target: targetEditor

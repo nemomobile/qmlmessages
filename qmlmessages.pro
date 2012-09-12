@@ -16,7 +16,8 @@ SOURCES += src/main.cpp \
     src/qmlgroupmodel.cpp \
     src/qmlchatmodel.cpp \
     src/windowmanager.cpp \
-    src/dbusadaptor.cpp
+    src/dbusadaptor.cpp \
+    src/groupmanager.cpp
 
 HEADERS += src/accountsmodel.h \
     src/clienthandler.h \
@@ -24,7 +25,8 @@ HEADERS += src/accountsmodel.h \
     src/qmlgroupmodel.h \
     src/qmlchatmodel.h \
     src/windowmanager.h \
-    src/dbusadaptor.h
+    src/dbusadaptor.h \
+    src/groupmanager.h
 
 RESOURCES += res/res.qrc qml/qml.qrc
 

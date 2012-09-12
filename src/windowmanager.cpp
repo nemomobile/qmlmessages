@@ -81,6 +81,7 @@ void WindowManager::showGroupsWindow()
         w->setWindowTitle(tr("Messages"));
         w->rootContext()->setContextProperty("clientHandler", QVariant::fromValue<QObject*>(ClientHandler::instance()));
         w->rootContext()->setContextProperty("groupModel", QVariant::fromValue<QObject*>(groupModel));
+        w->rootContext()->setContextProperty("groupManager", QVariant::fromValue<QObject*>(GroupManager::instance()));
         w->setSource(QUrl("qrc:qml/qmlmessages/main.qml"));
         w->setAttribute(Qt::WA_OpaquePaintEvent);
         w->setAttribute(Qt::WA_NoSystemBackground);

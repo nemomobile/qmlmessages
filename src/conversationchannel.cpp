@@ -46,7 +46,7 @@ extern Tp::AccountManagerPtr accountManager;
 extern QmlGroupModel *groupModel;
 
 ConversationChannel::ConversationChannel(QObject *parent)
-    : QObject(parent), mPendingRequest(0), mState(Null), mModel(0)
+    : QObject(parent), mPendingRequest(0), mState(Null), mModel(0), mGroupId(-1)
 {
 }
 
@@ -74,36 +74,10 @@ void ConversationChannel::setGroup(int groupid)
     setupGroup(group);
 }
 
-void ConversationChannel::setGroup(const QString &localUid, const QString &remoteUid)
-{
-    CommHistory::Group group;
-
-    for (int i = 0, c = groupModel->rowCount(); i < c; i++) {
-        const CommHistory::Group &g = groupModel->group(groupModel->index(i, 0));
-        if (g.localUid() == localUid && g.remoteUids().size() == 1
-                && g.remoteUids().first() == remoteUid) {
-            group = g;
-            break;
-        }
-    }
-
-    if (!group.isValid()) {
-        qDebug() << "ConversationChannel::setGroup creating group for" << localUid << remoteUid;
-        group.setLocalUid(localUid);
-        group.setRemoteUids(QStringList() << remoteUid);
-        group.setChatType(CommHistory::Group::ChatTypeP2P);
-        if (!groupModel->addGroup(group)) {
-            qWarning() << "ConversationChannel::setGroup failed creating group" << localUid << remoteUid;
-            return;
-        }
-        Q_ASSERT(group.isValid());
-    }
-
-    setupGroup(group);
-}
-
 void ConversationChannel::setupGroup(const CommHistory::Group &group)
 {
+    mGroupId = group.id();
+
     mContactId = group.remoteUids().value(0);
     emit contactIdChanged();
 

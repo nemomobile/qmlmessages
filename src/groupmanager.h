@@ -1,5 +1,4 @@
 /* Copyright (C) 2012 John Brooks <john.brooks@dereferenced.net>
- * Copyright (C) 2011 Robin Burchell <robin+nemo@viroteck.net>
  *
  * You may use this file under the terms of the BSD license as follows:
  *
@@ -29,45 +28,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import QtQuick 1.1
-import com.nokia.meego 1.0
-import org.nemomobile.qmlmessages 1.0
+#ifndef GROUPMANAGER_H
+#define GROUPMANAGER_H
 
-Item {
-    EmptyConversations {
-        id: emptyListView
-        onClicked: {
-            pageStack.push(Qt.resolvedUrl("ConversationPage.qml"))
-        }
-    }
+#include <QObject>
+#include <QHash>
 
-    ListView {
-        id: cardListView
-        anchors.fill: parent
-        snapMode: ListView.SnapToItem
-        highlightFollowsCurrentItem: false
-        focus: true
-        keyNavigationWraps: false
-        clip: true
-        opacity: 0
-        model: groupModel
+class ConversationChannel;
 
-        delegate: ConversationListDelegate {
-            onClicked: {
-                var group = groupManager.findGroupId(model.groupId)
-                pageStack.push(Qt.resolvedUrl("ConversationPage.qml"), { channel: group })
-            }
-        }
-    }
+class GroupManager : public QObject
+{
+    Q_OBJECT
 
-    Binding {
-        target: emptyListView;
-        property: "opacity";
-        value: ((cardListView.count == 0) ? 1 : 0);
-    }
-    Binding {
-        target: cardListView;
-        property: "opacity";
-        value: ((cardListView.count > 0) ? 1 : 0);
-    }
-}
+public:
+    static GroupManager *instance();
+
+    explicit GroupManager(QObject *parent = 0);
+
+    Q_INVOKABLE ConversationChannel *findGroupId(int groupid);
+    /* Find commhistory group for the combination of local and remote UIDs.
+     * Does not support multi-target groups currently.
+     *
+     * If the group doesn't exist, it will be created immediately. */
+    Q_INVOKABLE ConversationChannel *findGroup(const QString &localUid, const QString &remoteUid);
+
+private slots:
+    void groupDestroyed(QObject *obj);
+
+private:
+    QHash<int,ConversationChannel*> groups;
+
+    void addGroup(int id, ConversationChannel *c);
+};
+
+#endif

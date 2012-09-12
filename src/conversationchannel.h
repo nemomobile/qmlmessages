@@ -60,6 +60,8 @@ class ConversationChannel : public QObject
 
     Q_PROPERTY(QmlChatModel* model READ model NOTIFY chatModelReady)
 
+    friend class GroupManager;
+
 public:
     enum State {
         Null,
@@ -70,16 +72,7 @@ public:
         Error
     };
 
-    ConversationChannel(QObject *parent = 0);
     virtual ~ConversationChannel();
-
-    /* Set commhistory group by ID. Group must exist in the GroupModel. */
-    Q_INVOKABLE void setGroup(int groupid);
-    /* Find commhistory group for the combination of local and remote UIDs.
-     * Does not support multi-target groups currently.
-     *
-     * If the group doesn't exist, it will be created locally. */
-    Q_INVOKABLE void setGroup(const QString &localUid, const QString &remoteUid);
 
     State state() const { return mState; }
     QString contactId() const { return mContactId; }
@@ -111,14 +104,20 @@ private:
     State mState;
     QmlChatModel *mModel;
 
+    int mGroupId;
     QString mContactId;
 
     QList<QString> mPendingMessages;
 
+    ConversationChannel(QObject *parent = 0);
+
     void setState(State newState);
-    void setupGroup(const CommHistory::Group &group);
     void start(Tp::PendingChannelRequest *request);
     void setChannel(const Tp::ChannelPtr &channel);
+
+    /* Set commhistory group by ID. Group must exist in the GroupModel. */
+    void setGroup(int groupid);
+    void setupGroup(const CommHistory::Group &group);
 };
 
 #endif
