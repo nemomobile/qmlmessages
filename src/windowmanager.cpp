@@ -37,6 +37,7 @@
 #include <QDeclarativeContext>
 #include <QDeclarativeItem>
 #include <QDBusConnection>
+#include <ContextProvider>
 #ifdef HAS_BOOSTER
 #include <applauncherd/MDeclarativeCache>
 #endif
@@ -58,6 +59,13 @@ WindowManager::WindowManager(QObject *parent)
     if (!QDBusConnection::sessionBus().registerObject("/", this)) {
         qWarning() << "Cannot register DBus object!";
     }
+
+    ContextProvider::Service *cpService = new ContextProvider::Service(QDBusConnection::SessionBus,
+            "org.nemomobile.qmlmessages.context", this);
+    propObservedConversation = new ContextProvider::Property(*cpService, "Messaging.ObservedConversation",
+            this);
+    if (propObservedConversation && propObservedConversation->isSet())
+        propObservedConversation->unsetValue();
 }
 
 WindowManager::~WindowManager()
@@ -143,5 +151,12 @@ void WindowManager::updateCurrentGroup(ConversationChannel *g)
 
     mCurrentGroup = g;
     emit currentGroupChanged(g);
+
+    if (g) {
+        QVariantList observed;
+        observed << g->localUid() << g->contactId() << CommHistory::Group::ChatTypeP2P;
+        propObservedConversation->setValue(observed);
+    } else
+        propObservedConversation->unsetValue();
 }
 

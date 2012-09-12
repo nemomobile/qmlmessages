@@ -37,6 +37,10 @@
 class QDeclarativeView;
 class ConversationChannel;
 
+namespace ContextProvider {
+    class Property;
+}
+
 /* Right now, WindowManager is just responsible for creating/showing the
  * single window we manage when requested via DBus or application launch.
  *
@@ -68,6 +72,7 @@ signals:
 private:
     QWeakPointer<QDeclarativeView> mWindow;
     ConversationChannel *mCurrentGroup;
+    ContextProvider::Property *propObservedConversation;
 
     void ensureWindow();
 };
