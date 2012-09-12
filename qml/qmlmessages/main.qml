@@ -36,11 +36,46 @@ import org.nemomobile.qmlmessages 1.0
 PageStackWindow {
     id: window 
 
-    initialPage: ConversationListPage {}
-
     // Shared AccountsModel
     AccountsModel {
         id: accountsModel
+    }
+
+    Connections {
+        target: pageStack
+        onCurrentPageChanged: {
+            var group
+            try {
+                group = pageStack.currentPage.channel
+            } catch (e) {
+            }
+            if (group == undefined)
+                group = null
+            windowManager.currentGroup = group
+        }
+    }
+
+    function showConversation(group) {
+        if (group == windowManager.currentGroup)
+            return
+
+        var pages = [ ]
+        if (!pageStack.currentPage) {
+            pages.push(Qt.resolvedUrl("ConversationListPage.qml"))
+        }
+        pages.push({ page: Qt.resolvedUrl("ConversationPage.qml"), properties: { channel: group } })
+
+        if (pageStack.depth > 1)
+            pageStack.replace(pages)
+        else
+            pageStack.push(pages)
+    }
+
+    function showGroupsList() {
+        if (!pageStack.currentPage)
+            pageStack.push(Qt.resolvedUrl("ConversationListPage.qml"))
+        else if (pageStack.depth > 1)
+            pageStack.pop(null, true)
     }
 }
 

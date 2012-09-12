@@ -35,6 +35,7 @@
 #include <QWeakPointer>
 
 class QDeclarativeView;
+class ConversationChannel;
 
 /* Right now, WindowManager is just responsible for creating/showing the
  * single window we manage when requested via DBus or application launch.
@@ -51,11 +52,24 @@ public:
     explicit WindowManager(QObject *parent = 0);
     virtual ~WindowManager();
 
+    Q_PROPERTY(ConversationChannel* currentGroup READ currentGroup WRITE updateCurrentGroup NOTIFY currentGroupChanged)
+    ConversationChannel *currentGroup() const { return mCurrentGroup; }
+
 public slots:
     void showGroupsWindow();
+    void showConversation(const QString &localUid, const QString &remoteUid, unsigned type);
+
+private slots:
+    void updateCurrentGroup(ConversationChannel *group);
+
+signals:
+    void currentGroupChanged(ConversationChannel *currentGroup);
 
 private:
     QWeakPointer<QDeclarativeView> mWindow;
+    ConversationChannel *mCurrentGroup;
+
+    void ensureWindow();
 };
 
 #endif

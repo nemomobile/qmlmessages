@@ -31,9 +31,12 @@
 #include "windowmanager.h"
 #include "clienthandler.h"
 #include "qmlgroupmodel.h"
+#include "groupmanager.h"
 #include "dbusadaptor.h"
+#include "conversationchannel.h"
 #include <QDeclarativeView>
 #include <QDeclarativeContext>
+#include <QDeclarativeItem>
 #include <QDBusConnection>
 #ifdef HAS_BOOSTER
 #include <applauncherd/MDeclarativeCache>
@@ -49,7 +52,7 @@ WindowManager *WindowManager::instance()
 }
 
 WindowManager::WindowManager(QObject *parent)
-    : QObject(parent)
+    : QObject(parent), mCurrentGroup(0)
 {
     new DBusAdaptor(this);
     QDBusConnection::sessionBus().registerService("org.nemomobile.qmlmessages");
@@ -65,7 +68,7 @@ WindowManager::~WindowManager()
 #endif
 }
 
-void WindowManager::showGroupsWindow()
+void WindowManager::ensureWindow()
 {
     if (!mWindow) {
 #ifdef HAS_BOOSTER
@@ -75,11 +78,12 @@ void WindowManager::showGroupsWindow()
 #endif
 
         QDeclarativeView *w = mWindow.data();
+        mCurrentGroup = 0;
 
         // mWindow is a QWeakPointer, so it'll be cleared on delete
         w->setAttribute(Qt::WA_DeleteOnClose);
         w->setWindowTitle(tr("Messages"));
-        w->rootContext()->setContextProperty("clientHandler", QVariant::fromValue<QObject*>(ClientHandler::instance()));
+        w->rootContext()->setContextProperty("windowManager", QVariant::fromValue<QObject*>(this));
         w->rootContext()->setContextProperty("groupModel", QVariant::fromValue<QObject*>(groupModel));
         w->rootContext()->setContextProperty("groupManager", QVariant::fromValue<QObject*>(GroupManager::instance()));
         w->setSource(QUrl("qrc:qml/qmlmessages/main.qml"));
@@ -88,10 +92,54 @@ void WindowManager::showGroupsWindow()
         w->viewport()->setAttribute(Qt::WA_OpaquePaintEvent);
         w->viewport()->setAttribute(Qt::WA_NoSystemBackground);
     }
+}
 
-    // XXX set page for existing windows?
+void WindowManager::showGroupsWindow()
+{
+    ensureWindow();
+
+    QGraphicsObject *root = mWindow.data()->rootObject();
+    if (!root)
+        qFatal("No root object in window");
+    bool ok = root->metaObject()->invokeMethod(root, "showGroupsList");
+    if (!ok)
+        qWarning() << Q_FUNC_INFO << "showGroupsList call failed";
 
     mWindow.data()->showFullScreen();
     mWindow.data()->activateWindow();
+    mWindow.data()->raise();
+}
+
+void WindowManager::showConversation(const QString &localUid, const QString &remoteUid, unsigned type)
+{
+    Q_UNUSED(type);
+    ensureWindow();
+
+    qDebug() << Q_FUNC_INFO << localUid << remoteUid << type;
+    ConversationChannel *group = GroupManager::instance()->findGroup(localUid, remoteUid);
+    if (!group) {
+        qWarning() << Q_FUNC_INFO << "could not create group";
+        return;
+    }
+
+    QGraphicsObject *root = mWindow.data()->rootObject();
+    if (!root)
+        qFatal("No root object in window");
+    bool ok = root->metaObject()->invokeMethod(root, "showConversation", Q_ARG(QVariant, QVariant::fromValue<QObject*>(group)));
+    if (!ok)
+        qWarning() << Q_FUNC_INFO << "showConversation call failed";
+
+    mWindow.data()->showFullScreen();
+    mWindow.data()->activateWindow();
+    mWindow.data()->raise();
+}
+
+void WindowManager::updateCurrentGroup(ConversationChannel *g)
+{
+    if (g == mCurrentGroup)
+        return;
+
+    mCurrentGroup = g;
+    emit currentGroupChanged(g);
 }
 

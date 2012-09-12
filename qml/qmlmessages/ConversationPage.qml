@@ -41,6 +41,7 @@ Page {
     id: conversationPage
 
     property QtObject channel: null
+    tools: null
 
     PageHeader {
         id: header

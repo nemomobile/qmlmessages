@@ -46,6 +46,8 @@ public slots:
     void showGroupsWindow();
     void showGroupsWindow(const QStringList &a);
 
+    void startConversation(const QString &localUid, const QString &remoteUid, unsigned type);
+
 private:
     WindowManager * const wm;
 };

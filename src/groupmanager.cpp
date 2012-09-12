@@ -50,7 +50,7 @@ ConversationChannel *GroupManager::findGroupId(int groupid)
 {
     QHash<int,ConversationChannel*>::iterator it = groups.find(groupid);
     if (it == groups.end()) {
-        ConversationChannel *c = new ConversationChannel;
+        ConversationChannel *c = new ConversationChannel(this);
         c->setGroup(groupid);
         addGroup(groupid, c);
         return c;
@@ -83,7 +83,7 @@ ConversationChannel *GroupManager::findGroup(const QString &localUid, const QStr
     }
     Q_ASSERT(group.isValid());
 
-    ConversationChannel *c = new ConversationChannel;
+    ConversationChannel *c = new ConversationChannel(this);
     c->setupGroup(group);
     addGroup(group.id(), c);
     return c;

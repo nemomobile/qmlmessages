@@ -49,3 +49,8 @@ void DBusAdaptor::showGroupsWindow(const QStringList &a)
     wm->showGroupsWindow();
 }
 
+void DBusAdaptor::startConversation(const QString &localUid, const QString &remoteUid, unsigned type)
+{
+    wm->showConversation(localUid, remoteUid, type);
+}
+
