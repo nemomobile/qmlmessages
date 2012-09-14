@@ -102,6 +102,8 @@ private slots:
 
     void messageReceived(const Tp::ReceivedMessage &message);
 
+    void channelInvalidated(Tp::DBusProxy *proxy, const QString &errorName, const QString &errorMessage);
+
 private:
     Tp::PendingChannelRequest *mPendingRequest;
     Tp::ChannelRequestPtr mRequest;

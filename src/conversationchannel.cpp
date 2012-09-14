@@ -119,8 +119,12 @@ void ConversationChannel::start(Tp::PendingChannelRequest *pendingRequest)
 
 void ConversationChannel::setChannel(const Tp::ChannelPtr &c)
 {
-    if (!mChannel.isNull() || c.isNull())
+    if (mChannel && c && mChannel->objectPath() == c->objectPath())
         return;
+    if (!mChannel.isNull() || c.isNull()) {
+        qWarning() << Q_FUNC_INFO << "called with existing channel set";
+        return;
+    }
 
     mChannel = c;
     connect(mChannel->becomeReady(Tp::TextChannel::FeatureMessageQueue),
@@ -128,6 +132,8 @@ void ConversationChannel::setChannel(const Tp::ChannelPtr &c)
             SLOT(channelReady()));
     connect(mChannel.data(), SIGNAL(messageReceived(Tp::ReceivedMessage)),
             SLOT(messageReceived(Tp::ReceivedMessage)));
+    connect(mChannel.data(), SIGNAL(invalidated(Tp::DBusProxy*,QString,QString)),
+            SLOT(channelInvalidated(Tp::DBusProxy*,QString,QString)));
 
     setState(PendingReady);
 }
@@ -244,5 +250,15 @@ void ConversationChannel::sendMessage(const QString &text)
     // Note that buffered messages do not use this path. See channelReady.
     qDebug() << Q_FUNC_INFO << text;
     Tp::PendingSendMessage *msg = textChannel->send(text);
+}
+
+void ConversationChannel::channelInvalidated(Tp::DBusProxy *proxy,
+        const QString &errorName, const QString &errorMessage)
+{
+    Q_UNUSED(proxy);
+    qDebug() << "Channel invalidated:" << errorName << errorMessage;
+
+    mChannel.reset();
+    setState(Null);
 }
 
