@@ -79,20 +79,25 @@ void ConversationChannel::setupGroup(const CommHistory::Group &group)
     mGroupId = group.id();
 
     mContactId = group.remoteUids().value(0);
+    mLocalUid = group.localUid();
     emit contactIdChanged();
 
     Q_ASSERT(!mModel);
     mModel = new QmlChatModel(group.id(), this);
     emit chatModelReady(mModel);
+}
 
-    qDebug() << Q_FUNC_INFO << group.localUid() << group.remoteUids().value(0);
+void ConversationChannel::ensureChannel()
+{
+    if (!mChannel.isNull() || mPendingRequest || !mRequest.isNull())
+        return;
 
     // XXX wait for account manager if necessary?
-    Tp::AccountPtr account = accountManager->accountForPath(group.localUid());
+    Tp::AccountPtr account = accountManager->accountForPath(mLocalUid);
     // XXX error check
     Q_ASSERT(account);
     Q_ASSERT(account->isReady());
-    Tp::PendingChannelRequest *req = account->ensureTextChat(group.remoteUids().value(0),
+    Tp::PendingChannelRequest *req = account->ensureTextChat(mContactId,
             QDateTime::currentDateTime(),
             QLatin1String("org.freedesktop.Telepathy.Client.qmlmessages"));
     start(req);
@@ -114,8 +119,6 @@ void ConversationChannel::start(Tp::PendingChannelRequest *pendingRequest)
 
 void ConversationChannel::setChannel(const Tp::ChannelPtr &c)
 {
-    Q_ASSERT(mChannel.isNull());
-    Q_ASSERT(!c.isNull());
     if (!mChannel.isNull() || c.isNull())
         return;
 
@@ -225,6 +228,7 @@ void ConversationChannel::sendMessage(const QString &text)
 {
     if (mChannel.isNull() || !mChannel->isReady()) {
         Q_ASSERT(state() != Ready);
+        ensureChannel();
         qDebug() << Q_FUNC_INFO << "Buffering:" << text;
         mPendingMessages.append(text);
         return;

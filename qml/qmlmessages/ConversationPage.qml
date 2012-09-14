@@ -110,7 +110,7 @@ Page {
                 || accountSelector.selectedIndex < 0)
                 return
             console.log("startConversation", accountSelector.selectedUid, targetEditor.text);
-            channel = groupManager.findGroup(accountSelector.selectedUid, targetEditor.text)
+            channel = groupManager.getConversation(accountSelector.selectedUid, targetEditor.text)
         }
     }
 
@@ -217,5 +217,10 @@ Page {
             }
         }
     ]
+
+    onChannelChanged: {
+        if (channel != null)
+            channel.ensureChannel()
+    }
 }
 

@@ -46,7 +46,7 @@ GroupManager::GroupManager(QObject *parent)
 {
 }
 
-ConversationChannel *GroupManager::findGroupId(int groupid)
+ConversationChannel *GroupManager::getConversation(int groupid)
 {
     QHash<int,ConversationChannel*>::iterator it = groups.find(groupid);
     if (it == groups.end()) {
@@ -58,20 +58,25 @@ ConversationChannel *GroupManager::findGroupId(int groupid)
     return *it;
 }
 
-ConversationChannel *GroupManager::findGroup(const QString &localUid, const QString &remoteUid)
+CommHistory::Group GroupManager::groupFromUid(const QString &localUid, const QString &remoteUid)
 {
-    CommHistory::Group group;
     for (int i = 0, c = groupModel->rowCount(); i < c; i++) {
         const CommHistory::Group &g = groupModel->group(groupModel->index(i, 0));
         if (g.localUid() == localUid && g.remoteUids().size() == 1
                 && g.remoteUids().first() == remoteUid) {
-            group = g;
-            break;
+            return g;
         }
     }
+    return CommHistory::Group();
+}
 
+ConversationChannel *GroupManager::getConversation(const QString &localUid, const QString &remoteUid, bool create)
+{
+    CommHistory::Group group = groupFromUid(localUid, remoteUid);
     if (group.isValid())
-        return findGroupId(group.id());
+        return getConversation(group.id());
+    if (!create)
+        return 0;
 
     qDebug() << "ConversationChannel creating group for" << localUid << remoteUid;
     group.setLocalUid(localUid);

@@ -54,7 +54,7 @@ Item {
 
         delegate: ConversationListDelegate {
             onClicked: {
-                var group = groupManager.findGroupId(model.groupId)
+                var group = groupManager.getConversation(model.groupId)
                 pageStack.push(Qt.resolvedUrl("ConversationPage.qml"), { channel: group })
             }
         }

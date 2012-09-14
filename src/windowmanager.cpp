@@ -116,7 +116,7 @@ void WindowManager::showConversation(const QString &localUid, const QString &rem
     ensureWindow();
 
     qDebug() << Q_FUNC_INFO << localUid << remoteUid << type;
-    ConversationChannel *group = GroupManager::instance()->findGroup(localUid, remoteUid);
+    ConversationChannel *group = GroupManager::instance()->getConversation(localUid, remoteUid);
     if (!group) {
         qWarning() << Q_FUNC_INFO << "could not create group";
         return;

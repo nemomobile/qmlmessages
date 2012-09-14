@@ -57,6 +57,7 @@ class ConversationChannel : public QObject
    
     Q_PROPERTY(State state READ state NOTIFY stateChanged)
     Q_PROPERTY(QString contactId READ contactId NOTIFY contactIdChanged)
+    Q_PROPERTY(QString localUid READ localUid CONSTANT)
 
     Q_PROPERTY(QmlChatModel* model READ model NOTIFY chatModelReady)
 
@@ -76,7 +77,11 @@ public:
 
     State state() const { return mState; }
     QString contactId() const { return mContactId; }
+    QString localUid() const { return mLocalUid; }
     QmlChatModel *model() const { return mModel; }
+
+    Q_INVOKABLE void ensureChannel();
+    void setChannel(const Tp::ChannelPtr &channel);
 
 public slots:
     void sendMessage(const QString &text);
@@ -106,6 +111,7 @@ private:
 
     int mGroupId;
     QString mContactId;
+    QString mLocalUid;
 
     QList<QString> mPendingMessages;
 
@@ -113,7 +119,6 @@ private:
 
     void setState(State newState);
     void start(Tp::PendingChannelRequest *request);
-    void setChannel(const Tp::ChannelPtr &channel);
 
     /* Set commhistory group by ID. Group must exist in the GroupModel. */
     void setGroup(int groupid);
