@@ -30,11 +30,13 @@
 
 #include "clienthandler.h"
 #include "conversationchannel.h"
+#include "groupmanager.h"
 
 #include <TelepathyQt4/ChannelClassSpec>
 #include <TelepathyQt4/ReceivedMessage>
 #include <TelepathyQt4/TextChannel>
 #include <TelepathyQt4/ChannelRequest>
+#include <TelepathyQt4/Account>
 
 using namespace Tp;
 
@@ -67,7 +69,24 @@ void ClientHandler::handleChannels(const MethodInvocationContextPtr<> &context, 
                                    const QList<ChannelRequestPtr> &requestsSatisfied, const QDateTime &userActionTime,
                                    const HandlerInfo &handlerInfo)
 {
-    // XXX what do we need to take care of here?
+    foreach (const ChannelPtr &channel, channels) {
+        QVariantMap properties = channel->immutableProperties();
+        QString targetId = properties.value(TP_QT_IFACE_CHANNEL + QLatin1String(".TargetID")).toString();
+
+        if (targetId.isEmpty()) {
+            qWarning() << "handleChannels cannot get TargetID for channel";
+            continue;
+        }
+
+        ConversationChannel *g = GroupManager::instance()->getConversation(account->objectPath(), targetId);
+        if (!g) {
+            qWarning() << "handleChannels cannot create ConversationChannel";
+            continue;
+        }
+
+        g->setChannel(channel);
+    }
+
     context->setFinished();
 }
 
