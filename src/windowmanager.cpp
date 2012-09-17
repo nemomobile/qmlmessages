@@ -30,7 +30,6 @@
 
 #include "windowmanager.h"
 #include "clienthandler.h"
-#include "qmlgroupmodel.h"
 #include "groupmanager.h"
 #include "dbusadaptor.h"
 #include "conversationchannel.h"
@@ -42,9 +41,11 @@
 #include <applauncherd/MDeclarativeCache>
 #endif
 
+#include <CommHistory/GroupModel>
+
 Q_GLOBAL_STATIC(WindowManager, wmInstance)
 
-extern QmlGroupModel *groupModel;
+extern CommHistory::GroupModel *groupModel;
 
 WindowManager *WindowManager::instance()
 {

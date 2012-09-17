@@ -43,18 +43,18 @@
 #include <TelepathyQt4/Types>
 #include <TelepathyQt4/ClientRegistrar>
 
+#include <CommHistory/GroupModel>
+
 #include "src/windowmanager.h"
 #include "src/accountsmodel.h"
 #include "src/clienthandler.h"
 #include "src/conversationchannel.h"
-#include "src/qmlgroupmodel.h"
-#include "src/qmlchatmodel.h"
 
 using namespace Tp;
 
 Tp::AccountManagerPtr accountManager;
 
-QmlGroupModel *groupModel = 0;
+CommHistory::GroupModel *groupModel = 0;
 
 #ifdef HAS_BOOSTER
 Q_DECL_EXPORT
@@ -93,10 +93,10 @@ int main(int argc, char **argv)
 
     // Set up QML
     qmlRegisterType<AccountsModel>("org.nemomobile.qmlmessages", 1, 0, "AccountsModel");
-    qmlRegisterUncreatableType<QmlChatModel>("org.nemomobile.qmlmessages", 1, 0, "ChatModel", "Cannot be created");
     qmlRegisterUncreatableType<ConversationChannel>("org.nemomobile.qmlmessages", 1, 0, "ConversationChannel", "");
 
-    QmlGroupModel gm;
+    CommHistory::GroupModel gm;
+    gm.getGroups();
     groupModel = &gm;
 
     WindowManager *wm = WindowManager::instance();

@@ -38,8 +38,7 @@
 #include <TelepathyQt4/PendingSendMessage>
 #include <TelepathyQt4/ReceivedMessage>
 #include <CommHistory/Group>
-
-class QmlChatModel;
+#include <CommHistory/ConversationModel>
 
 /* ConversationChannel handles the relationship between a commhistory
  * group and the associated Telepathy channel.
@@ -59,7 +58,7 @@ class ConversationChannel : public QObject
     Q_PROPERTY(QString contactId READ contactId NOTIFY contactIdChanged)
     Q_PROPERTY(QString localUid READ localUid CONSTANT)
 
-    Q_PROPERTY(QmlChatModel* model READ model NOTIFY chatModelReady)
+    Q_PROPERTY(QObject* model READ model NOTIFY chatModelReady)
 
     friend class GroupManager;
 
@@ -78,7 +77,7 @@ public:
     State state() const { return mState; }
     QString contactId() const { return mContactId; }
     QString localUid() const { return mLocalUid; }
-    QmlChatModel *model() const { return mModel; }
+    QObject *model() const { return mModel; }
 
     Q_INVOKABLE void ensureChannel();
     void setChannel(const Tp::ChannelPtr &channel);
@@ -88,7 +87,7 @@ public slots:
 
 signals:
     void stateChanged(int newState);
-    void chatModelReady(QmlChatModel *model);
+    void chatModelReady(QObject *model);
     void contactIdChanged();
 
     void requestSucceeded();
@@ -109,7 +108,7 @@ private:
     Tp::ChannelRequestPtr mRequest;
     Tp::ChannelPtr mChannel;
     State mState;
-    QmlChatModel *mModel;
+    CommHistory::ConversationModel *mModel;
 
     int mGroupId;
     QString mContactId;

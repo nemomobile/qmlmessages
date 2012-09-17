@@ -30,11 +30,12 @@
 
 #include "groupmanager.h"
 #include "conversationchannel.h"
-#include "qmlgroupmodel.h"
+
+#include <CommHistory/GroupModel>
 
 Q_GLOBAL_STATIC(GroupManager, gmInstance)
 
-extern QmlGroupModel *groupModel;
+extern CommHistory::GroupModel *groupModel;
 
 GroupManager *GroupManager::instance()
 {

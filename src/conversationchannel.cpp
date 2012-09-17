@@ -30,8 +30,6 @@
 
 #include "conversationchannel.h"
 #include "clienthandler.h"
-#include "qmlgroupmodel.h"
-#include "qmlchatmodel.h"
 
 #include <TelepathyQt4/ChannelRequest>
 #include <TelepathyQt4/TextChannel>
@@ -41,9 +39,12 @@
 #include <TelepathyQt4/Account>
 #include <TelepathyQt4/AccountManager>
 
+#include <CommHistory/ConversationModel>
+#include <CommHistory/GroupModel>
+
 // XXX
 extern Tp::AccountManagerPtr accountManager;
-extern QmlGroupModel *groupModel;
+extern CommHistory::GroupModel *groupModel;
 
 ConversationChannel::ConversationChannel(QObject *parent)
     : QObject(parent), mPendingRequest(0), mState(Null), mModel(0), mGroupId(-1)
@@ -59,9 +60,9 @@ void ConversationChannel::setGroup(int groupid)
     CommHistory::Group group;
 
     for (int i = 0, c = groupModel->rowCount(); i < c; i++) {
-        int id = groupModel->index(i, 0).data(QmlGroupModel::GroupIdRole).toInt();
-        if (id == groupid) {
-            group = groupModel->group(groupModel->index(i, 0));
+        const CommHistory::Group &g = groupModel->group(groupModel->index(i, 0));
+        if (g.id() == groupid) {
+            group = g;
             break;
         }
     }
@@ -83,7 +84,9 @@ void ConversationChannel::setupGroup(const CommHistory::Group &group)
     emit contactIdChanged();
 
     Q_ASSERT(!mModel);
-    mModel = new QmlChatModel(group.id(), this);
+    mModel = new CommHistory::ConversationModel(this);
+    mModel->setTreeMode(false);
+    mModel->getEvents(mGroupId);
     emit chatModelReady(mModel);
 }
 

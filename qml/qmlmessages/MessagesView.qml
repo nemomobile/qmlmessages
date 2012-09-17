@@ -31,6 +31,7 @@
 import QtQuick 1.1
 import com.nokia.meego 1.0
 import org.nemomobile.qmlmessages 1.0
+import org.nemomobile.commhistory 1.0
 
 Item {
     property alias model: view.model
@@ -68,7 +69,7 @@ Item {
 
                 Text {
                     id: messageText
-                    text: model.text
+                    text: model.freeText
                     width: messageBox.parent.width * 0.7
                     wrapMode: Text.Wrap
                     style: Text.Raised
@@ -99,7 +100,7 @@ Item {
             states: [
                 State {
                     name: "incoming"
-                    when: model.direction == ChatModel.Incoming
+                    when: model.direction == CommHistory.Inbound
 
                     PropertyChanges {
                         target: messageBox
@@ -112,7 +113,7 @@ Item {
                 },
                 State {
                     name: "outgoing"
-                    when: model.direction == ChatModel.Outgoing
+                    when: model.direction == CommHistory.Outbound
 
                     PropertyChanges {
                         target: messageBox

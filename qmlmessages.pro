@@ -13,8 +13,6 @@ SOURCES += src/main.cpp \
     src/accountsmodel.cpp \
     src/clienthandler.cpp \
     src/conversationchannel.cpp \
-    src/qmlgroupmodel.cpp \
-    src/qmlchatmodel.cpp \
     src/windowmanager.cpp \
     src/dbusadaptor.cpp \
     src/groupmanager.cpp
@@ -22,8 +20,6 @@ SOURCES += src/main.cpp \
 HEADERS += src/accountsmodel.h \
     src/clienthandler.h \
     src/conversationchannel.h \
-    src/qmlgroupmodel.h \
-    src/qmlchatmodel.h \
     src/windowmanager.h \
     src/dbusadaptor.h \
     src/groupmanager.h

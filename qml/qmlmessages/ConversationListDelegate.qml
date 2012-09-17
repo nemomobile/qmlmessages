@@ -66,7 +66,7 @@ Item {
 
             Label {
                 id: nameFirst
-                text: model.displayName
+                text: model.remoteUids[0]
 
                 platformStyle: LabelStyle {
                     fontFamily: "Droid Sans"
@@ -77,7 +77,7 @@ Item {
             Label {
                 id: messageDate
                 // XXX This should be something more natural/useful
-                text: Qt.formatDateTime(model.messageDate, "M/d")
+                text: Qt.formatDateTime(model.lastModified, "M/d")
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
 
@@ -91,7 +91,7 @@ Item {
 
         Label {
             id: messagePreview
-            text: model.messagePreview
+            text: model.lastMessageText
             elide: Text.ElideRight
             width: parent.width
 
