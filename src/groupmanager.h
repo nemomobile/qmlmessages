@@ -54,7 +54,7 @@ public:
 
     /* Get a conversation by commhistory group ID, creating it if necessary.
      * A telepathy channel will be established if none exists already. */
-    Q_INVOKABLE ConversationChannel *getConversation(int groupid);
+    Q_INVOKABLE ConversationChannel *getConversationById(int groupid);
     /* Find commhistory group for the combination of local and remote UIDs,
      * and return the associated conversation. Does not support multi-target
      * groups currently. If the group doesn't exist, it will be created immediately. */

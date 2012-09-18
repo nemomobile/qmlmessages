@@ -46,7 +46,7 @@ GroupManager::GroupManager(QObject *parent)
 {
 }
 
-ConversationChannel *GroupManager::getConversation(int groupid)
+ConversationChannel *GroupManager::getConversationById(int groupid)
 {
     QHash<int,ConversationChannel*>::iterator it = groups.find(groupid);
     if (it == groups.end()) {
@@ -74,7 +74,7 @@ ConversationChannel *GroupManager::getConversation(const QString &localUid, cons
 {
     CommHistory::Group group = groupFromUid(localUid, remoteUid);
     if (group.isValid())
-        return getConversation(group.id());
+        return getConversationById(group.id());
     if (!create)
         return 0;
 
