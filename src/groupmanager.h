@@ -41,6 +41,7 @@ class ConversationChannel;
 
 namespace CommHistory {
     class Group;
+    class GroupModel;
 }
 
 class GroupManager : public QObject
@@ -52,6 +53,8 @@ public:
 
     explicit GroupManager(QObject *parent = 0);
 
+    CommHistory::GroupModel *groupModel() const { return mGroupModel; }
+
     /* Get a conversation by commhistory group ID, creating it if necessary.
      * A telepathy channel will be established if none exists already. */
     Q_INVOKABLE ConversationChannel *getConversationById(int groupid);
@@ -61,11 +64,13 @@ public:
     Q_INVOKABLE ConversationChannel *getConversation(const QString &localUid, const QString &remoteUid, bool create = true);
 
     CommHistory::Group groupFromUid(const QString &localUid, const QString &remoteUid);
+    CommHistory::Group groupFromId(int groupid);
 
 private slots:
     void groupDestroyed(QObject *obj);
 
 private:
+    CommHistory::GroupModel *mGroupModel;
     QHash<int,ConversationChannel*> groups;
 
     void addGroup(int id, ConversationChannel *c);

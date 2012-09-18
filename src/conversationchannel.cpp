@@ -29,6 +29,7 @@
  */
 
 #include "conversationchannel.h"
+#include "groupmanager.h"
 #include "clienthandler.h"
 
 #include <TelepathyQt4/ChannelRequest>
@@ -40,11 +41,9 @@
 #include <TelepathyQt4/AccountManager>
 
 #include <CommHistory/ConversationModel>
-#include <CommHistory/GroupModel>
 
 // XXX
 extern Tp::AccountManagerPtr accountManager;
-extern CommHistory::GroupModel *groupModel;
 
 ConversationChannel::ConversationChannel(QObject *parent)
     : QObject(parent), mPendingRequest(0), mState(Null), mModel(0), mGroupId(-1)
@@ -57,16 +56,7 @@ ConversationChannel::~ConversationChannel()
 
 void ConversationChannel::setGroup(int groupid)
 {
-    CommHistory::Group group;
-
-    for (int i = 0, c = groupModel->rowCount(); i < c; i++) {
-        const CommHistory::Group &g = groupModel->group(groupModel->index(i, 0));
-        if (g.id() == groupid) {
-            group = g;
-            break;
-        }
-    }
-
+    CommHistory::Group group = GroupManager::instance()->groupFromId(groupid);
     if (!group.isValid()) {
         qWarning() << Q_FUNC_INFO << "Cannot find group id" << groupid;
         return;

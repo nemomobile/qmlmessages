@@ -45,8 +45,6 @@
 
 Q_GLOBAL_STATIC(WindowManager, wmInstance)
 
-extern CommHistory::GroupModel *groupModel;
-
 WindowManager *WindowManager::instance()
 {
     return wmInstance();
@@ -84,9 +82,12 @@ void WindowManager::ensureWindow()
         // mWindow is a QWeakPointer, so it'll be cleared on delete
         w->setAttribute(Qt::WA_DeleteOnClose);
         w->setWindowTitle(tr("Messages"));
-        w->rootContext()->setContextProperty("windowManager", QVariant::fromValue<QObject*>(this));
-        w->rootContext()->setContextProperty("groupModel", QVariant::fromValue<QObject*>(groupModel));
-        w->rootContext()->setContextProperty("groupManager", QVariant::fromValue<QObject*>(GroupManager::instance()));
+        w->rootContext()->setContextProperty("windowManager",
+                QVariant::fromValue<QObject*>(this));
+        w->rootContext()->setContextProperty("groupManager",
+                QVariant::fromValue<QObject*>(GroupManager::instance()));
+        w->rootContext()->setContextProperty("groupModel",
+                QVariant::fromValue<QObject*>(GroupManager::instance()->groupModel()));
         w->setSource(QUrl("qrc:qml/qmlmessages/main.qml"));
         w->setAttribute(Qt::WA_OpaquePaintEvent);
         w->setAttribute(Qt::WA_NoSystemBackground);

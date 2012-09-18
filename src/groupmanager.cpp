@@ -30,12 +30,9 @@
 
 #include "groupmanager.h"
 #include "conversationchannel.h"
-
 #include <CommHistory/GroupModel>
 
 Q_GLOBAL_STATIC(GroupManager, gmInstance)
-
-extern CommHistory::GroupModel *groupModel;
 
 GroupManager *GroupManager::instance()
 {
@@ -45,6 +42,8 @@ GroupManager *GroupManager::instance()
 GroupManager::GroupManager(QObject *parent)
     : QObject(parent)
 {
+    mGroupModel = new CommHistory::GroupModel(this);
+    mGroupModel->getGroups();
 }
 
 ConversationChannel *GroupManager::getConversationById(int groupid)
@@ -61,13 +60,24 @@ ConversationChannel *GroupManager::getConversationById(int groupid)
 
 CommHistory::Group GroupManager::groupFromUid(const QString &localUid, const QString &remoteUid)
 {
-    for (int i = 0, c = groupModel->rowCount(); i < c; i++) {
-        const CommHistory::Group &g = groupModel->group(groupModel->index(i, 0));
+    for (int i = 0, c = mGroupModel->rowCount(); i < c; i++) {
+        const CommHistory::Group &g = mGroupModel->group(mGroupModel->index(i, 0));
         if (g.localUid() == localUid && g.remoteUids().size() == 1
                 && g.remoteUids().first() == remoteUid) {
             return g;
         }
     }
+    return CommHistory::Group();
+}
+
+CommHistory::Group GroupManager::groupFromId(int groupid)
+{
+    for (int i = 0, c = mGroupModel->rowCount(); i < c; i++) {
+        const CommHistory::Group &g = mGroupModel->group(mGroupModel->index(i, 0));
+        if (g.id() == groupid)
+            return g;
+    }
+
     return CommHistory::Group();
 }
 
@@ -83,7 +93,7 @@ ConversationChannel *GroupManager::getConversation(const QString &localUid, cons
     group.setLocalUid(localUid);
     group.setRemoteUids(QStringList() << remoteUid);
     group.setChatType(CommHistory::Group::ChatTypeP2P);
-    if (!groupModel->addGroup(group)) {
+    if (!mGroupModel->addGroup(group)) {
         qWarning() << "ConversationChannel failed creating group" << localUid << remoteUid;
         return 0;
     }

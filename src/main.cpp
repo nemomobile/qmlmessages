@@ -54,8 +54,6 @@ using namespace Tp;
 
 Tp::AccountManagerPtr accountManager;
 
-CommHistory::GroupModel *groupModel = 0;
-
 #ifdef HAS_BOOSTER
 Q_DECL_EXPORT
 #endif
@@ -94,10 +92,6 @@ int main(int argc, char **argv)
     // Set up QML
     qmlRegisterType<AccountsModel>("org.nemomobile.qmlmessages", 1, 0, "AccountsModel");
     qmlRegisterUncreatableType<ConversationChannel>("org.nemomobile.qmlmessages", 1, 0, "ConversationChannel", "");
-
-    CommHistory::GroupModel gm;
-    gm.getGroups();
-    groupModel = &gm;
 
     WindowManager *wm = WindowManager::instance();
     if (showWindow)
