@@ -41,6 +41,7 @@
 #include <TelepathyQt4/AccountManager>
 
 #include <CommHistory/ConversationModel>
+#include <CommHistory/GroupModel>
 
 // XXX
 extern Tp::AccountManagerPtr accountManager;
@@ -75,6 +76,7 @@ void ConversationChannel::setupGroup(const CommHistory::Group &group)
 
     Q_ASSERT(!mModel);
     mModel = new CommHistory::ConversationModel(this);
+    mModel->setBackgroundThread(GroupManager::instance()->groupModel()->backgroundThread());
     mModel->setTreeMode(false);
     mModel->getEvents(mGroupId);
     emit chatModelReady(mModel);

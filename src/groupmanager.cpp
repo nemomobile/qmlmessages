@@ -30,6 +30,7 @@
 
 #include "groupmanager.h"
 #include "conversationchannel.h"
+#include <QThread>
 #include <CommHistory/GroupModel>
 
 Q_GLOBAL_STATIC(GroupManager, gmInstance)
@@ -42,7 +43,11 @@ GroupManager *GroupManager::instance()
 GroupManager::GroupManager(QObject *parent)
     : QObject(parent)
 {
+    QThread *modelThread = new QThread(this);
+    modelThread->start();
+
     mGroupModel = new CommHistory::GroupModel(this);
+    mGroupModel->setBackgroundThread(modelThread);
     mGroupModel->getGroups();
 }
 
