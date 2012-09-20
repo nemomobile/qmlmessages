@@ -46,9 +46,17 @@ Item {
         anchors.fill: parent
         cacheBuffer: parent.height
 
-        onCountChanged: view.positionViewAtBeginning()
         // Necessary when opening VKB, for example
         onHeightChanged: view.positionViewAtBeginning()
+
+        Connections {
+            target: model
+            onRowsInserted: {
+                if (first == 0)
+                    view.positionViewAtBeginning()
+            }
+            onModelReset: view.positionViewAtBeginning()
+        }
 
         delegate: BorderImage {
             id: messageBox

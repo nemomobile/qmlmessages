@@ -77,6 +77,9 @@ void ConversationChannel::setupGroup(const CommHistory::Group &group)
     Q_ASSERT(!mModel);
     mModel = new CommHistory::ConversationModel(this);
     mModel->setBackgroundThread(GroupManager::instance()->groupModel()->backgroundThread());
+    mModel->setQueryMode(CommHistory::EventModel::StreamedAsyncQuery);
+    mModel->setFirstChunkSize(25);
+    mModel->setChunkSize(50);
     mModel->setTreeMode(false);
     mModel->getEvents(mGroupId);
     emit chatModelReady(mModel);
