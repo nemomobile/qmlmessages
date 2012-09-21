@@ -58,18 +58,15 @@ MouseArea {
             verticalCenter: parent.verticalCenter
         }
 
-        Item {
+        Label {
+            id: nameFirst
+            text: model.remoteUids[0]
             width: parent.width
-            height: nameFirst.paintedHeight
+            height: paintedHeight
 
-            Label {
-                id: nameFirst
-                text: model.remoteUids[0]
-
-                platformStyle: LabelStyle {
-                    fontFamily: "Droid Sans"
-                    fontPixelSize: 30
-                }
+            platformStyle: LabelStyle {
+                fontFamily: "Droid Sans"
+                fontPixelSize: 30
             }
 
             Label {
