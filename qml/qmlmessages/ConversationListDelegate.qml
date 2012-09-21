@@ -40,6 +40,7 @@ MouseArea {
     anchors.right: parent.right
     anchors.leftMargin: itemMargins
     anchors.rightMargin: itemMargins
+    opacity: pressed ? 0.7 : 1.0
 
     property int itemMargins: 10
 
@@ -97,12 +98,5 @@ MouseArea {
             }
         }
     }
-
-
-    states: State {
-        name: "pressed"; when: pressed == true
-        PropertyChanges { target: root; opacity: .7}
-    }
-
 }
 
