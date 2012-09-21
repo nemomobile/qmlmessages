@@ -32,7 +32,7 @@
 import QtQuick 1.1
 import com.nokia.meego 1.0
 
-Item {
+MouseArea {
     id: root
 
     height: photo.height + itemMargins
@@ -42,8 +42,6 @@ Item {
     anchors.rightMargin: itemMargins
 
     property int itemMargins: 10
-
-    signal clicked
 
     Image {
         id: photo
@@ -104,16 +102,8 @@ Item {
     }
 
 
-    MouseArea {
-        id: mouseArea
-        anchors.fill: parent
-        onClicked: {
-            parent.clicked();
-        }
-    }
-
     states: State {
-        name: "pressed"; when: mouseArea.pressed == true
+        name: "pressed"; when: pressed == true
         PropertyChanges { target: root; opacity: .7}
     }
 
