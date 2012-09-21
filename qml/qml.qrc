@@ -10,5 +10,6 @@
         <file>qmlmessages/MessagesView.qml</file>
         <file>qmlmessages/TargetEditBox.qml</file>
         <file>qmlmessages/AccountSelector.qml</file>
+        <file>qmlmessages/ChatTextInput.qml</file>
     </qresource>
 </RCC>

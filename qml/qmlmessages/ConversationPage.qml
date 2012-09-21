@@ -125,54 +125,21 @@ Page {
         }
     }
 
-    Image {
+    ChatTextInput {
         id: textArea
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        height: textInput.height + 22
 
-        source: "image://theme/meegotouch-toolbar-portrait-background"
+        onSendMessage: {
+            if (text.length < 1)
+                return
 
-        TextField {
-            id: textInput
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.leftMargin: 10
-            anchors.rightMargin: 10
-            y: 10
-            placeholderText: qsTr("Type a message")
+            if (conversationPage.state == "new" && targetEditor.text.length > 0)
+                targetEditor.startConversation()
 
-            Button {
-                id: sendBtn
-                anchors.right: parent.right
-                anchors.rightMargin: 5
-                anchors.verticalCenter: textInput.verticalCenter
-                anchors.verticalCenterOffset: textInput.hasFocus ? 0 : 1
-
-                text: qsTr("Send")
-                enabled: textInput.text.length > 0
-                
-                platformStyle: ButtonStyle {
-                    buttonWidth: 100
-                    buttonHeight: textInput.height - 10
-                    background: "image://theme/meegotouch-button-inverted-background"
-                    disabledBackground: background
-                    textColor: "white"
-                    disabledTextColor: "lightgray"
-                }
-
-                onClicked: {
-                    if (conversationPage.state == "new" && targetEditor.text.length > 0) {
-                        targetEditor.startConversation()
-                    }
-
-                    if (textInput.text.length > 0) {
-                        channel.sendMessage(textInput.text)
-                        textInput.text = ""
-                    }
-                }
-            }
+            channel.sendMessage(text)
+            clear()
         }
     }
 
@@ -209,11 +176,6 @@ Page {
             AnchorChanges {
                 target: messagesView
                 anchors.top: targetEditor.bottom
-            }
-
-            PropertyChanges {
-                target: sendBtn
-                enabled: textInput.text.length > 0 && targetEditor.text.length > 0
             }
         }
     ]
