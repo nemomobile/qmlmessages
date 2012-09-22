@@ -58,6 +58,12 @@ Item {
             onModelReset: view.positionViewAtBeginning()
         }
 
+        // Cannot use Label, because it shadows the 'style' property.
+        // Copy its text formatting instead.
+        LabelStyle {
+            id: labelStyle
+        }
+
         delegate: BorderImage {
             id: messageBox
             x: model.direction == CommHistory.Outbound ? parent.width - width : 0
@@ -90,12 +96,6 @@ Item {
                 styleColor: "#eeeeee"
                 font.family: labelStyle.fontFamily
                 font.pixelSize: labelStyle.fontPixelSize
-
-                // Cannot use Label, because it shadows the 'style' property.
-                // Copy its text formatting instead.
-                LabelStyle {
-                    id: labelStyle
-                }
             }
 
             function showError(details) {
