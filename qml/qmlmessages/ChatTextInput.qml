@@ -32,10 +32,11 @@
 import QtQuick 1.1
 import com.nokia.meego 1.0
 
-Image {
+BorderImage {
     id: textArea
-    height: textInput.height + 22
+    height: textInput.height + (8*2)
     source: "image://theme/meegotouch-toolbar-portrait-background"
+    border { left: 10; right: 10; top: 10; bottom: 10 }
 
     property alias text: textInput.text
 
@@ -48,37 +49,35 @@ Image {
     TextArea {
         id: textInput
         anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.leftMargin: 10
-        anchors.rightMargin: 10
-        y: 10
+        anchors.leftMargin: UiConstants.ButtonSpacing
+        anchors.right: sendBtn.left
+        anchors.rightMargin: UiConstants.ButtonSpacing
+        y: 8
+        height: 52 /* UI.DEFAULT_FIELD.HEIGHT */
+
         placeholderText: qsTr("Type a message")
         wrapMode: TextEdit.Wrap
         textFormat: TextEdit.PlainText
+    }
 
-        Component.onCompleted: height = implicitHeight
+    Button {
+        id: sendBtn
+        anchors.right: parent.right
+        anchors.rightMargin: UiConstants.ButtonSpacing
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 8
 
-        Button {
-            id: sendBtn
-            anchors.right: parent.right
-            anchors.rightMargin: 5
-            anchors.verticalCenter: textInput.verticalCenter
-            anchors.verticalCenterOffset: textInput.hasFocus ? 0 : 1
+        text: qsTr("Send")
+        enabled: textInput.text.length > 0
 
-            text: qsTr("Send")
-            enabled: textInput.text.length > 0
-
-            platformStyle: ButtonStyle {
-                buttonWidth: 100
-                buttonHeight: textInput.height - 10
-                background: "image://theme/meegotouch-button-inverted-background"
-                disabledBackground: background
-                textColor: "white"
-                disabledTextColor: "lightgray"
-            }
-
-            onClicked: sendMessage(text)
+        platformStyle: ButtonStyle {
+            buttonWidth: 100
+            background: "image://theme/meegotouch-button-inverted-background"
+            disabledBackground: background
+            textColor: "white"
+            disabledTextColor: "lightgray"
         }
+
+        onClicked: sendMessage(text)
     }
 }
-
