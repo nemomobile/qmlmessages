@@ -97,48 +97,6 @@ Item {
                 font.family: labelStyle.fontFamily
                 font.pixelSize: labelStyle.fontPixelSize
             }
-
-            function showError(details) {
-                details = "Cannot send message\n\n" + details
-                errorComponent.createObject(messageBox, { text: details })
-            }
-            onStatusChanged: {
-                if (status < 0)
-                    showError(model.statusMessage)
-            }
-
-            Component {
-                id: errorComponent
-
-                Item {
-                    id: errorContent
-                    anchors.top: messageText.bottom
-                    anchors.topMargin: 5
-                    anchors.left: messageText.left
-                    width: Math.max(errorText.paintedWidth, messageText.paintedWidth)
-                    height: errorText.paintedHeight + 6
-
-                    property alias text: errorText.text
-
-                    Rectangle {
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-                        height: 1
-                        color: "#afafaf"
-                    }
-
-                    Label {
-                        id: errorText
-                        width: messageText.width
-                        anchors.top: parent.top
-                        anchors.topMargin: 5
-
-                        platformStyle: LabelStyle {
-                            textColor: "red"
-                        }
-                    }
-                }
-            }
         }
     }
 
