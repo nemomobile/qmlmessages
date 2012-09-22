@@ -60,18 +60,28 @@ Item {
 
         delegate: BorderImage {
             id: messageBox
+            x: model.direction == CommHistory.Outbound ? parent.width - width : 0
             height: childrenRect.height + 20
             width: messageText.paintedWidth + 30
             cache: true
             // Fix rotation from the view hack...
             rotation: 180
+            border.left: 24
+            border.right: 24
+            border.top: 24
+            border.bottom: 24
+
+            // This should use meegotouch's speechbubble theme elements, but those SVG group
+            // images are not supported in qt-components currently. incoming.svg and outgoing.svg
+            // are extracted from the group SVG in meegotouch's base theme and included here.
+            source: model.direction == CommHistory.Inbound ? "qrc:/images/incoming.svg" : "qrc:/images/outgoing.svg"
 
             property int status: model.status
 
             Text {
                 id: messageText
+                x: model.direction == CommHistory.Outbound ? 20 : 10
                 y: 10
-                x: 10
                 text: model.freeText
                 width: messageBox.parent.width * 0.7
                 height: paintedHeight
@@ -96,44 +106,6 @@ Item {
                 if (status < 0)
                     showError(model.statusMessage)
             }
-
-            // This should use meegotouch's speechbubble theme elements, but those SVG group
-            // images are not supported in qt-components currently. incoming.svg and outgoing.svg
-            // are extracted from the group SVG in meegotouch's base theme and included here.
-            states: [
-                State {
-                    name: "incoming"
-                    when: model.direction == CommHistory.Inbound
-
-                    PropertyChanges {
-                        target: messageBox
-                        source: "qrc:/images/incoming.svg"
-                        border.left: 24
-                        border.right: 24
-                        border.top: 24
-                        border.bottom: 24
-                    }
-                },
-                State {
-                    name: "outgoing"
-                    when: model.direction == CommHistory.Outbound
-
-                    PropertyChanges {
-                        target: messageBox
-                        x: parent.width - width
-                        source: "qrc:/images/outgoing.svg"
-                        border.left: 24
-                        border.right: 24
-                        border.top: 24
-                        border.bottom: 24
-                    }
-
-                    PropertyChanges {
-                        target: messageText
-                        x: 20
-                    }
-                }
-            ]
 
             Component {
                 id: errorComponent
