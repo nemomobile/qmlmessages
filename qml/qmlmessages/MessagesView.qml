@@ -61,35 +61,30 @@ Item {
         delegate: BorderImage {
             id: messageBox
             height: childrenRect.height + 20
-            width: childrenRect.width + 30
+            width: messageText.paintedWidth + 30
             cache: true
             // Fix rotation from the view hack...
             rotation: 180
 
             property int status: model.status
 
-            Item {
-                id: messageContent
-                height: messageText.paintedHeight
-                width: messageText.paintedWidth
+            Text {
+                id: messageText
                 y: 10
                 x: 10
+                text: model.freeText
+                width: messageBox.parent.width * 0.7
+                height: paintedHeight
+                wrapMode: Text.Wrap
+                style: Text.Raised
+                styleColor: "#eeeeee"
+                font.family: labelStyle.fontFamily
+                font.pixelSize: labelStyle.fontPixelSize
 
-                Text {
-                    id: messageText
-                    text: model.freeText
-                    width: messageBox.parent.width * 0.7
-                    wrapMode: Text.Wrap
-                    style: Text.Raised
-                    styleColor: "#eeeeee"
-                    font.family: labelStyle.fontFamily
-                    font.pixelSize: labelStyle.fontPixelSize
-
-                    // Cannot use Label, because it shadows the 'style' property.
-                    // Copy its text formatting instead.
-                    LabelStyle {
-                        id: labelStyle
-                    }
+                // Cannot use Label, because it shadows the 'style' property.
+                // Copy its text formatting instead.
+                LabelStyle {
+                    id: labelStyle
                 }
             }
 
@@ -134,7 +129,7 @@ Item {
                     }
 
                     PropertyChanges {
-                        target: messageContent
+                        target: messageText
                         x: 20
                     }
                 }
@@ -145,9 +140,9 @@ Item {
 
                 Item {
                     id: errorContent
-                    anchors.top: messageContent.bottom
+                    anchors.top: messageText.bottom
                     anchors.topMargin: 5
-                    anchors.left: messageContent.left
+                    anchors.left: messageText.left
                     width: Math.max(errorText.paintedWidth, messageText.paintedWidth)
                     height: errorText.paintedHeight + 6
 
