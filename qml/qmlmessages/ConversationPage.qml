@@ -65,16 +65,22 @@ Page {
 
         Text {
             id: label
-            anchors.centerIn: parent
+            anchors {
+                left: backBtn.right; right: avatar.left; top: parent.top; bottom: parent.bottom
+                leftMargin: 10; rightMargin: 10;
+            }
+            horizontalAlignment: Qt.AlignHCenter
+            verticalAlignment:  Qt.AlignVCenter
+
             elide: Text.ElideRight
             smooth: true
             color: "#111111"
-            text: channel == null ? "" : channel.contactId
             style: Text.Raised
             styleColor: "white"
-
             font.family: "Droid Sans"
             font.pixelSize: 30
+
+            text: channel == null ? "" : channel.contactId
         }
 
         Image {
