@@ -46,18 +46,40 @@ BorderImage {
         text = ""
     }
 
-    TextArea {
-        id: textInput
+    /* See comment on InverseMouseArea */
+    FocusScope {
+        id: inputFocusScope
         anchors.left: parent.left
         anchors.leftMargin: UiConstants.ButtonSpacing
         anchors.right: sendBtn.left
         anchors.rightMargin: UiConstants.ButtonSpacing
         y: 8
-        height: 52 /* UI.DEFAULT_FIELD.HEIGHT */
 
-        placeholderText: qsTr("Type a message")
-        wrapMode: TextEdit.Wrap
-        textFormat: TextEdit.PlainText
+        TextArea {
+            id: textInput
+            anchors.left: parent.left
+            anchors.right: parent.right
+            height: 52 /* UI.DEFAULT_FIELD.HEIGHT */
+
+            placeholderText: qsTr("Type a message")
+            wrapMode: TextEdit.Wrap
+            textFormat: TextEdit.PlainText
+        }
+    }
+
+    /* To keep the VKB open when the 'Send' button is clicked, but close it
+     * when clicked elsewhere, we have to disable TextArea's default behavior
+     * - which is to give focus to its parent - by wrapping it in a FocusScope
+     * (making that no-op), and implement the correct behavior here. */
+    InverseMouseArea {
+        anchors.fill: parent
+        enabled: inputContext.softwareInputPanelVisible
+        z: 100
+
+        onClickedOutside: {
+            textArea.focus = true
+            textInput.platformCloseSoftwareInputPanel();
+        }
     }
 
     Button {
