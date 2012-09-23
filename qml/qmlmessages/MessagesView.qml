@@ -50,7 +50,7 @@ Item {
         onHeightChanged: view.positionViewAtBeginning()
 
         Connections {
-            target: model
+            target: model || null
             onRowsInserted: {
                 if (first == 0)
                     view.positionViewAtBeginning()
