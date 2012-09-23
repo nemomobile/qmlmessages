@@ -91,11 +91,30 @@ void ConversationChannel::ensureChannel()
         return;
 
     // XXX wait for account manager if necessary?
-    Tp::AccountPtr account = accountManager->accountForPath(mLocalUid);
-    // XXX error check
-    Q_ASSERT(account);
-    Q_ASSERT(account->isReady());
-    Tp::PendingChannelRequest *req = account->ensureTextChat(mContactId,
+    mAccount = Tp::Account::create(TP_QT_ACCOUNT_MANAGER_BUS_NAME, mLocalUid);
+    if (!mAccount) {
+        qWarning() << "ConversationChannel::ensureChannel no account for" << mLocalUid;
+        setState(Error);
+        return;
+    }
+
+    if (mAccount->isReady()) {
+        accountReadyForChannel(0);
+    } else {
+        connect(mAccount->becomeReady(), SIGNAL(finished(Tp::PendingOperation*)),
+                SLOT(accountReadyForChannel(Tp::PendingOperation*)));
+    }
+}
+
+void ConversationChannel::accountReadyForChannel(Tp::PendingOperation *op)
+{
+    if (op && op->isError()) {
+        qWarning() << "No account for" << mLocalUid;
+        setState(Error);
+        return;
+    }
+
+    Tp::PendingChannelRequest *req = mAccount->ensureTextChat(mContactId,
             QDateTime::currentDateTime(),
             QLatin1String("org.freedesktop.Telepathy.Client.qmlmessages"));
     start(req);

@@ -94,6 +94,7 @@ signals:
     void requestFailed(const QString &errorName, const QString &errorMessage);
 
 private slots:
+    void accountReadyForChannel(Tp::PendingOperation *op);
     void channelRequestCreated(const Tp::ChannelRequestPtr &request);
     void channelRequestSucceeded(const Tp::ChannelPtr &channel);
     void channelRequestFailed(const QString &errorName, const QString &errorMessage);
@@ -107,6 +108,7 @@ private:
     Tp::PendingChannelRequest *mPendingRequest;
     Tp::ChannelRequestPtr mRequest;
     Tp::ChannelPtr mChannel;
+    Tp::AccountPtr mAccount;
     State mState;
     CommHistory::ConversationModel *mModel;
 
