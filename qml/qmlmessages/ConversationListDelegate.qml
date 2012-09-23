@@ -67,7 +67,6 @@ MouseArea {
             elide: Text.ElideRight
 
             platformStyle: LabelStyle {
-                fontFamily: "Droid Sans"
                 fontPixelSize: 30
             }
 
@@ -79,7 +78,6 @@ MouseArea {
                 anchors.verticalCenter: parent.verticalCenter
 
                 platformStyle: LabelStyle {
-                    fontFamily: "Droid Sans"
                     fontPixelSize: 22
                     textColor: "#303030"
                 }
@@ -93,7 +91,6 @@ MouseArea {
             width: parent.width
 
             platformStyle: LabelStyle {
-                fontFamily: "Droid Sans"
                 fontPixelSize: 20
                 textColor: "#4b4b4b"
             }

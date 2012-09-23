@@ -77,7 +77,6 @@ Page {
             color: "#111111"
             style: Text.Raised
             styleColor: "white"
-            font.family: "Droid Sans"
             font.pixelSize: 30
 
             text: channel == null ? "" : channel.contactId

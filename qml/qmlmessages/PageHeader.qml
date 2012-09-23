@@ -62,7 +62,6 @@ Rectangle {
         color: "white"
 
         platformStyle: LabelStyle {
-            fontFamily: "Droid Sans"
             fontPixelSize: 30
         }
     }
