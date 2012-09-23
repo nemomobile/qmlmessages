@@ -38,13 +38,9 @@
 #include <TelepathyQt4/PendingReady>
 #include <TelepathyQt4/Contact>
 #include <TelepathyQt4/Account>
-#include <TelepathyQt4/AccountManager>
 
 #include <CommHistory/ConversationModel>
 #include <CommHistory/GroupModel>
-
-// XXX
-extern Tp::AccountManagerPtr accountManager;
 
 ConversationChannel::ConversationChannel(QObject *parent)
     : QObject(parent), mPendingRequest(0), mState(Null), mModel(0), mGroupId(-1)
