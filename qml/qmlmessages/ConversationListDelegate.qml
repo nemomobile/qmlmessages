@@ -62,8 +62,9 @@ MouseArea {
         Label {
             id: nameFirst
             text: model.remoteUids[0]
-            width: parent.width
+            width: parent.width - messageDate.paintedWidth
             height: paintedHeight
+            elide: Text.ElideRight
 
             platformStyle: LabelStyle {
                 fontFamily: "Droid Sans"
@@ -74,7 +75,7 @@ MouseArea {
                 id: messageDate
                 // XXX This should be something more natural/useful
                 text: Qt.formatDateTime(model.lastModified, "M/d")
-                anchors.right: parent.right
+                anchors.left: parent.right
                 anchors.verticalCenter: parent.verticalCenter
 
                 platformStyle: LabelStyle {
