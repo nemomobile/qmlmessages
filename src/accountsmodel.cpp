@@ -33,9 +33,9 @@
 #include <QDBusConnection>
 #include <QDebug>
 
-#include <TelepathyQt4/AccountFactory>
-#include <TelepathyQt4/PendingReady>
-#include <TelepathyQt4/PendingChannelRequest>
+#include <TelepathyQt/AccountFactory>
+#include <TelepathyQt/PendingReady>
+#include <TelepathyQt/PendingChannelRequest>
 
 Q_DECLARE_METATYPE(Tp::AccountPtr)
 

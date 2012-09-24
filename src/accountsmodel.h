@@ -32,8 +32,8 @@
 #define ACCOUNTSMODEL_H
 
 #include <QAbstractListModel>
-#include <TelepathyQt4/Types>
-#include <TelepathyQt4/AccountManager>
+#include <TelepathyQt/Types>
+#include <TelepathyQt/AccountManager>
 
 class ConversationChannel;
 

@@ -32,11 +32,11 @@
 #include "conversationchannel.h"
 #include "groupmanager.h"
 
-#include <TelepathyQt4/ChannelClassSpec>
-#include <TelepathyQt4/ReceivedMessage>
-#include <TelepathyQt4/TextChannel>
-#include <TelepathyQt4/ChannelRequest>
-#include <TelepathyQt4/Account>
+#include <TelepathyQt/ChannelClassSpec>
+#include <TelepathyQt/ReceivedMessage>
+#include <TelepathyQt/TextChannel>
+#include <TelepathyQt/ChannelRequest>
+#include <TelepathyQt/Account>
 
 using namespace Tp;
 

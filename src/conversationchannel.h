@@ -32,11 +32,11 @@
 #define CONVERSATIONCHANNEL_H
 
 #include <QObject>
-#include <TelepathyQt4/PendingChannelRequest>
-#include <TelepathyQt4/ChannelRequest>
-#include <TelepathyQt4/Channel>
-#include <TelepathyQt4/PendingSendMessage>
-#include <TelepathyQt4/ReceivedMessage>
+#include <TelepathyQt/PendingChannelRequest>
+#include <TelepathyQt/ChannelRequest>
+#include <TelepathyQt/Channel>
+#include <TelepathyQt/PendingSendMessage>
+#include <TelepathyQt/ReceivedMessage>
 #include <CommHistory/Group>
 #include <CommHistory/ConversationModel>
 

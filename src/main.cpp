@@ -38,10 +38,10 @@
 #include <applauncherd/MDeclarativeCache>
 #endif
 
-#include <TelepathyQt4/Constants>
-#include <TelepathyQt4/Debug>
-#include <TelepathyQt4/Types>
-#include <TelepathyQt4/ClientRegistrar>
+#include <TelepathyQt/Constants>
+#include <TelepathyQt/Debug>
+#include <TelepathyQt/Types>
+#include <TelepathyQt/ClientRegistrar>
 
 #include <CommHistory/GroupModel>
 

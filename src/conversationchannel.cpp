@@ -32,12 +32,12 @@
 #include "groupmanager.h"
 #include "clienthandler.h"
 
-#include <TelepathyQt4/ChannelRequest>
-#include <TelepathyQt4/TextChannel>
-#include <TelepathyQt4/Channel>
-#include <TelepathyQt4/PendingReady>
-#include <TelepathyQt4/Contact>
-#include <TelepathyQt4/Account>
+#include <TelepathyQt/ChannelRequest>
+#include <TelepathyQt/TextChannel>
+#include <TelepathyQt/Channel>
+#include <TelepathyQt/PendingReady>
+#include <TelepathyQt/Contact>
+#include <TelepathyQt/Account>
 
 #include <CommHistory/ConversationModel>
 #include <CommHistory/GroupModel>

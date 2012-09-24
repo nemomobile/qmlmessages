@@ -32,8 +32,8 @@
 #define CLIENTHANDLER_H
 
 #include <QObject>
-#include <TelepathyQt4/AbstractClientHandler>
-#include <TelepathyQt4/PendingChannelRequest>
+#include <TelepathyQt/AbstractClientHandler>
+#include <TelepathyQt/PendingChannelRequest>
 
 class ConversationChannel;
 
