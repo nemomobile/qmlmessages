@@ -43,16 +43,28 @@ PageStackWindow {
 
     Connections {
         target: pageStack
-        onCurrentPageChanged: {
-            var group
-            try {
-                group = pageStack.currentPage.channel
-            } catch (e) {
-            }
-            if (group == undefined)
-                group = null
-            windowManager.currentGroup = group
+        onCurrentPageChanged: updateCurrentGroup()
+    }
+
+    Connections {
+        target: screen
+        onMinimizedChanged: updateCurrentGroup()
+    }
+
+    function updateCurrentGroup() {
+        if (screen.minimized) {
+            windowManager.currentGroup = null;
+            return;
         }
+
+        var group
+        try {
+            group = pageStack.currentPage.channel
+        } catch (e) {
+        }
+        if (group == undefined)
+            group = null
+        windowManager.currentGroup = group
     }
 
     function showConversation(group) {

@@ -2,7 +2,7 @@ PROJECT_NAME = qmlmessages
 QT += dbus declarative svg
 
 CONFIG += link_pkgconfig
-PKGCONFIG += commhistory TelepathyQt4
+PKGCONFIG += commhistory TelepathyQt4 contextprovider-1.0
 
 target.path = $$INSTALL_ROOT/usr/bin
 INSTALLS += target
