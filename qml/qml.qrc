@@ -1,15 +1,15 @@
 <RCC>
     <qresource prefix="/qml">
-        <file>qmlmessages/main.qml</file>
-        <file>qmlmessages/PageHeader.qml</file>
-        <file>qmlmessages/EmptyConversations.qml</file>
-        <file>qmlmessages/ConversationPage.qml</file>
-        <file>qmlmessages/ConversationListWidget.qml</file>
-        <file>qmlmessages/ConversationListPage.qml</file>
-        <file>qmlmessages/ConversationListDelegate.qml</file>
-        <file>qmlmessages/MessagesView.qml</file>
-        <file>qmlmessages/TargetEditBox.qml</file>
-        <file>qmlmessages/AccountSelector.qml</file>
-        <file>qmlmessages/ChatTextInput.qml</file>
+        <file>main.qml</file>
+        <file>PageHeader.qml</file>
+        <file>EmptyConversations.qml</file>
+        <file>ConversationPage.qml</file>
+        <file>ConversationListWidget.qml</file>
+        <file>ConversationListPage.qml</file>
+        <file>ConversationListDelegate.qml</file>
+        <file>MessagesView.qml</file>
+        <file>TargetEditBox.qml</file>
+        <file>AccountSelector.qml</file>
+        <file>ChatTextInput.qml</file>
     </qresource>
 </RCC>

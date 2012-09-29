@@ -96,7 +96,7 @@ void WindowManager::ensureWindow()
                 QVariant::fromValue<QObject*>(GroupManager::instance()));
         w->rootContext()->setContextProperty("groupModel",
                 QVariant::fromValue<QObject*>(GroupManager::instance()->groupModel()));
-        w->setSource(QUrl("qrc:qml/qmlmessages/main.qml"));
+        w->setSource(QUrl("qrc:qml/main.qml"));
         w->setAttribute(Qt::WA_OpaquePaintEvent);
         w->setAttribute(Qt::WA_NoSystemBackground);
         w->viewport()->setAttribute(Qt::WA_OpaquePaintEvent);
