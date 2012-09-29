@@ -85,8 +85,8 @@ int main(int argc, char **argv)
     registrar->registerClient(handler, "qmlmessages");
 
     // Set up QML
-    qmlRegisterType<AccountsModel>("org.nemomobile.qmlmessages", 1, 0, "AccountsModel");
-    qmlRegisterUncreatableType<ConversationChannel>("org.nemomobile.qmlmessages", 1, 0, "ConversationChannel", "");
+    qmlRegisterType<AccountsModel>("org.nemomobile.messages.private", 1, 0, "AccountsModel");
+    qmlRegisterUncreatableType<ConversationChannel>("org.nemomobile.messages.private", 1, 0, "ConversationChannel", "");
 
     WindowManager *wm = WindowManager::instance();
     if (showWindow)

@@ -31,7 +31,7 @@
 
 import QtQuick 1.1
 import com.nokia.meego 1.0
-import org.nemomobile.qmlmessages 1.0
+import org.nemomobile.messages.private 1.0
 
 /* ConversationPage has two states, depending on if it has an active
  * conversation or not. This is determined by whether the channel property
