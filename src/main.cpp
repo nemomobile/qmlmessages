@@ -45,10 +45,10 @@
 
 #include <CommHistory/GroupModel>
 
-#include "src/windowmanager.h"
-#include "src/accountsmodel.h"
-#include "src/clienthandler.h"
-#include "src/conversationchannel.h"
+#include "windowmanager.h"
+#include "accountsmodel.h"
+#include "clienthandler.h"
+#include "conversationchannel.h"
 
 using namespace Tp;
 
