@@ -31,18 +31,18 @@
 
 import QtQuick 1.1
 import com.nokia.meego 1.0
+import org.nemomobile.qmlcontacts 1.0
 
 MouseArea {
     id: root
 
-    height: photo.height + itemMargins
+    height: UiConstants.ListItemHeightDefault
     anchors.left: parent.left
     anchors.right: parent.right
-    anchors.leftMargin: itemMargins
-    anchors.rightMargin: itemMargins
+    anchors.leftMargin: UiConstants.DefaultMargin
+    anchors.rightMargin: UiConstants.DefaultMargin
     opacity: pressed ? 0.7 : 1.0
 
-    property int itemMargins: 10
     property QtObject person: null
 
     Connections {
@@ -57,12 +57,10 @@ MouseArea {
         person = peopleModel.personById(model.contactIds[0])
     }
 
-    Image {
+    ContactAvatarImage {
         id: photo
-        source: person ? person.avatarPath : "image://theme/icon-m-telephony-contact-avatar"
-        sourceSize: Qt.size(80, 80)
+        contact: person
         anchors.verticalCenter: parent.verticalCenter
-        asynchronous: true
     }
 
     Column {
