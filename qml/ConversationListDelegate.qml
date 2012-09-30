@@ -43,12 +43,26 @@ MouseArea {
     opacity: pressed ? 0.7 : 1.0
 
     property int itemMargins: 10
+    property QtObject person: null
+
+    Connections {
+        target: person ? null : peopleModel
+        onRowsInserted: updatePerson()
+        onModelReset: updatePerson()
+    }
+
+    Component.onCompleted: updatePerson()
+
+    function updatePerson() {
+        person = peopleModel.personById(model.contactIds[0])
+    }
 
     Image {
         id: photo
-        source: (model.avatarPath == undefined) ? "image://theme/icon-m-telephony-contact-avatar" : model.avatarPath
+        source: person ? person.avatarPath : "image://theme/icon-m-telephony-contact-avatar"
         sourceSize: Qt.size(80, 80)
         anchors.verticalCenter: parent.verticalCenter
+        asynchronous: true
     }
 
     Column {
@@ -61,10 +75,10 @@ MouseArea {
 
         Label {
             id: nameFirst
-            text: model.remoteUids[0]
             width: parent.width - messageDate.paintedWidth
             height: paintedHeight
             elide: Text.ElideRight
+            text: person ? person.displayLabel : model.remoteUids[0]
 
             platformStyle: LabelStyle {
                 fontPixelSize: 30

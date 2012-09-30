@@ -32,6 +32,7 @@
 import QtQuick 1.1
 import com.nokia.meego 1.0
 import org.nemomobile.messages.private 1.0
+import org.nemomobile.contacts 1.0
 
 PageStackWindow {
     id: window 
@@ -39,6 +40,10 @@ PageStackWindow {
     // Shared AccountsModel
     AccountsModel {
         id: accountsModel
+    }
+
+    PeopleModel {
+        id: peopleModel
     }
 
     Connections {
