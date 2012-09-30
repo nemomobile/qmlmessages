@@ -22,6 +22,7 @@ void MessagesManager::startConversation(const QString &localAccount, const QStri
 
 void MessagesManager::startSMS(const QString &phoneNumber)
 {
-    interface->asyncCall("startConversation", "ring/tel/account0", phoneNumber, (unsigned)0);
+    interface->asyncCall("startConversation", "/org/freedesktop/Telepathy/Account/ring/tel/account0",
+            phoneNumber, (unsigned)0);
 }
 
