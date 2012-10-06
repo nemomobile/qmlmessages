@@ -34,7 +34,10 @@
 #include <QObject>
 #include <QWeakPointer>
 
-class QDeclarativeView;
+class QGraphicsView;
+class QGraphicsScene;
+class QGraphicsObject;
+class QDeclarativeEngine;
 class ConversationChannel;
 
 namespace ContextProvider {
@@ -70,10 +73,14 @@ signals:
     void currentGroupChanged(ConversationChannel *currentGroup);
 
 private:
-    QWeakPointer<QDeclarativeView> mWindow;
+    QWeakPointer<QGraphicsView> mWindow;
+    QDeclarativeEngine *mEngine;
+    QGraphicsScene *mScene;
+    QGraphicsObject *mRootObject;
     ConversationChannel *mCurrentGroup;
     ContextProvider::Property *propObservedConversation;
 
+    void createScene();
     void ensureWindow();
 };
 

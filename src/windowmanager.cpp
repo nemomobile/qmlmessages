@@ -33,74 +33,105 @@
 #include "groupmanager.h"
 #include "dbusadaptor.h"
 #include "conversationchannel.h"
-#include <QDeclarativeView>
+#include <QDeclarativeEngine>
 #include <QDeclarativeContext>
 #include <QDeclarativeItem>
+#include <QGraphicsView>
+#include <QGraphicsObject>
 #include <QDBusConnection>
 #include <ContextProvider>
-#ifdef HAS_BOOSTER
-#include <applauncherd/MDeclarativeCache>
-#endif
 
 #include <CommHistory/GroupModel>
 
-Q_GLOBAL_STATIC(WindowManager, wmInstance)
+static WindowManager *wmInstance = 0;
 
 WindowManager *WindowManager::instance()
 {
-    return wmInstance();
+    if (!wmInstance)
+        wmInstance = new WindowManager(qApp);
+    return wmInstance;
 }
 
 WindowManager::WindowManager(QObject *parent)
-    : QObject(parent), mCurrentGroup(0)
+    : QObject(parent), mEngine(0), mCurrentGroup(0)
 {
-    new DBusAdaptor(this);
-    QDBusConnection::sessionBus().registerService("org.nemomobile.qmlmessages");
-    if (!QDBusConnection::sessionBus().registerObject("/", this)) {
-        qWarning() << "Cannot register DBus object!";
-    }
-
     ContextProvider::Service *cpService = new ContextProvider::Service(QDBusConnection::SessionBus,
             "org.nemomobile.qmlmessages.context", this);
     propObservedConversation = new ContextProvider::Property(*cpService, "Messaging.ObservedConversation",
             this);
     if (propObservedConversation && propObservedConversation->isSet())
         propObservedConversation->unsetValue();
+
+    createScene();
+
+    new DBusAdaptor(this);
+    QDBusConnection::sessionBus().registerService("org.nemomobile.qmlmessages");
+    if (!QDBusConnection::sessionBus().registerObject("/", this)) {
+        qWarning() << "Cannot register DBus object!";
+    }
 }
 
 WindowManager::~WindowManager()
 {
-#ifndef HAS_BOOSTER
-    delete mWindow;
-#endif
+    delete mWindow.data();
+    delete mEngine;
+    delete mScene;
+}
+
+void WindowManager::createScene()
+{
+    if (mEngine)
+        return;
+
+    mEngine = new QDeclarativeEngine;
+    mEngine->rootContext()->setContextProperty("windowManager",
+            QVariant::fromValue<QObject*>(this));
+    mEngine->rootContext()->setContextProperty("groupManager",
+            QVariant::fromValue<QObject*>(GroupManager::instance()));
+    mEngine->rootContext()->setContextProperty("groupModel",
+            QVariant::fromValue<QObject*>(GroupManager::instance()->groupModel()));
+
+    mScene = new QGraphicsScene;
+    // From QDeclarativeView
+    mScene->setItemIndexMethod(QGraphicsScene::NoIndex);
+    mScene->setStickyFocus(true);
+
+    QDeclarativeComponent component(mEngine, QUrl("qrc:qml/main.qml"));
+    mRootObject = static_cast<QGraphicsObject*>(component.create());
+    mScene->addItem(mRootObject);
 }
 
 void WindowManager::ensureWindow()
 {
     if (!mWindow) {
-#ifdef HAS_BOOSTER
-        mWindow = MDeclarativeCache::qDeclarativeView();
-#else
-        mWindow = new QDeclarativeView;
-#endif
+        createScene();
 
-        QDeclarativeView *w = mWindow.data();
+        mWindow = new QGraphicsView;
+
+        QGraphicsView *w = mWindow.data();
         mCurrentGroup = 0;
 
         // mWindow is a QWeakPointer, so it'll be cleared on delete
         w->setAttribute(Qt::WA_DeleteOnClose);
         w->setWindowTitle(tr("Messages"));
-        w->rootContext()->setContextProperty("windowManager",
-                QVariant::fromValue<QObject*>(this));
-        w->rootContext()->setContextProperty("groupManager",
-                QVariant::fromValue<QObject*>(GroupManager::instance()));
-        w->rootContext()->setContextProperty("groupModel",
-                QVariant::fromValue<QObject*>(GroupManager::instance()->groupModel()));
-        w->setSource(QUrl("qrc:qml/main.qml"));
         w->setAttribute(Qt::WA_OpaquePaintEvent);
         w->setAttribute(Qt::WA_NoSystemBackground);
         w->viewport()->setAttribute(Qt::WA_OpaquePaintEvent);
         w->viewport()->setAttribute(Qt::WA_NoSystemBackground);
+        // From QDeclarativeView
+        w->setFrameStyle(0);
+        w->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        w->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        w->setOptimizationFlags(QGraphicsView::DontSavePainterState);
+        w->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
+        w->viewport()->setFocusPolicy(Qt::NoFocus);
+        w->setFocusPolicy(Qt::StrongFocus);
+
+        w->setScene(mScene);
+
+        QDeclarativeItem *i = qobject_cast<QDeclarativeItem*>(mRootObject);
+        w->resize(i->width(), i->height());
+        w->setSceneRect(QRectF(0, 0, i->width(), i->height()));
     }
 }
 
@@ -108,10 +139,8 @@ void WindowManager::showGroupsWindow()
 {
     ensureWindow();
 
-    QGraphicsObject *root = mWindow.data()->rootObject();
-    if (!root)
-        qFatal("No root object in window");
-    bool ok = root->metaObject()->invokeMethod(root, "showGroupsList");
+    Q_ASSERT(mRootObject);
+    bool ok = mRootObject->metaObject()->invokeMethod(mRootObject, "showGroupsList");
     if (!ok)
         qWarning() << Q_FUNC_INFO << "showGroupsList call failed";
 
@@ -132,10 +161,9 @@ void WindowManager::showConversation(const QString &localUid, const QString &rem
         return;
     }
 
-    QGraphicsObject *root = mWindow.data()->rootObject();
-    if (!root)
-        qFatal("No root object in window");
-    bool ok = root->metaObject()->invokeMethod(root, "showConversation", Q_ARG(QVariant, QVariant::fromValue<QObject*>(group)));
+    Q_ASSERT(mRootObject);
+    bool ok = mRootObject->metaObject()->invokeMethod(mRootObject, "showConversation",
+            Q_ARG(QVariant, QVariant::fromValue<QObject*>(group)));
     if (!ok)
         qWarning() << Q_FUNC_INFO << "showConversation call failed";
 
