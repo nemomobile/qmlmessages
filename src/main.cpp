@@ -74,6 +74,8 @@ int main(int argc, char **argv)
             Tp::enableDebug(true);
         else if (arg == "-background")
             showWindow = false;
+        else if (arg == "-prestart")
+            showWindow = false;
     }
 
     const QDBusConnection &dbus = QDBusConnection::sessionBus();
