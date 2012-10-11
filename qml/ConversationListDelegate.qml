@@ -101,6 +101,8 @@ MouseArea {
             text: model.lastMessageText
             elide: Text.ElideRight
             width: parent.width
+            textFormat: Text.PlainText
+            maximumLineCount: 1
 
             platformStyle: LabelStyle {
                 fontPixelSize: 20
