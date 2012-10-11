@@ -32,6 +32,7 @@
 import QtQuick 1.1
 import com.nokia.meego 1.0
 import org.nemomobile.messages.private 1.0
+import org.nemomobile.qmlcontacts 1.0
 
 /* ConversationPage has two states, depending on if it has an active
  * conversation or not. This is determined by whether the channel property
@@ -41,6 +42,8 @@ Page {
     id: conversationPage
 
     property QtObject channel: null
+    property QtObject group: channel ? groupModel.groupById(channel.groupId) : null
+    property QtObject person: group ? peopleModel.personById(group.contactId) : null
     tools: null
 
     PageHeader {
@@ -79,16 +82,15 @@ Page {
             styleColor: "white"
             font.pixelSize: 30
 
-            text: channel == null ? "" : channel.contactId
+            text: person ? person.displayLabel : (group ? group.remoteUids[0] : "")
         }
 
-        Image {
+        ContactAvatarImage {
             id: avatar
+            contact: person
             anchors.right: parent.right
             anchors.rightMargin: 10
             anchors.verticalCenter: parent.verticalCenter
-            source: "image://theme/icon-m-telephony-contact-avatar"
-            sourceSize: Qt.size(55, 55)
         }
     }
 

@@ -37,12 +37,9 @@
 #include <TelepathyQt/Account>
 #include <TelepathyQt/Channel>
 
-class ConversationChannel;
+#include <CommHistory/GroupModel>
 
-namespace CommHistory {
-    class Group;
-    class GroupModel;
-}
+class ConversationChannel;
 
 class GroupManager : public QObject
 {
@@ -53,6 +50,7 @@ public:
 
     explicit GroupManager(QObject *parent = 0);
 
+    Q_PROPERTY(QObject* groupModel READ groupModel CONSTANT)
     CommHistory::GroupModel *groupModel() const { return mGroupModel; }
 
     /* Get a conversation by commhistory group ID, creating it if necessary.

@@ -88,8 +88,6 @@ void WindowManager::createScene()
             QVariant::fromValue<QObject*>(this));
     mEngine->rootContext()->setContextProperty("groupManager",
             QVariant::fromValue<QObject*>(GroupManager::instance()));
-    mEngine->rootContext()->setContextProperty("groupModel",
-            QVariant::fromValue<QObject*>(GroupManager::instance()->groupModel()));
 
     mScene = new QGraphicsScene;
     // From QDeclarativeView

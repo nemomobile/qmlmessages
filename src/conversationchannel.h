@@ -57,6 +57,7 @@ class ConversationChannel : public QObject
     Q_PROPERTY(State state READ state NOTIFY stateChanged)
     Q_PROPERTY(QString contactId READ contactId NOTIFY contactIdChanged)
     Q_PROPERTY(QString localUid READ localUid CONSTANT)
+    Q_PROPERTY(int groupId READ groupId CONSTANT)
 
     Q_PROPERTY(QObject* model READ model NOTIFY chatModelReady)
 
@@ -77,6 +78,7 @@ public:
     State state() const { return mState; }
     QString contactId() const { return mContactId; }
     QString localUid() const { return mLocalUid; }
+    int groupId() const { return mGroupId; }
     QObject *model() const { return mModel; }
 
     Q_INVOKABLE void ensureChannel();
