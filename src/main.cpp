@@ -30,10 +30,7 @@
  */
 
 #include <QApplication>
-#include <QDeclarativeView>
-#include <QDeclarativeContext>
 #include <QDBusConnection>
-#include <QtDeclarative>
 #ifdef HAS_BOOSTER
 #include <applauncherd/MDeclarativeCache>
 #endif
@@ -41,16 +38,10 @@
 #include <TelepathyQt/Constants>
 #include <TelepathyQt/Debug>
 #include <TelepathyQt/Types>
-#include <TelepathyQt/ClientRegistrar>
 
 #include <CommHistory/GroupModel>
 
 #include "windowmanager.h"
-#include "accountsmodel.h"
-#include "clienthandler.h"
-#include "conversationchannel.h"
-
-using namespace Tp;
 
 #ifdef HAS_BOOSTER
 Q_DECL_EXPORT
@@ -78,18 +69,7 @@ int main(int argc, char **argv)
             showWindow = false;
     }
 
-    const QDBusConnection &dbus = QDBusConnection::sessionBus();
-    ClientRegistrarPtr registrar = ClientRegistrar::create(AccountFactory::create(dbus),
-            ConnectionFactory::create(dbus), ChannelFactory::create(dbus),
-            ContactFactory::create());
-    ClientHandler *clientHandler = new ClientHandler;
-    AbstractClientPtr handler = AbstractClientPtr::dynamicCast(SharedPtr<ClientHandler>(clientHandler));
-    registrar->registerClient(handler, "qmlmessages");
-
     // Set up QML
-    qmlRegisterType<AccountsModel>("org.nemomobile.messages.private", 1, 0, "AccountsModel");
-    qmlRegisterUncreatableType<ConversationChannel>("org.nemomobile.messages.private", 1, 0, "ConversationChannel", "");
-
     WindowManager *wm = WindowManager::instance();
     if (showWindow)
         wm->showGroupsWindow();

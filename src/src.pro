@@ -2,25 +2,17 @@ PROJECT_NAME = qmlmessages
 QT += dbus declarative svg
 
 CONFIG += link_pkgconfig
-PKGCONFIG += commhistory TelepathyQt4 contextprovider-1.0
+PKGCONFIG += TelepathyQt4
 
 target.path = $$INSTALL_ROOT/usr/bin
 INSTALLS += target
 
 SOURCES += main.cpp \
-    accountsmodel.cpp \
-    clienthandler.cpp \
-    conversationchannel.cpp \
     windowmanager.cpp \
-    dbusadaptor.cpp \
-    groupmanager.cpp
+    dbusadaptor.cpp
 
-HEADERS += accountsmodel.h \
-    clienthandler.h \
-    conversationchannel.h \
-    windowmanager.h \
-    dbusadaptor.h \
-    groupmanager.h
+HEADERS += windowmanager.h \
+    dbusadaptor.h
 
 RESOURCES += ../res/res.qrc ../qml/qml.qrc
 

@@ -31,7 +31,7 @@
 
 import QtQuick 1.1
 import com.nokia.meego 1.0
-import org.nemomobile.messages.private 1.0
+import org.nemomobile.messages.internal 1.0
 import org.nemomobile.contacts 1.0
 import org.nemomobile.commhistory 1.0
 
@@ -39,7 +39,7 @@ PageStackWindow {
     id: window 
 
     // Shared AccountsModel
-    AccountsModel {
+    TelepathyAccountsModel {
         id: accountsModel
     }
 
@@ -47,45 +47,44 @@ PageStackWindow {
         id: peopleModel
     }
 
+    GroupManager {
+        id: groupManager
+    }
+
+    TelepathyClientHandler {
+        groupManager: groupManager
+    }
+
     CommGroupModel {
         id: groupModel
         sourceModel: groupManager.groupModel
     }
 
-    Connections {
-        target: pageStack
-        onCurrentPageChanged: updateCurrentGroup()
-    }
+    MessagesContextProvider {
+        id: contextProvider
 
-    Connections {
-        target: screen
-        onMinimizedChanged: updateCurrentGroup()
-    }
+        currentConversation: {
+            if (screen.minimized)
+                return null
 
-    function updateCurrentGroup() {
-        if (screen.minimized) {
-            windowManager.currentGroup = null;
-            return;
+            var c = null
+            try {
+                c = pageStack.currentPage.channel
+            } catch (e) {
+            }
+
+            return c || null
         }
-
-        var group
-        try {
-            group = pageStack.currentPage.channel
-        } catch (e) {
-        }
-        if (group == undefined)
-            group = null
-        windowManager.currentGroup = group
     }
 
-    function showConversation(group) {
-        if (group == windowManager.currentGroup)
+    function showConversation(localUid, remoteUid) {
+        var group = groupManager.getConversation(localUid, remoteUid)
+        if (!group || group == contextProvider.currentConversation)
             return
 
         var pages = [ ]
-        if (!pageStack.currentPage) {
+        if (!pageStack.currentPage)
             pages.push(Qt.resolvedUrl("ConversationListPage.qml"))
-        }
         pages.push({ page: Qt.resolvedUrl("ConversationPage.qml"), properties: { channel: group } })
 
         if (pageStack.depth > 1)

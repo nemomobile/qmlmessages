@@ -31,7 +31,7 @@
 
 import QtQuick 1.1
 import com.nokia.meego 1.0
-import org.nemomobile.messages.private 1.0
+import org.nemomobile.messages.internal 1.0
 import org.nemomobile.qmlcontacts 1.0
 
 /* ConversationPage has two states, depending on if it has an active

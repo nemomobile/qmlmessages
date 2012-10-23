@@ -38,11 +38,6 @@ class QGraphicsView;
 class QGraphicsScene;
 class QGraphicsObject;
 class QDeclarativeEngine;
-class ConversationChannel;
-
-namespace ContextProvider {
-    class Property;
-}
 
 /* Right now, WindowManager is just responsible for creating/showing the
  * single window we manage when requested via DBus or application launch.
@@ -59,26 +54,15 @@ public:
     explicit WindowManager(QObject *parent = 0);
     virtual ~WindowManager();
 
-    Q_PROPERTY(ConversationChannel* currentGroup READ currentGroup WRITE updateCurrentGroup NOTIFY currentGroupChanged)
-    ConversationChannel *currentGroup() const { return mCurrentGroup; }
-
 public slots:
     void showGroupsWindow();
     void showConversation(const QString &localUid, const QString &remoteUid, unsigned type);
-
-private slots:
-    void updateCurrentGroup(ConversationChannel *group);
-
-signals:
-    void currentGroupChanged(ConversationChannel *currentGroup);
 
 private:
     QWeakPointer<QGraphicsView> mWindow;
     QDeclarativeEngine *mEngine;
     QGraphicsScene *mScene;
     QGraphicsObject *mRootObject;
-    ConversationChannel *mCurrentGroup;
-    ContextProvider::Property *propObservedConversation;
 
     void createScene();
     void ensureWindow();
