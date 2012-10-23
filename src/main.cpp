@@ -39,8 +39,6 @@
 #include <TelepathyQt/Debug>
 #include <TelepathyQt/Types>
 
-#include <CommHistory/GroupModel>
-
 #include "windowmanager.h"
 
 #ifdef HAS_BOOSTER
