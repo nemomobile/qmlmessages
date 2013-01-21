@@ -78,6 +78,17 @@ PageStackWindow {
     }
 
     function showConversation(localUid, remoteUid) {
+        if (!groupManager.ready) {
+            function delayedShow() {
+                if (groupManager.ready) {
+                    showConversation(localUid, remoteUid)
+                    groupManager.readyChanged.disconnect(delayedShow)
+                }
+            }
+            groupManager.readyChanged.connect(delayedShow)
+            return
+        }
+
         var group = groupManager.getConversation(localUid, remoteUid)
         if (!group || group == contextProvider.currentConversation)
             return
