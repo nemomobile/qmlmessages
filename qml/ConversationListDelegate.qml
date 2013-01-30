@@ -44,6 +44,7 @@ MouseArea {
     opacity: pressed ? 0.7 : 1.0
 
     property QtObject person: null
+    property int contactId: model.contactIds.length > 0 ? model.contactIds[0] : -1
 
     Connections {
         target: person ? null : peopleModel
@@ -52,6 +53,7 @@ MouseArea {
     }
 
     Component.onCompleted: updatePerson()
+    onContactIdChanged: updatePerson()
 
     function updatePerson() {
         person = peopleModel.personById(model.contactIds[0])
