@@ -79,7 +79,7 @@ Rectangle {
 
         PropertyChanges {
             target: selector
-            selectedUid: dialog.model.get(dialog.selectedIndex, AccountsModel.AccountUidRole)
+            selectedUid: dialog.model.get(dialog.selectedIndex, accountsModel.AccountUidRole)
         }
     }
 }
