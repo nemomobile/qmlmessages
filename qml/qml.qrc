@@ -2,7 +2,6 @@
     <qresource prefix="/qml">
         <file>main.qml</file>
         <file>PageHeader.qml</file>
-        <file>EmptyConversations.qml</file>
         <file>ConversationPage.qml</file>
         <file>ConversationListWidget.qml</file>
         <file>ConversationListPage.qml</file>

@@ -30,15 +30,13 @@
  */
 
 import QtQuick 1.1
-import com.nokia.meego 1.0
+import com.nokia.meego 1.2
 import org.nemomobile.messages.internal 1.0
 
 Item {
-    EmptyConversations {
-        id: emptyListView
-        onClicked: {
-            pageStack.push(Qt.resolvedUrl("ConversationPage.qml"))
-        }
+    ViewPlaceholder {
+        enabled: cardListView.count == 0
+        text: "No messages yet"
     }
 
     ListView {
@@ -49,7 +47,6 @@ Item {
         focus: true
         keyNavigationWraps: false
         clip: true
-        opacity: 0
         model: groupModel
 
         delegate: ConversationListDelegate {
@@ -58,16 +55,5 @@ Item {
                 pageStack.push(Qt.resolvedUrl("ConversationPage.qml"), { channel: group })
             }
         }
-    }
-
-    Binding {
-        target: emptyListView;
-        property: "opacity";
-        value: ((cardListView.count == 0) ? 1 : 0);
-    }
-    Binding {
-        target: cardListView;
-        property: "opacity";
-        value: ((cardListView.count > 0) ? 1 : 0);
     }
 }
