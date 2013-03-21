@@ -33,6 +33,7 @@ import QtQuick 1.1
 import com.nokia.meego 1.0
 import org.nemomobile.messages.internal 1.0
 import org.nemomobile.qmlcontacts 1.0
+import org.nemomobile.commhistory 1.0
 
 /* ConversationPage has two states, depending on if it has an active
  * conversation or not. This is determined by whether the channel property
@@ -42,7 +43,7 @@ Page {
     id: conversationPage
 
     property QtObject channel: null
-    property QtObject group: channel ? groupModel.groupById(channel.groupId) : null
+    property QtObject group
     property QtObject person: group ? peopleModel.personById(group.contactId) : null
     tools: null
 
@@ -117,7 +118,7 @@ Page {
                 || accountSelector.selectedIndex < 0)
                 return
             console.log("startConversation", accountSelector.selectedUid, targetEditor.text);
-            channel = groupManager.getConversation(accountSelector.selectedUid, targetEditor.text)
+            channel = channelManager.getConversation(accountSelector.selectedUid, targetEditor.text.toLowerCase())
         }
     }
 
@@ -129,6 +130,14 @@ Page {
             left: parent.left; right: parent.right
             topMargin: 10; bottomMargin: 10
             leftMargin: 5; rightMargin: 5
+        }
+
+        model: conversationModel
+        
+        CommConversationModel {
+            id: conversationModel
+            useBackgroundThread: true
+            groupId: group ? group.id : -1
         }
     }
 
@@ -151,15 +160,6 @@ Page {
     }
 
     states: [
-        State {
-            name: "active"
-            when: channel !== null
-
-            PropertyChanges {
-                target: messagesView
-                model: channel.model
-            }
-        },
         State {
             name: "new"
             when: channel == null
@@ -188,8 +188,22 @@ Page {
     ]
 
     onChannelChanged: {
-        if (channel != null)
+        if (channel != null) {
             channel.ensureChannel()
+            _updateGroup()
+        }
+    }
+
+    function _updateGroup() {
+        if (group === null)
+            group = groupManager.findGroup(channel.localUid, channel.remoteUid)
+    }
+
+    Connections {
+        target: groupManager
+
+        onGroupAdded: _updateGroup()
+        onGroupUpdated: _updateGroup()
     }
 }
 

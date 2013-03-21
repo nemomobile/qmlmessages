@@ -47,17 +47,17 @@ PageStackWindow {
         id: peopleModel
     }
 
-    GroupManager {
-        id: groupManager
+    TelepathyChannelManager {
+        id: channelManager
     }
 
-    TelepathyClientHandler {
-        groupManager: groupManager
+    CommGroupManager {
+        id: groupManager
     }
 
     CommGroupModel {
         id: groupModel
-        sourceModel: groupManager.groupModel
+        manager: groupManager
     }
 
     MessagesContextProvider {
@@ -89,7 +89,7 @@ PageStackWindow {
             return
         }
 
-        var group = groupManager.getConversation(localUid, remoteUid)
+        var group = channelManager.getConversation(localUid, remoteUid)
         if (!group || group == contextProvider.currentConversation)
             return
 
