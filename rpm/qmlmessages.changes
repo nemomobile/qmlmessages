@@ -1,0 +1,69 @@
+* Wed Mar 20 2013 John Brooks <john.brooks@jollamobile.com> - 0.1.4
+- Adapt to API changes in nemo-qml-plugin-messages (>= 0.1.0) and libcommhistory-declarative (>= 1.5.1)
+
+* Sun Mar 03 2013 Robin Burchell <robin+mer@viroteck.net> - 0.1.3
+- Use common empty state component (from Robin)
+
+* Tue Feb 26 2013 John Brooks <john.brooks@jollamobile.com> - 0.1.2
+- Make sure contact is updated in ConversationListDelegate
+- Fix enum type in account selector (from Ruediger Gad)
+
+* Fri Jan 25 2013 John Brooks <john.brooks@jollamobile.com> - 0.1.1
+- Fixes NEMO#476: Duplicate conversations can be started via dbus
+
+* Tue Oct 23 2012 John Brooks <john.brooks@jollamobile.com> - 0.1.0
+- Fixes NEMO#482: Multi-line messages break layout of conversation list view
+- Fixes NEMO#376: Group titles should be displayed consistently
+- Use a single persistent QDeclarativeEngine to avoid potential crashes and improve performance
+- Move C++ logic to a QML plugin
+- Move external API plugin to shared plugins repository
+
+* Thu Oct 04 2012 John Brooks <john.brooks@dereferenced.net> - 0.0.6
+- Added dependency on commhistory-daemon
+
+* Sun Sep 30 2012 John Brooks <john.brooks@dereferenced.net> - 0.0.6
+- Added a declarative plugin for messages API
+- Show real contact names and avatars in groups list
+- Changes to list delegate to follow platform UI guidelines (from Robin Burchell)
+
+* Tue Sep 25 2012 John Brooks <john.brooks@dereferenced.net> - 0.0.5
+- Clean up QML and improve scrolling performance (from Robin Burchell)
+- Fixes NEMO#368: Long text labels overflow in UI
+- Redesigned text input to add wrapping and hold the VKB open
+- Fixed a crash when opening a group for a deleted telepathy account
+- Fixes NEMO#369: Notifications are shown for the active chat window
+- Use newer header location for telepathy-qt
+
+* Fri Sep 21 2012 John Brooks <john.brooks@dereferenced.net> - 0.0.4
+- Open the conversation window after tapping on a commhistory-daemon notification
+- Improve handling of incoming telepathy channels
+- Use libcommhistory-declarative for QML bindings
+- Fixes NEMO#378: Use a background thread for CommHistory models
+- Use streamed queries for ConversationModel to improve load time
+
+* Sun Sep 02 2012 Marko Saukko <marko.saukko@jollamobile.com> - 0.0.3
+- Obsolete peregrine to get updates working properly.
+
+* Fri Aug 31 2012 John Brooks <john.brooks@dereferenced.net> - 0.0.3
+- Use pkgconfig to find TelepathyQt4 for build
+
+* Mon Aug 27 2012 John Brooks <john.brooks@dereferenced.net> - 0.0.3
+- Fixes NEMO#374: Add support for dbus activation by telepathy
+- qmlmessages will run in the background when needed to handle channels
+- Added org.nemomobile.qmlmessages service to handle window launching
+
+* Fri Aug 24 2012 John Brooks <john.brooks@dereferenced.net> - 0.0.2
+- Fixes NEMO#320: Integrate with libcommhistory
+- Fixes NEMO#291: Incoming conversations should be merged with existing conversations
+- Fixes NEMO#313: Account selection doesn't work
+- Changed text boxes to fit to their text exactly and improve readability
+- Messages view now starts from the bottom of the screen
+
+* Tue Aug 21 2012 Marko Saukko <marko.saukko@jollamobile.com> - 0.0.1
+- Obsolete meego-handset-sms.
+
+* Thu Aug 02 2012 Marko Saukko <marko.saukko@jollamobile.com> - 0.0.1
+- Drop nemo-qml-plugins-contacts for now as it is not needed or available. 
+
+* Mon Jul 30 2012 Robin Burchell <robin+mer@viroteck.net> - 0.0.1
+- Initial packaging
