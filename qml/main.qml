@@ -63,17 +63,19 @@ PageStackWindow {
     MessagesContextProvider {
         id: contextProvider
 
-        currentConversation: {
+        observedInbox: !screen.minimized && pageStack.depth === 1
+        observedGroups: {
             if (screen.minimized)
-                return null
+                return [ ]
 
-            var c = null
+            var c = [ ]
             try {
-                c = pageStack.currentPage.channel
+                if (pageStack.currentPage && pageStack.currentPage.group)
+                    c.push(pageStack.currentPage.group)
             } catch (e) {
             }
 
-            return c || null
+            return c
         }
     }
 

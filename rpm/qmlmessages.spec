@@ -17,7 +17,7 @@ URL:        https://github.com/nemomobile/qmlmessages
 Source0:    %{name}-%{version}.tar.bz2
 Source100:  qmlmessages.yaml
 Requires:   qt-components >= 1.4.8
-Requires:   nemo-qml-plugin-messages-internal >= 0.1.0
+Requires:   nemo-qml-plugin-messages-internal >= 0.1.1
 Requires:   libcommhistory-declarative >= 1.5.1
 Requires:   commhistory-daemon
 Requires:   nemo-qml-plugins-contacts
