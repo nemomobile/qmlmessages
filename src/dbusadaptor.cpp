@@ -49,8 +49,20 @@ void DBusAdaptor::showGroupsWindow(const QStringList &a)
     wm->showGroupsWindow();
 }
 
+void DBusAdaptor::startConversation(const QString &localUid, const QString &remoteUid)
+{
+    // ChatTypeP2P
+    wm->showConversation(localUid, remoteUid, 0);
+}
+
 void DBusAdaptor::startConversation(const QString &localUid, const QString &remoteUid, unsigned type)
 {
     wm->showConversation(localUid, remoteUid, type);
+}
+
+void DBusAdaptor::startSMS(const QString &phoneNumber)
+{
+    // Static account path for telepathy-ring
+    wm->showConversation(QLatin1String("/org/freedesktop/Telepathy/Account/ring/tel/account0"), phoneNumber, 0);
 }
 

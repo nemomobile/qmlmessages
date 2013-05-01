@@ -46,7 +46,9 @@ public slots:
     void showGroupsWindow();
     void showGroupsWindow(const QStringList &a);
 
+    void startConversation(const QString &localUid, const QString &remoteUid);
     void startConversation(const QString &localUid, const QString &remoteUid, unsigned type);
+    void startSMS(const QString &phoneNumber);
 
 private:
     WindowManager * const wm;
