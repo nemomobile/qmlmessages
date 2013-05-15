@@ -46,7 +46,7 @@ Requires:
     - libcommhistory-declarative >= 1.5.1
     - commhistory-daemon
 # C++ contacts APIs
-    - nemo-qml-plugins-contacts
+    - nemo-qml-plugin-contacts
 # QML contacts APIs
     - qmlcontacts
  
