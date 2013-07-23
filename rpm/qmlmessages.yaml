@@ -47,6 +47,7 @@ Requires:
     - commhistory-daemon
 # C++ contacts APIs
     - nemo-qml-plugin-contacts
+    - nemo-qml-plugin-dbus
 # QML contacts APIs
     - qmlcontacts
  
