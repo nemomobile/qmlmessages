@@ -34,6 +34,7 @@ import com.nokia.meego 1.0
 import org.nemomobile.messages.internal 1.0
 import org.nemomobile.contacts 1.0
 import org.nemomobile.commhistory 1.0
+import "common"
 
 PageStackWindow {
     id: window 
@@ -60,10 +61,10 @@ PageStackWindow {
         manager: groupManager
     }
 
-    MessagesContextProvider {
-        id: contextProvider
+    CommHistoryService {
+        id: commHistory
 
-        observedInbox: !screen.minimized && pageStack.depth === 1
+        inboxObserved: !screen.minimized && pageStack.depth === 1
         observedGroups: {
             if (screen.minimized)
                 return [ ]
