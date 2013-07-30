@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="64px" height="64px" viewBox="0 0 64 64" enable-background="new 0 0 64 64" xml:space="preserve">
+<g id="meegotouch-speechbubble-outgoing-chat-mirrored-background">
+	<g>
+		
+			<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="31.6489" y1="2.5005" x2="31.6489" y2="65.5005" gradientTransform="matrix(1 0 0 -1 0 66)">
+			<stop  offset="0" style="stop-color:#45A4D8"/>
+			<stop  offset="0.2881" style="stop-color:#48A7DA"/>
+			<stop  offset="0.5194" style="stop-color:#52AFE0"/>
+			<stop  offset="0.7311" style="stop-color:#63BCEA"/>
+			<stop  offset="0.9298" style="stop-color:#7BD0F9"/>
+			<stop  offset="1" style="stop-color:#85D8FF"/>
+		</linearGradient>
+		<path fill="url(#SVGID_1_)" d="M10,63.5c-5.238,0-9.5-4.262-9.5-9.5V10c0-5.238,4.262-9.5,9.5-9.5h52.798L55.5,7.846V54
+			c0,5.238-4.262,9.5-9.5,9.5H10z"/>
+		<g>
+			<path fill="#666666" d="M61.598,1l-6.307,6.346L55,7.639v0.412V54c0,4.963-4.037,9-9,9H10c-4.962,0-9-4.037-9-9V10
+				c0-4.963,4.038-9,9-9H61.598 M64,0H10C4.5,0,0,4.5,0,10v44c0,5.5,4.5,10,10,10h36c5.5,0,10-4.5,10-10V8.051L64,0L64,0z"/>
+		</g>
+	</g>
+</g>
+</svg>

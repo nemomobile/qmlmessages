@@ -1,0 +1,60 @@
+Name:  qmlmessages
+Summary: Messaging application for nemo
+Version: 0.1.4
+Release: 1
+Group: Applications/System
+License: BSD
+URL: https://github.com/nemomobile/qmlmessages
+Sources:
+    - "%{name}-%{version}.tar.bz2"
+
+Description: Messaging application using Qt Quick for Nemo Mobile.
+Configure: none
+Builder: qmake
+Obsoletes: 
+    # meego-handset-sms is the old MTF based application that isn't
+    # maintained anymore, obsoleted here to make updates work.
+    - meego-handset-sms <= 0.1.2
+    - meego-handset-sms-branding-upstream <= 0.1.2
+    # Peregrine isn't maintained atm. and qmlmessages provides
+    # most of its features. To make updates work properly we obsolete
+    # the old peregrine.
+    - peregrine-components-bridge-common < 1.1.7 
+    - peregrine-components-layout < 1.1.7
+    - peregrine-libs < 1.1.7
+    - peregrine-qml-starter < 1.1.7
+    - peregrine-tablet-common < 1.1.7
+Provides: 
+    - meego-handset-sms > 0.1.2
+    - meego-handset-sms-branding-upstream > 0.1.2
+    # And provide "new" one. 
+    - peregrine-components-bridge-common = 1.1.7 
+    - peregrine-components-layout = 1.1.7
+    - peregrine-libs = 1.1.7
+    - peregrine-qml-starter = 1.1.7
+    - peregrine-tablet-common = 1.1.7
+PkgConfigBR:
+    - QtCore >= 4.7.0
+    - QtDeclarative
+    - QtContacts
+    - qdeclarative-boostable
+    - TelepathyQt4
+
+Requires:
+    - qt-components >= 1.4.8
+    - nemo-qml-plugin-messages-internal >= 0.1.1
+    - libcommhistory-declarative >= 1.5.1
+    - commhistory-daemon
+# C++ contacts APIs
+    - nemo-qml-plugin-contacts
+    - nemo-qml-plugin-dbus
+# QML contacts APIs
+    - qmlcontacts
+ 
+Files:
+    - "%{_bindir}/qmlmessages"
+    - "%{_datadir}/applications/qmlmessages.desktop"
+    - "%{_datadir}/telepathy/clients/qmlmessages.client"
+    - "%{_datadir}/dbus-1/services/org.freedesktop.Telepathy.Client.qmlmessages.service"
+    - "%{_datadir}/dbus-1/services/org.nemomobile.qmlmessages.service"
+    - "%{_datadir}/contextkit/providers/org.nemomobile.qmlmessages.context.context"

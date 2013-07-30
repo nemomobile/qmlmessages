@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<provider bus="session" service="org.nemomobile.qmlmessages.context">
+    <key name="Messaging.ObservedConversation" type="list"></key>
+    <key name="Messaging.ObservedInbox" type="bool"></key>
+</provider>
