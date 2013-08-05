@@ -46,6 +46,7 @@ Page {
     property QtObject group
     property QtObject person: group ? peopleModel.personById(group.contactId) : null
     tools: null
+    property alias phoneNumber: targetEditor.text
 
     PageHeader {
         id: header
@@ -64,7 +65,16 @@ Page {
             id: backBtn
             anchors.verticalCenter: parent.verticalCenter
             iconId: "icon-m-toolbar-back"
-            onClicked: pageStack.pop()
+            onClicked: {
+                if (pageStack.depth <= 1)
+                {
+                    Qt.quit()
+                } 
+                else
+                {
+                    pageStack.pop()
+                }
+            }
         }
 
         Text {

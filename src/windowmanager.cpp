@@ -39,20 +39,22 @@
 #include <QGraphicsObject>
 #include <QDBusConnection>
 #include <QDebug>
+#include <QQuickView>
 
 static WindowManager *wmInstance = 0;
 
-WindowManager *WindowManager::instance(QObject *rootObject)
+WindowManager *WindowManager::instance(QObject *rootObject, QQuickView *view)
 {
     if (!wmInstance)
-        wmInstance = new WindowManager(rootObject, qApp);
+        wmInstance = new WindowManager(rootObject, qApp, view);
     return wmInstance;
 }
 
-WindowManager::WindowManager(QObject *rootObject, QObject *parent)
+WindowManager::WindowManager(QObject *rootObject, QObject *parent, QQuickView *view)
     : QObject(parent)
 {
     mRootObject = rootObject;
+    pView = view;
 
     new DBusAdaptor(this);
     QDBusConnection::sessionBus().registerService("org.nemomobile.qmlmessages");
@@ -75,5 +77,10 @@ void WindowManager::showConversation(const QString &localUid, const QString &rem
 {
     Q_UNUSED(type);
     QMetaObject::invokeMethod(mRootObject, "showConversation", Q_ARG(QVariant, localUid), Q_ARG(QVariant, remoteUid));
+}
+
+void WindowManager::setActiveWindow()
+{
+    pView->raise();
 }
 

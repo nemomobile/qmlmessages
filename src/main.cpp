@@ -74,12 +74,12 @@ int main(int argc, char **argv)
             exit(0);
         }
     }
-
     QObject::connect(view->engine(), SIGNAL(quit()), application, SLOT(quit()));
     view->setSource(QUrl("qrc:/qml/main.qml"));
 
     QObject *object = (QObject *)view->rootObject();
-    WindowManager *wm = WindowManager::instance( object  );
+    WindowManager *wm = WindowManager::instance( object, view );
+    view->rootContext()->setContextProperty("wManager", wm);    
     wm->showGroupsWindow();
     if (isFullscreen)
     {

@@ -34,6 +34,7 @@
 #include <QObject>
 #include <QPointer>
 
+class QQuickView;
 class QGraphicsView;
 class QGraphicsScene;
 class QGraphicsObject;
@@ -49,10 +50,11 @@ class WindowManager : public QObject
     Q_OBJECT
 
 public:
-    static WindowManager *instance(QObject *rootObject);
+    static WindowManager *instance(QObject *rootObject, QQuickView *view);
 
-    explicit WindowManager(QObject *rootObject, QObject *parent = 0);
+    explicit WindowManager(QObject *rootObject, QObject *parent = 0, QQuickView *view = NULL);
     virtual ~WindowManager();
+    Q_INVOKABLE void setActiveWindow();
 
 public slots:
     void showGroupsWindow();
@@ -60,6 +62,7 @@ public slots:
 
 private:
     QObject *mRootObject;
+    QQuickView *pView;
 };
 
 #endif

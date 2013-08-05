@@ -81,6 +81,20 @@ PageStackWindow {
     }
 
     function showConversation(localUid, remoteUid) {
+        var pages = [ ]
+        pages.push({ page: Qt.resolvedUrl("ConversationPage.qml"), properties: { phoneNumber: remoteUid } })
+        pageStack.clear();
+        if (pageStack.depth > 1)
+        {
+            pageStack.replace(pages)
+        }
+        else
+        {
+            pageStack.push(pages)
+        }
+        
+        wManager.setActiveWindow()
+            /*
         if (!groupManager.ready) {
             function delayedShow() {
                 if (groupManager.ready) {
@@ -105,6 +119,7 @@ PageStackWindow {
             pageStack.replace(pages)
         else
             pageStack.push(pages)
+            */
     }
 
     function showGroupsList() {
