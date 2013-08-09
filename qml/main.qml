@@ -50,6 +50,7 @@ PageStackWindow {
 
     TelepathyChannelManager {
         id: channelManager
+        handlerName: "qmlmessages"
     }
 
     CommGroupManager {

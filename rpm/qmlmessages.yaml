@@ -42,7 +42,7 @@ PkgConfigBR:
 
 Requires:
     - qt-components >= 1.4.8
-    - nemo-qml-plugin-messages-internal >= 0.1.1
+    - nemo-qml-plugin-messages-internal >= 0.1.7
     - libcommhistory-declarative >= 1.5.1
     - commhistory-daemon
 # C++ contacts APIs
