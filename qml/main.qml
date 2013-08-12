@@ -38,6 +38,7 @@ import "common"
 
 PageStackWindow {
     id: window 
+    property bool bFromOutside;
 
     // Shared AccountsModel
     TelepathyAccountsModel {
@@ -82,7 +83,9 @@ PageStackWindow {
 
     function showConversation(localUid, remoteUid) {
         var pages = [ ]
-        pages.push({ page: Qt.resolvedUrl("ConversationPage.qml"), properties: { phoneNumber: remoteUid } })
+        bFromOutside = true
+        pConversationPage.phoneNumber = remoteUid;
+        pages.push(pConversationPage);
         pageStack.clear();
         if (pageStack.depth > 1)
         {
@@ -121,12 +124,44 @@ PageStackWindow {
             pageStack.push(pages)
             */
     }
+    
+    ConversationListPage {
+        id: pConversationListPage
+        visible: false
+    }
+    
+    ConversationPage {
+        id: pConversationPage
+        visible: false
+    }
+    
+    function addPhoneNumber(strPhoneNumber)
+    {
+        if (bFromOutside == false)
+        {
+            pConversationListPage.addPhoneNumber(strPhoneNumber)
+        }
+        else
+        {
+            pConversationPage.addPhoneNumber(strPhoneNumber)
+        }
+    }
 
     function showGroupsList() {
+        bFromOutside = false
         if (!pageStack.currentPage)
-            pageStack.push(Qt.resolvedUrl("ConversationListPage.qml"))
+            pageStack.push(pConversationListPage); 
         else if (pageStack.depth > 1)
             pageStack.pop(null, true)
     }
+    
+    property PeopleModel contactListModel: PeopleModel {
+        
+        Component.onCompleted: {
+              setDisplayLabelOrder(false);
+              setFilterType(5);
+        }
+    }    
+    
 }
 

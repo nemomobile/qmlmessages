@@ -47,7 +47,12 @@ Page {
     property QtObject person: group ? peopleModel.personById(group.contactId) : null
     tools: null
     property alias phoneNumber: targetEditor.text
-
+    
+    function addPhoneNumber(strPhoneNumber)
+    {   
+        targetEditor.addPhoneNumber(strPhoneNumber);
+    }
+    
     PageHeader {
         id: header
         color: "#bcbcbc"
