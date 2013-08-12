@@ -156,11 +156,23 @@ Page {
         }
     }
 
-    ChatTextInput {
-        id: textArea
+    Label {
+        id: minMaxText
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
+        text: qsTr("%1").arg(textArea.text.length) + "/160"
+        anchors.leftMargin: 10
+        anchors.rightMargin: 10
+        horizontalAlignment: Text.AlignRight
+    }
+
+    ChatTextInput {
+        id: textArea
+        anchors.bottom: minMaxText.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        source: ""
 
         onSendMessage: {
             if (text.length < 1)
@@ -173,6 +185,7 @@ Page {
             clear()
         }
     }
+    
 
     states: [
         State {
