@@ -156,10 +156,31 @@ Page {
         }
     }
 
+    Button {
+        id: clearBtn
+        anchors.left: parent.left
+        anchors.rightMargin: UiConstants.ButtonSpacing
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 8
+
+        text: qsTr("Clear")
+        enabled: textArea.text.length > 0
+
+        platformStyle: ButtonStyle {
+            buttonWidth: 100
+            background: "image://theme/meegotouch-button-inverted-background"
+            disabledBackground: background
+            textColor: "white"
+            disabledTextColor: "lightgray"
+        }
+
+        onClicked: textArea.text = ""
+    }
+
     Label {
         id: minMaxText
         anchors.bottom: parent.bottom
-        anchors.left: parent.left
+        anchors.top: clearBtn.top
         anchors.right: parent.right
         text: qsTr("%1").arg(textArea.text.length) + "/160"
         anchors.leftMargin: 10
@@ -169,7 +190,7 @@ Page {
 
     ChatTextInput {
         id: textArea
-        anchors.bottom: minMaxText.top
+        anchors.bottom: clearBtn.top
         anchors.left: parent.left
         anchors.right: parent.right
         source: ""

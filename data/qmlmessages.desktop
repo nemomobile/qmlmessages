@@ -2,7 +2,7 @@
 Type=Application
 Name=Messages
 Icon=icons-Applications-sms
-Exec=invoker --type=e /usr/bin/qmlmessages
+Exec=invoker --type=qtcomponents-qt5 /usr/bin/qmlmessages
 Comment=Nemo messaging application
 X-Desktop-File-Install-Version=0.19
 X-Maemo-Service=org.nemomobile.qmlmessages
