@@ -9,7 +9,7 @@ Name:       qmlmessages
 # << macros
 
 Summary:    Messaging application for nemo
-Version:    0.1.4
+Version:    0.1.4.skytree1
 Release:    1
 Group:      Applications/System
 License:    BSD
@@ -27,6 +27,7 @@ BuildRequires:  pkgconfig(Qt5Gui)
 BuildRequires:  pkgconfig(Qt5Widgets)
 BuildRequires:  pkgconfig(Qt5Quick)
 BuildRequires:  pkgconfig(Qt5Core) 
+BuildRequires:  pkgconfig(Qt5Svg) 
 BuildRequires:  pkgconfig(Qt5Contacts)
 BuildRequires:  pkgconfig(qdeclarative5-boostable)
 BuildRequires:  pkgconfig(TelepathyQt5)
