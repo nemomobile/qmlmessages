@@ -9,7 +9,7 @@ Name:       qmlmessages
 # << macros
 
 Summary:    Messaging application for nemo
-Version:    0.1.4.skytree1
+Version:    0.1.4
 Release:    1
 Group:      Applications/System
 License:    BSD
