@@ -29,8 +29,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import QtQuick 1.1
-import com.nokia.meego 1.0
+import QtQuick 2.0
+import com.nokia.meego 2.0
 import org.nemomobile.messages.internal 1.0
 import org.nemomobile.qmlcontacts 1.0
 import org.nemomobile.commhistory 1.0
@@ -46,7 +46,13 @@ Page {
     property QtObject group
     property QtObject person: group ? peopleModel.personById(group.contactId) : null
     tools: null
-
+    property alias phoneNumber: targetEditor.text
+    
+    function addPhoneNumber(strPhoneNumber)
+    {   
+        targetEditor.addPhoneNumber(strPhoneNumber);
+    }
+    
     PageHeader {
         id: header
         color: "#bcbcbc"
@@ -64,7 +70,16 @@ Page {
             id: backBtn
             anchors.verticalCenter: parent.verticalCenter
             iconId: "icon-m-toolbar-back"
-            onClicked: pageStack.pop()
+            onClicked: {
+                if (pageStack.depth <= 1)
+                {
+                    Qt.quit()
+                } 
+                else
+                {
+                    pageStack.pop()
+                }
+            }
         }
 
         Text {
@@ -141,11 +156,44 @@ Page {
         }
     }
 
+    Button {
+        id: clearBtn
+        anchors.left: parent.left
+        anchors.rightMargin: UiConstants.ButtonSpacing
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 8
+
+        text: qsTr("Clear")
+        enabled: textArea.text.length > 0
+
+        platformStyle: ButtonStyle {
+            buttonWidth: 100
+            background: "image://theme/meegotouch-button-inverted-background"
+            disabledBackground: background
+            textColor: "white"
+            disabledTextColor: "lightgray"
+        }
+
+        onClicked: textArea.text = ""
+    }
+
+    Label {
+        id: minMaxText
+        anchors.bottom: parent.bottom
+        anchors.top: clearBtn.top
+        anchors.right: parent.right
+        text: qsTr("%1").arg(textArea.text.length) + "/160"
+        anchors.leftMargin: 10
+        anchors.rightMargin: 10
+        horizontalAlignment: Text.AlignRight
+    }
+
     ChatTextInput {
         id: textArea
-        anchors.bottom: parent.bottom
+        anchors.bottom: clearBtn.top
         anchors.left: parent.left
         anchors.right: parent.right
+        source: ""
 
         onSendMessage: {
             if (text.length < 1)

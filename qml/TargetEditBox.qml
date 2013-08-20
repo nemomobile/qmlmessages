@@ -28,15 +28,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import QtQuick 1.1
-import com.nokia.meego 1.0
+import QtQuick 2.0
+import com.nokia.meego 2.0
 
 Rectangle {
+    id: targetEditor
     color: "white"
     height: targetInput.height + 22
 
     property alias text: targetInput.text
 
+    function addPhoneNumber(strPhoneNumber)
+    {
+        targetInput.text = strPhoneNumber;
+    }
+    
     TextField {
         id: "targetInput"
         placeholderText: "To:"
@@ -64,7 +70,10 @@ Rectangle {
             textColor: "white"
         }
 
-        onClicked: console.log("Open contacts browsing dialog here")
+        onClicked: {
+           // console.log("Open contacts browsing dialog here")
+            pageStack.push(Qt.resolvedUrl("ContactListPage.qml"))
+        }
     }
 
     Rectangle {

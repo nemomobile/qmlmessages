@@ -32,9 +32,12 @@
 #include <QApplication>
 #include <QDBusConnection>
 #ifdef HAS_BOOSTER
-#include <applauncherd/MDeclarativeCache>
+#include <mdeclarativecache5/MDeclarativeCache>
 #endif
 
+#include <QQuickView>
+#include <QQmlEngine>
+#include <QQmlContext>
 #include <TelepathyQt/Constants>
 #include <TelepathyQt/Debug>
 #include <TelepathyQt/Types>
@@ -46,34 +49,47 @@ Q_DECL_EXPORT
 #endif
 int main(int argc, char **argv)
 {
-#ifdef HAS_BOOSTER
-    MDeclarativeCache::qApplication(argc, argv);
+    QQuickView *view;
+#ifdef HAS_BOOSTER 
+    QGuiApplication *application;
+    application = MDeclarativeCache::qApplication(argc, argv);
+    view = MDeclarativeCache::populate();
 #else
+    QApplication *application;
     qWarning() << Q_FUNC_INFO << "Warning! Running without booster. This may be a bit slower.";
-    QApplication a(argc, argv);
+    QApplication stackApp(argc, argv);
+    QQuickView stackView;
+    application = &stackApp;
+    view = &stackView;
 #endif
 
-    // Set up Telepathy
-    Tp::registerTypes();
-    Tp::enableWarnings(true);
+    bool isFullscreen = false;
+    QStringList arguments = application->arguments();
+    for (int i = 0; i < arguments.count(); ++i) {
+        QString parameter = arguments.at(i);
+        if (parameter == "-fullscreen") {
+            isFullscreen = true;
+        } else if (parameter == "-help") {
+            qDebug() << "Contacts application";
+            qDebug() << "-fullscreen   - show QML fullscreen";
+            exit(0);
+        }
+    }
+    QObject::connect(view->engine(), SIGNAL(quit()), application, SLOT(quit()));
+    view->setSource(QUrl("qrc:/qml/main.qml"));
 
-    bool showWindow = true;
-    foreach (QString arg, qApp->arguments()) {
-        if (arg == "-debug")
-            Tp::enableDebug(true);
-        else if (arg == "-background")
-            showWindow = false;
-        else if (arg == "-prestart")
-            showWindow = false;
+    QObject *object = (QObject *)view->rootObject();
+    WindowManager *wm = WindowManager::instance( object, view );
+    view->rootContext()->setContextProperty("wManager", wm);    
+    wm->showGroupsWindow();
+    if (isFullscreen)
+    {
+        view->showFullScreen();
+    }
+    else
+    {
+        view->show();
     }
 
-    // Set up QML
-    WindowManager *wm = WindowManager::instance();
-    if (showWindow)
-        wm->showGroupsWindow();
-    else 
-        // Stay open persistently if not started with UI
-        qApp->setQuitOnLastWindowClosed(false);
-
-    return qApp->exec();
+    return application->exec();
 }

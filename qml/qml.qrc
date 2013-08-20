@@ -10,6 +10,8 @@
         <file>TargetEditBox.qml</file>
         <file>AccountSelector.qml</file>
         <file>ChatTextInput.qml</file>
+        <file>SearchBox.qml</file>
+        <file>ContactListPage.qml</file>
         <file>common/CommHistoryService.qml</file>
     </qresource>
 </RCC>

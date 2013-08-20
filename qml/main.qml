@@ -29,8 +29,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import QtQuick 1.1
-import com.nokia.meego 1.0
+import QtQuick 2.0
+import com.nokia.meego 2.0
 import org.nemomobile.messages.internal 1.0
 import org.nemomobile.contacts 1.0
 import org.nemomobile.commhistory 1.0
@@ -38,6 +38,7 @@ import "common"
 
 PageStackWindow {
     id: window 
+    property bool bFromOutside;
 
     // Shared AccountsModel
     TelepathyAccountsModel {
@@ -50,7 +51,6 @@ PageStackWindow {
 
     TelepathyChannelManager {
         id: channelManager
-        handlerName: "qmlmessages"
     }
 
     CommGroupManager {
@@ -82,6 +82,22 @@ PageStackWindow {
     }
 
     function showConversation(localUid, remoteUid) {
+        var pages = [ ]
+        bFromOutside = true
+        pConversationPage.phoneNumber = remoteUid;
+        pages.push(pConversationPage);
+        pageStack.clear();
+        if (pageStack.depth > 1)
+        {
+            pageStack.replace(pages)
+        }
+        else
+        {
+            pageStack.push(pages)
+        }
+        
+        wManager.setActiveWindow()
+            /*
         if (!groupManager.ready) {
             function delayedShow() {
                 if (groupManager.ready) {
@@ -106,13 +122,45 @@ PageStackWindow {
             pageStack.replace(pages)
         else
             pageStack.push(pages)
+            */
+    }
+    
+    ConversationListPage {
+        id: pConversationListPage
+        visible: false
+    }
+    
+    ConversationPage {
+        id: pConversationPage
+        visible: false
+    }
+    
+    function addPhoneNumber(strPhoneNumber)
+    {
+        if (bFromOutside == false)
+        {
+            pConversationListPage.addPhoneNumber(strPhoneNumber)
+        }
+        else
+        {
+            pConversationPage.addPhoneNumber(strPhoneNumber)
+        }
     }
 
     function showGroupsList() {
+        bFromOutside = false
         if (!pageStack.currentPage)
-            pageStack.push(Qt.resolvedUrl("ConversationListPage.qml"))
+            pageStack.push(pConversationListPage); 
         else if (pageStack.depth > 1)
             pageStack.pop(null, true)
     }
+    
+    property PeopleModel contactListModel: PeopleModel {
+        
+        Component.onCompleted: {
+              setDisplayLabelOrder(false);
+              setFilterType(5);
+        }
+    }    
 }
 
