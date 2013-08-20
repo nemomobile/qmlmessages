@@ -55,6 +55,7 @@ int main(int argc, char **argv)
     application = MDeclarativeCache::qApplication(argc, argv);
     view = MDeclarativeCache::populate();
 #else
+    QApplication *application;
     qWarning() << Q_FUNC_INFO << "Warning! Running without booster. This may be a bit slower.";
     QApplication stackApp(argc, argv);
     QQuickView stackView;
@@ -89,8 +90,6 @@ int main(int argc, char **argv)
     {
         view->show();
     }
-
-
 
     return application->exec();
 }

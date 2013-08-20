@@ -162,6 +162,5 @@ PageStackWindow {
               setFilterType(5);
         }
     }    
-    
 }
 

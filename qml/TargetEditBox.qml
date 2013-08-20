@@ -30,8 +30,6 @@
 
 import QtQuick 2.0
 import com.nokia.meego 2.0
-import org.nemomobile.qmlcontacts 1.0
-import org.nemomobile.contacts 1.0
 
 Rectangle {
     id: targetEditor

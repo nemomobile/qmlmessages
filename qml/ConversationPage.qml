@@ -206,7 +206,6 @@ Page {
             clear()
         }
     }
-    
 
     states: [
         State {

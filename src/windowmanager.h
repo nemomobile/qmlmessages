@@ -63,6 +63,9 @@ public slots:
 private:
     QObject *mRootObject;
     QQuickView *pView;
+
+    void createScene();
+    void ensureWindow();
 };
 
 #endif
