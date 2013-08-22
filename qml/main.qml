@@ -29,8 +29,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import QtQuick 1.1
-import com.nokia.meego 1.0
+import QtQuick 2.0
+import com.nokia.meego 2.0
 import org.nemomobile.messages.internal 1.0
 import org.nemomobile.contacts 1.0
 import org.nemomobile.commhistory 1.0
@@ -50,7 +50,6 @@ PageStackWindow {
 
     TelepathyChannelManager {
         id: channelManager
-        handlerName: "qmlmessages"
     }
 
     CommGroupManager {
@@ -89,7 +88,8 @@ PageStackWindow {
                     groupManager.readyChanged.disconnect(delayedShow)
                 }
             }
-            groupManager.readyChanged.connect(delayedShow)
+         // this function seems to be gone in qt5 (or can be something wrong in my setups)
+         //   groupManager.readyChanged.connect(delayedShow)
             return
         }
 
