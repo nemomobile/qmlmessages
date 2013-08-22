@@ -32,12 +32,10 @@
 #define WINDOWMANAGER_H
 
 #include <QObject>
-#include <QWeakPointer>
+#include <QPointer>
 
-class QGraphicsView;
-class QGraphicsScene;
-class QGraphicsObject;
-class QDeclarativeEngine;
+class QQuickView;
+class QQmlEngine;
 
 /* Right now, WindowManager is just responsible for creating/showing the
  * single window we manage when requested via DBus or application launch.
@@ -49,23 +47,19 @@ class WindowManager : public QObject
     Q_OBJECT
 
 public:
-    static WindowManager *instance();
+    static WindowManager *instance(QObject *rootObject, QQuickView *view);
 
-    explicit WindowManager(QObject *parent = 0);
+    explicit WindowManager(QObject *rootObject, QObject *parent = 0, QQuickView *view = NULL);
     virtual ~WindowManager();
+    Q_INVOKABLE void setActiveWindow();
 
 public slots:
     void showGroupsWindow();
     void showConversation(const QString &localUid, const QString &remoteUid, unsigned type);
 
 private:
-    QWeakPointer<QGraphicsView> mWindow;
-    QDeclarativeEngine *mEngine;
-    QGraphicsScene *mScene;
-    QGraphicsObject *mRootObject;
-
-    void createScene();
-    void ensureWindow();
+    QObject *mRootObject;
+    QQuickView *pView;
 };
 
 #endif

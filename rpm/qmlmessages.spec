@@ -16,18 +16,20 @@ License:    BSD
 URL:        https://github.com/nemomobile/qmlmessages
 Source0:    %{name}-%{version}.tar.bz2
 Source100:  qmlmessages.yaml
-Requires:   qt-components >= 1.4.8
-Requires:   nemo-qml-plugin-messages-internal >= 0.1.1
-Requires:   libcommhistory-declarative >= 1.5.1
+Requires:   qt-components-qt5
+Requires:   nemo-qml-plugin-messages-internal-qt5
+Requires:   libcommhistory-qt5-declarative
 Requires:   commhistory-daemon
-Requires:   nemo-qml-plugin-contacts
-Requires:   nemo-qml-plugin-dbus
+Requires:   nemo-qml-plugin-contacts-qt5
+Requires:   nemo-qml-plugin-dbus-qt5
 Requires:   qmlcontacts
-BuildRequires:  pkgconfig(QtCore) >= 4.7.0
-BuildRequires:  pkgconfig(QtDeclarative)
-BuildRequires:  pkgconfig(QtContacts)
-BuildRequires:  pkgconfig(qdeclarative-boostable)
-BuildRequires:  pkgconfig(TelepathyQt4)
+BuildRequires:  pkgconfig(Qt5Gui)
+BuildRequires:  pkgconfig(Qt5Quick)
+BuildRequires:  pkgconfig(Qt5Core) 
+BuildRequires:  pkgconfig(Qt5Svg) 
+BuildRequires:  pkgconfig(Qt5Contacts)
+BuildRequires:  pkgconfig(qdeclarative5-boostable)
+BuildRequires:  pkgconfig(TelepathyQt5)
 BuildRequires:  desktop-file-utils
 Provides:   meego-handset-sms > 0.1.2
 Provides:   meego-handset-sms-branding-upstream > 0.1.2
@@ -57,7 +59,7 @@ Messaging application using Qt Quick for Nemo Mobile.
 # >> build pre
 # << build pre
 
-%qmake 
+qmake -qt=5 -recursive
 
 make %{?jobs:-j%jobs}
 
@@ -79,7 +81,6 @@ desktop-file-install --delete-original       \
 
 %post
 # >> post
-update-contextkit-providers
 # << post
 
 %files
@@ -89,6 +90,5 @@ update-contextkit-providers
 %{_datadir}/telepathy/clients/qmlmessages.client
 %{_datadir}/dbus-1/services/org.freedesktop.Telepathy.Client.qmlmessages.service
 %{_datadir}/dbus-1/services/org.nemomobile.qmlmessages.service
-%{_datadir}/contextkit/providers/org.nemomobile.qmlmessages.context.context
 # >> files
 # << files

@@ -34,20 +34,20 @@ Provides:
     - peregrine-qml-starter = 1.1.7
     - peregrine-tablet-common = 1.1.7
 PkgConfigBR:
-    - QtCore >= 4.7.0
-    - QtDeclarative
-    - QtContacts
-    - qdeclarative-boostable
-    - TelepathyQt4
+    - Qt5Core
+    - Qt5Quick
+    - Qt5Contacts
+    - qdeclarative5-boostable
+    - TelepathyQt5
 
 Requires:
-    - qt-components >= 1.4.8
-    - nemo-qml-plugin-messages-internal >= 0.1.7
-    - libcommhistory-declarative >= 1.5.1
+    - qt-components-qt5 >= 1.4.8
+    - nemo-qml-plugin-messages-internal-qt5
+    - libcommhistory-qt5-declarative
     - commhistory-daemon
 # C++ contacts APIs
-    - nemo-qml-plugin-contacts
-    - nemo-qml-plugin-dbus
+    - nemo-qml-plugin-contacts-qt5
+    - nemo-qml-plugin-dbus-qt5
 # QML contacts APIs
     - qmlcontacts
  
@@ -57,4 +57,4 @@ Files:
     - "%{_datadir}/telepathy/clients/qmlmessages.client"
     - "%{_datadir}/dbus-1/services/org.freedesktop.Telepathy.Client.qmlmessages.service"
     - "%{_datadir}/dbus-1/services/org.nemomobile.qmlmessages.service"
-    - "%{_datadir}/contextkit/providers/org.nemomobile.qmlmessages.context.context"
+
