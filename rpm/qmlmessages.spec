@@ -20,13 +20,13 @@ Requires:   qt-components-qt5
 Requires:   nemo-qml-plugin-messages-internal-qt5
 Requires:   libcommhistory-qt5-declarative
 Requires:   commhistory-daemon
+Requires:   qt5-qtsvg-plugin-imageformat-svg
 Requires:   nemo-qml-plugin-contacts-qt5
 Requires:   nemo-qml-plugin-dbus-qt5
 Requires:   qmlcontacts
 BuildRequires:  pkgconfig(Qt5Gui)
 BuildRequires:  pkgconfig(Qt5Quick)
-BuildRequires:  pkgconfig(Qt5Core) 
-BuildRequires:  pkgconfig(Qt5Svg) 
+BuildRequires:  pkgconfig(Qt5Core)
 BuildRequires:  pkgconfig(Qt5Contacts)
 BuildRequires:  pkgconfig(qdeclarative5-boostable)
 BuildRequires:  pkgconfig(TelepathyQt5)
@@ -59,9 +59,9 @@ Messaging application using Qt Quick for Nemo Mobile.
 # >> build pre
 # << build pre
 
-qmake -qt=5 -recursive
+%qmake5 
 
-make %{?jobs:-j%jobs}
+make %{?_smp_mflags}
 
 # >> build post
 # << build post
@@ -70,7 +70,7 @@ make %{?jobs:-j%jobs}
 rm -rf %{buildroot}
 # >> install pre
 # << install pre
-%qmake_install
+%qmake5_install
 
 # >> install post
 # << install post
@@ -78,10 +78,6 @@ rm -rf %{buildroot}
 desktop-file-install --delete-original       \
   --dir %{buildroot}%{_datadir}/applications             \
    %{buildroot}%{_datadir}/applications/*.desktop
-
-%post
-# >> post
-# << post
 
 %files
 %defattr(-,root,root,-)

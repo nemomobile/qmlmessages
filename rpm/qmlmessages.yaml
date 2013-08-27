@@ -10,7 +10,7 @@ Sources:
 
 Description: Messaging application using Qt Quick for Nemo Mobile.
 Configure: none
-Builder: qmake
+Builder: qmake5
 Obsoletes: 
     # meego-handset-sms is the old MTF based application that isn't
     # maintained anymore, obsoleted here to make updates work.
@@ -34,17 +34,19 @@ Provides:
     - peregrine-qml-starter = 1.1.7
     - peregrine-tablet-common = 1.1.7
 PkgConfigBR:
-    - Qt5Core
+    - Qt5Gui
     - Qt5Quick
+    - Qt5Core
     - Qt5Contacts
     - qdeclarative5-boostable
     - TelepathyQt5
 
 Requires:
-    - qt-components-qt5 >= 1.4.8
+    - qt-components-qt5
     - nemo-qml-plugin-messages-internal-qt5
     - libcommhistory-qt5-declarative
     - commhistory-daemon
+    - qt5-qtsvg-plugin-imageformat-svg
 # C++ contacts APIs
     - nemo-qml-plugin-contacts-qt5
     - nemo-qml-plugin-dbus-qt5
