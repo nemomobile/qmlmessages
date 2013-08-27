@@ -29,12 +29,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <QApplication>
+#include <QGuiApplication>
 #include <QDBusConnection>
 #ifdef HAS_BOOSTER
-#include <applauncherd/MDeclarativeCache>
+#include <MDeclarativeCache>
 #endif
 
+#include <QQuickView>
+#include <QQmlEngine>
+#include <QQmlContext>
 #include <TelepathyQt/Constants>
 #include <TelepathyQt/Debug>
 #include <TelepathyQt/Types>
@@ -46,13 +49,19 @@ Q_DECL_EXPORT
 #endif
 int main(int argc, char **argv)
 {
-#ifdef HAS_BOOSTER
-    MDeclarativeCache::qApplication(argc, argv);
+    QQuickView *view;
+#ifdef HAS_BOOSTER 
+    QGuiApplication *application;
+    application = MDeclarativeCache::qApplication(argc, argv);
+    view = MDeclarativeCache::qQuickView();
 #else
+    QGuiApplication *application;
     qWarning() << Q_FUNC_INFO << "Warning! Running without booster. This may be a bit slower.";
-    QApplication a(argc, argv);
+    QGuiApplication stackApp(argc, argv);
+    QQuickView stackView;
+    application = &stackApp;
+    view = &stackView;
 #endif
-
     // Set up Telepathy
     Tp::registerTypes();
     Tp::enableWarnings(true);
@@ -67,13 +76,16 @@ int main(int argc, char **argv)
             showWindow = false;
     }
 
-    // Set up QML
-    WindowManager *wm = WindowManager::instance();
-    if (showWindow)
-        wm->showGroupsWindow();
-    else 
-        // Stay open persistently if not started with UI
-        qApp->setQuitOnLastWindowClosed(false);
+    QObject::connect(view->engine(), SIGNAL(quit()), application, SLOT(quit()));
+    view->setSource(QUrl("qrc:/qml/main.qml"));
 
-    return qApp->exec();
+    QObject *object = (QObject *)view->rootObject();
+    WindowManager *wm = WindowManager::instance( object, view );
+    view->rootContext()->setContextProperty("wManager", wm);    
+    if (showWindow)
+    {
+        wm->showGroupsWindow();
+    }
+
+    return application->exec();
 }
