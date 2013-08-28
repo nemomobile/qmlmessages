@@ -1,5 +1,5 @@
 PROJECT_NAME = qmlmessages
-QT += dbus quick svg
+QT += dbus quick
 
 CONFIG += link_pkgconfig
 PKGCONFIG += TelepathyQt5
