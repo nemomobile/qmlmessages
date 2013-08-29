@@ -1,9 +1,6 @@
 PROJECT_NAME = qmlmessages
 QT += dbus quick
 
-CONFIG += link_pkgconfig
-PKGCONFIG += TelepathyQt5
-
 target.path = $$INSTALL_ROOT/usr/bin
 INSTALLS += target
 

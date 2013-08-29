@@ -29,7 +29,6 @@ BuildRequires:  pkgconfig(Qt5Quick)
 BuildRequires:  pkgconfig(Qt5Core)
 BuildRequires:  pkgconfig(Qt5Contacts)
 BuildRequires:  pkgconfig(qdeclarative5-boostable)
-BuildRequires:  pkgconfig(TelepathyQt5)
 BuildRequires:  desktop-file-utils
 Provides:   meego-handset-sms > 0.1.2
 Provides:   meego-handset-sms-branding-upstream > 0.1.2
