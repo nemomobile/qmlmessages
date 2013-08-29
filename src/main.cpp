@@ -38,9 +38,6 @@
 #include <QQuickView>
 #include <QQmlEngine>
 #include <QQmlContext>
-#include <TelepathyQt/Constants>
-#include <TelepathyQt/Debug>
-#include <TelepathyQt/Types>
 
 #include "windowmanager.h"
 
@@ -62,15 +59,10 @@ int main(int argc, char **argv)
     application = &stackApp;
     view = &stackView;
 #endif
-    // Set up Telepathy
-    Tp::registerTypes();
-    Tp::enableWarnings(true);
 
     bool showWindow = true;
     foreach (QString arg, qApp->arguments()) {
-        if (arg == "-debug")
-            Tp::enableDebug(true);
-        else if (arg == "-background")
+        if (arg == "-background")
             showWindow = false;
         else if (arg == "-prestart")
             showWindow = false;
