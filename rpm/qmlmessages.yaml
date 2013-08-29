@@ -39,7 +39,6 @@ PkgConfigBR:
     - Qt5Core
     - Qt5Contacts
     - qdeclarative5-boostable
-    - TelepathyQt5
 
 Requires:
     - qt-components-qt5
