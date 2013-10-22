@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Name=Messages
-Icon=icons-Applications-sms
+Icon=icon-app-conversation
 Exec=invoker --type=qtcomponents-qt5 /usr/bin/qmlmessages
 Comment=Nemo messaging application
 X-Desktop-File-Install-Version=0.19
